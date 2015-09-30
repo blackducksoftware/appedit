@@ -1,0 +1,26 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">  
+	<includeBaseDirectory>false</includeBaseDirectory> 
+	<formats>
+		<format>zip</format> 
+	</formats> 
+	<id>bds</id>
+	<fileSets> 
+		<fileSet>
+	       <directory>${project.basedir}/src/main/resources</directory>
+	       	<outputDirectory>/</outputDirectory>
+	       	<includes>
+				<include>APPEDIT-README.txt</include>
+				<include>LICENSE*</include>
+				<include>notices*</include>
+			</includes>
+	    </fileSet>
+		<fileSet> 
+			<directory>${project.build.directory}</directory> 
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>*.war</include>
+			</includes>
+		</fileSet> 	
+	</fileSets> 
+</assembly> 

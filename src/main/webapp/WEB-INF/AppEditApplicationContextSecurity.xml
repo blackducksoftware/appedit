@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+<!-- security:debug/ -->
+
+<security:http pattern="/css/**" security="none"/>
+<security:http pattern="/styles/**" security="none" />  
+<security:http pattern="/index.jsp" security="none"/>
+
+<security:http auto-config='true' use-expressions="true">
+    
+    <security:form-login
+                login-page="/loginRequest?login_error=1"
+                login-processing-url="/login/authenticate"
+        	    authentication-failure-url="/loginRequest?error=true"
+                username-parameter="username"
+                password-parameter="password"/>
+    <security:logout logout-success-url="/j_spring_security_logout"
+        delete-cookies="JSESSIONID"/>  
+        
+    <!--  Secure all urls except /login -->
+    <security:intercept-url pattern="/loginForm" access="permitAll"/>
+    <security:intercept-url pattern="/loginRequest" access="permitAll"/>
+    <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+    
+    <!-- Enable Cross Site Request Forgery (CSRF) protection -->
+    <security:csrf />
+    
+</security:http>
+
+<security:authentication-manager alias="authenticationManager"
+    erase-credentials="false">
+    <security:authentication-provider ref="AppEditAuthenticationProvider"/>
+</security:authentication-manager>
+
+<bean id="AppEditAuthenticationProvider" class="com.blackducksoftware.tools.appedit.codecenter.AppEditAuthenticationProvider"/>
+
+</beans>
