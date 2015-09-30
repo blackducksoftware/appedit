@@ -54,8 +54,8 @@ To launch by hand (for testing):
     ``http://<host>/AppEdit/editappdetails?appName=<Code Center application name>``
     
 ## Change History
-v1.0.0 Initial version
-v1.0.1 Mar 5, 2015: Read config file from user's (process owner's) home directory
-v1.1.0 April 16, 2015: Migrated to Code Center 7 SDK.
-v1.2.0 May 1, 2015: Support any arbitrary (configurable) set of custom attributes
-v1.3.0 Sept, 2015: Open Sourced
+* v1.0.0 Initial version
+* v1.0.1 Mar 5, 2015: Read config file from user's (process owner's) home directory
+* v1.1.0 April 16, 2015: Migrated to Code Center 7 SDK.
+* v1.2.0 May 1, 2015: Support any arbitrary (configurable) set of custom attributes
+* v1.3.0 Sept, 2015: Open Sourced
