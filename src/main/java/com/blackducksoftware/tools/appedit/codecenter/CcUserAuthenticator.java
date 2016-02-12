@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.codecenter;
 
@@ -29,9 +29,9 @@ import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
 import com.blackducksoftware.tools.commonframework.core.config.ConfigConstants.APPLICATION;
 import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
-import com.blackducksoftware.tools.commonframework.standard.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
-//import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
+// import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
 
 /**
  * Authenticates a given username/password via Code Center.
@@ -41,11 +41,12 @@ import com.blackducksoftware.tools.commonframework.standard.codecenter.CodeCente
  */
 public class CcUserAuthenticator implements UserAuthenticator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+            .getName());
+
     private final AppEditConfigManager config;
 
     public CcUserAuthenticator(AppEditConfigManager config) throws Exception {
-	this.config = config;
+        this.config = config;
     }
 
     /**
@@ -53,38 +54,38 @@ public class CcUserAuthenticator implements UserAuthenticator {
      */
     @Override
     public AuthenticationResult authenticate(String username, String password) {
-	String message = "";
-	ServerBean serverBean = new ServerBean();
-	serverBean.setApplication(APPLICATION.CODECENTER);
-	serverBean.setServerName(config.getServerBean().getServerName());
-	serverBean.setUserName(username);
-	serverBean.setPassword(password);
+        String message = "";
+        ServerBean serverBean = new ServerBean();
+        serverBean.setApplication(APPLICATION.CODECENTER);
+        serverBean.setServerName(config.getServerBean().getServerName());
+        serverBean.setUserName(username);
+        serverBean.setPassword(password);
 
-	CodeCenterServerWrapper ccsw = null;
-	try {
-	    ccsw = new CodeCenterServerWrapper(serverBean, config);
-	} catch (Exception e) {
-	    message = "Authentication failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(false, message);
-	}
+        CodeCenterServerWrapper ccsw = null;
+        try {
+            ccsw = new CodeCenterServerWrapper(serverBean, config);
+        } catch (Exception e) {
+            message = "Authentication failed: " + e.getMessage();
+            logger.info(message);
+            return new AuthenticationResult(false, message);
+        }
 
-	// Authorize by performing an operation this user should be able to do
-	UserNameToken userToken = new UserNameToken();
-	userToken.setName(username);
-	try {
-	    ccsw.getInternalApiWrapper().getProxy().getUserApi()
-		    .getUser(userToken);
-	} catch (SdkFault e) {
-	    message = "Authorization failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(false, message);
-	} catch (SOAPFaultException e) {
-	    message = "Authorization failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(false, message);
-	}
-	message = "Login was successful.";
-	return new AuthenticationResult(true, message);
+        // Authorize by performing an operation this user should be able to do
+        UserNameToken userToken = new UserNameToken();
+        userToken.setName(username);
+        try {
+            ccsw.getInternalApiWrapper().getProxy().getUserApi()
+                    .getUser(userToken);
+        } catch (SdkFault e) {
+            message = "Authorization failed: " + e.getMessage();
+            logger.info(message);
+            return new AuthenticationResult(false, message);
+        } catch (SOAPFaultException e) {
+            message = "Authorization failed: " + e.getMessage();
+            logger.info(message);
+            return new AuthenticationResult(false, message);
+        }
+        message = "Login was successful.";
+        return new AuthenticationResult(true, message);
     }
 }

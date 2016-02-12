@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.codecenter;
 
@@ -35,7 +35,7 @@ import com.blackducksoftware.sdk.codecenter.role.data.ApplicationRoleAssignment;
 import com.blackducksoftware.tools.appedit.core.AppDao;
 import com.blackducksoftware.tools.appedit.core.AppDetails;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.commonframework.standard.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
 /**
  * Loads AppDetails data from Code Center / Updates Code Center with data from a
@@ -53,13 +53,15 @@ import com.blackducksoftware.tools.commonframework.standard.codecenter.CodeCente
  */
 public class CcAppDao implements AppDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+            .getName());
+
     private final AppEditConfigManager config;
+
     private final CodeCenterServerWrapper ccsw;
 
     public CcAppDao(AppEditConfigManager config) throws Exception {
-	this.config = config;
-	ccsw = new CodeCenterServerWrapper(config.getServerBean(), config);
+        this.config = config;
+        ccsw = new CodeCenterServerWrapper(config.getServerBean(), config);
     }
 
     /**
@@ -68,34 +70,34 @@ public class CcAppDao implements AppDao {
      */
     @Override
     public boolean authorizeUser(String appId, String username) {
-	logger.debug("Verifying that user " + username
-		+ " has access to app ID " + appId);
-	ApplicationIdToken appIdToken = new ApplicationIdToken();
-	appIdToken.setId(appId);
+        logger.debug("Verifying that user " + username
+                + " has access to app ID " + appId);
+        ApplicationIdToken appIdToken = new ApplicationIdToken();
+        appIdToken.setId(appId);
 
-	try {
-	    List<ApplicationRoleAssignment> roles = ccsw
-		    .getInternalApiWrapper().getProxy().getRoleApi()
-		    .getApplicationRoles(appIdToken);
-	    for (ApplicationRoleAssignment role : roles) {
-		logger.debug("Found a role for user: "
-			+ role.getUserNameToken().getName() + ": "
-			+ role.getRoleNameToken().getName());
+        try {
+            List<ApplicationRoleAssignment> roles = ccsw
+                    .getInternalApiWrapper().getProxy().getRoleApi()
+                    .getApplicationRoles(appIdToken);
+            for (ApplicationRoleAssignment role : roles) {
+                logger.debug("Found a role for user: "
+                        + role.getUserNameToken().getName() + ": "
+                        + role.getRoleNameToken().getName());
 
-		if (username.equals(role.getUserNameToken().getName())) {
-		    logger.info("Access by user " + username + " to app ID "
-			    + appId + " is granted");
-		    return true;
-		}
-	    }
-	    logger.warn("Access by user " + username + " to app ID " + appId
-		    + " is denied: User is not assigned to application's team.");
-	    return false;
-	} catch (SdkFault e) {
-	    logger.error("Error retrieving application roles: "
-		    + e.getMessage());
-	    return false;
-	}
+                if (username.equals(role.getUserNameToken().getName())) {
+                    logger.info("Access by user " + username + " to app ID "
+                            + appId + " is granted");
+                    return true;
+                }
+            }
+            logger.warn("Access by user " + username + " to app ID " + appId
+                    + " is denied: User is not assigned to application's team.");
+            return false;
+        } catch (SdkFault e) {
+            logger.error("Error retrieving application roles: "
+                    + e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -104,14 +106,14 @@ public class CcAppDao implements AppDao {
     @Override
     public AppDetails loadFromName(String appName) throws Exception {
 
-	ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
-	appNameToken.setName(appName);
-	appNameToken.setVersion(config.getAppVersion());
-	Application app = ccsw.getInternalApiWrapper().getProxy()
-		.getApplicationApi().getApplication(appNameToken);
-	AppDetails appDetails = deriveAppDetails(app);
+        ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
+        appNameToken.setName(appName);
+        appNameToken.setVersion(config.getAppVersion());
+        Application app = ccsw.getInternalApiWrapper().getProxy()
+                .getApplicationApi().getApplication(appNameToken);
+        AppDetails appDetails = deriveAppDetails(app);
 
-	return appDetails;
+        return appDetails;
     }
 
     /**
@@ -120,38 +122,38 @@ public class CcAppDao implements AppDao {
     @Override
     public AppDetails loadFromId(String appId) throws Exception {
 
-	ApplicationIdToken appIdToken = new ApplicationIdToken();
-	appIdToken.setId(appId);
-	Application app = ccsw.getInternalApiWrapper().getProxy()
-		.getApplicationApi().getApplication(appIdToken);
-	AppDetails appDetails = deriveAppDetails(app);
+        ApplicationIdToken appIdToken = new ApplicationIdToken();
+        appIdToken.setId(appId);
+        Application app = ccsw.getInternalApiWrapper().getProxy()
+                .getApplicationApi().getApplication(appIdToken);
+        AppDetails appDetails = deriveAppDetails(app);
 
-	return appDetails;
+        return appDetails;
     }
 
     private AppDetails deriveAppDetails(Application app) throws Exception {
-	AppDetails appDetails = new AppDetails(app.getId().getId(),
-		app.getName());
+        AppDetails appDetails = new AppDetails(app.getId().getId(),
+                app.getName());
 
-	// Look through all custom attrs for this app, and add to appDetails any
-	// attrs (and their values) that the config says we care about
-	// This pulls any existing values from Code Center.
-	List<AttributeValue> attrValues = app.getAttributeValues();
-	for (AttributeValue attrValue : attrValues) {
-	    AttributeNameOrIdToken attrToken = attrValue.getAttributeId();
-	    AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
-		    .getAttributeApi().getAttribute(attrToken);
+        // Look through all custom attrs for this app, and add to appDetails any
+        // attrs (and their values) that the config says we care about
+        // This pulls any existing values from Code Center.
+        List<AttributeValue> attrValues = app.getAttributeValues();
+        for (AttributeValue attrValue : attrValues) {
+            AttributeNameOrIdToken attrToken = attrValue.getAttributeId();
+            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
+                    .getAttributeApi().getAttribute(attrToken);
 
-	    String attrName = attrDef.getName();
-	    if (config.getCcAttributeNames().contains(attrName)) {
-		String attrValueString = "";
-		if (attrValue.getValues().size() > 0) {
-		    attrValueString = attrValue.getValues().get(0);
-		}
-		appDetails.addCustomAttributeValue(attrName, attrValueString);
-	    }
-	}
-	return appDetails;
+            String attrName = attrDef.getName();
+            if (config.getCcAttributeNames().contains(attrName)) {
+                String attrValueString = "";
+                if (attrValue.getValues().size() > 0) {
+                    attrValueString = attrValue.getValues().get(0);
+                }
+                appDetails.addCustomAttributeValue(attrName, attrValueString);
+            }
+        }
+        return appDetails;
     }
 
     /**
@@ -160,53 +162,53 @@ public class CcAppDao implements AppDao {
      */
     @Override
     public void update(AppDetails app) throws Exception {
-	logger.info("CcDataSource.update called for app: " + app);
+        logger.info("CcDataSource.update called for app: " + app);
 
-	ApplicationUpdate appUpdate = new ApplicationUpdate();
+        ApplicationUpdate appUpdate = new ApplicationUpdate();
 
-	ApplicationIdToken appIdToken = new ApplicationIdToken();
-	appIdToken.setId(app.getAppId());
-	appUpdate.setId(appIdToken);
+        ApplicationIdToken appIdToken = new ApplicationIdToken();
+        appIdToken.setId(app.getAppId());
+        appUpdate.setId(appIdToken);
 
-	for (String attrName : config.getCcAttributeNames()) {
-	    // AbstractAttribute's used to be cached, avoiding (in some
-	    // cases) the need to fetch them from CC here, but making this class
-	    // mutable. The negligible performance benefit does not
-	    // seem worth the risk. Without that caching, this class
-	    // is now immutable.
+        for (String attrName : config.getCcAttributeNames()) {
+            // AbstractAttribute's used to be cached, avoiding (in some
+            // cases) the need to fetch them from CC here, but making this class
+            // mutable. The negligible performance benefit does not
+            // seem worth the risk. Without that caching, this class
+            // is now immutable.
 
-	    logger.info("Looking up attribute definition");
-	    AttributeNameToken attrToken = new AttributeNameToken();
-	    attrToken.setName(attrName);
-	    AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
-		    .getAttributeApi().getAttribute(attrToken);
+            logger.info("Looking up attribute definition");
+            AttributeNameToken attrToken = new AttributeNameToken();
+            attrToken.setName(attrName);
+            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
+                    .getAttributeApi().getAttribute(attrToken);
 
-	    logger.debug("attr type: " + attrDef.getName());
-	    logger.debug("attr type: " + attrDef.getAttrType());
+            logger.debug("attr type: " + attrDef.getName());
+            logger.debug("attr type: " + attrDef.getAttrType());
 
-	    AttributeValue attrValueObject = new AttributeValue();
-	    attrValueObject.setAttributeId(attrDef.getId());
-	    attrValueObject.getValues().add(
-		    app.getCustomAttributeValue(attrName));
+            AttributeValue attrValueObject = new AttributeValue();
+            attrValueObject.setAttributeId(attrDef.getId());
+            attrValueObject.getValues().add(
+                    app.getCustomAttributeValue(attrName));
 
-	    logger.info("Setting attribute " + attrName + " to "
-		    + app.getCustomAttributeValue(attrName));
-	    appUpdate.getAttributeValues().add(attrValueObject);
-	}
+            logger.info("Setting attribute " + attrName + " to "
+                    + app.getCustomAttributeValue(attrName));
+            appUpdate.getAttributeValues().add(attrValueObject);
+        }
 
-	try {
-	    ccsw.getInternalApiWrapper().getApplicationApi()
-		    .updateApplication(appUpdate);
-	} catch (SdkFault e) {
-	    throw new Exception("Error updating app " + app.getAppName() + ": "
-		    + e.getMessage());
-	}
+        try {
+            ccsw.getInternalApiWrapper().getApplicationApi()
+                    .updateApplication(appUpdate);
+        } catch (SdkFault e) {
+            throw new Exception("Error updating app " + app.getAppName() + ": "
+                    + e.getMessage());
+        }
     }
 
     @Override
     public String toString() {
-	return "CcDataSource [customAttributeNames="
-		+ config.getCcAttributeNames() + "]";
+        return "CcDataSource [customAttributeNames="
+                + config.getCcAttributeNames() + "]";
     }
 
 }
