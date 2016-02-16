@@ -17,9 +17,12 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.codecenter;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
 import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
@@ -73,7 +76,11 @@ public class CcUserAuthenticator implements UserAuthenticator {
         try {
             ccsw.getInternalApiWrapper().getProxy().getUserApi()
                     .getUser(userToken);
-        } catch (Exception e) {
+        } catch (SdkFault e) {
+            message = "Authorization failed: " + e.getMessage();
+            logger.info(message);
+            return new AuthenticationResult(false, message);
+        } catch (SOAPFaultException e) {
             message = "Authorization failed: " + e.getMessage();
             logger.info(message);
             return new AuthenticationResult(false, message);
