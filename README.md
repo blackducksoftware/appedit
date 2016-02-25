@@ -7,7 +7,7 @@ AppEdit is a web application that allows users to edit a configurable set of one
 
 You can download the latest source from GitHub: https://github.com/blackducksoftware/appedit.
 
-You can pull the binary from BinTray via Maven: https://bintray.com/bds/tools/appedit/view
+You can pull releases from: https://github.com/blackducksoftware/appedit/releases
 
 ## Documentation
 
