@@ -3,3 +3,8 @@ bin
 .springBeans
 AppEdit.log
 /target/
+.settings
+.project
+.classpath
+*.swp
+t_dep.txt
