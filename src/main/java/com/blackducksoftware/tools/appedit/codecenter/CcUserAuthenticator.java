@@ -22,13 +22,12 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
-import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
 import com.blackducksoftware.tools.commonframework.core.config.ConfigConstants.APPLICATION;
 import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
+import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
 // import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
@@ -71,12 +70,9 @@ public class CcUserAuthenticator implements UserAuthenticator {
         }
 
         // Authorize by performing an operation this user should be able to do
-        UserNameToken userToken = new UserNameToken();
-        userToken.setName(username);
         try {
-            ccsw.getInternalApiWrapper().getProxy().getUserApi()
-                    .getUser(userToken);
-        } catch (SdkFault e) {
+            ccsw.getUserManager().getUserByName(username);
+        } catch (CommonFrameworkException e) {
             message = "Authorization failed: " + e.getMessage();
             logger.info(message);
             return new AuthenticationResult(false, message);
