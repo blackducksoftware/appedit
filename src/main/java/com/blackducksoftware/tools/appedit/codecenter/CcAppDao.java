@@ -32,9 +32,9 @@ import com.blackducksoftware.sdk.codecenter.attribute.data.AttributeNameToken;
 import com.blackducksoftware.sdk.codecenter.common.data.AttributeValue;
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
 import com.blackducksoftware.sdk.codecenter.role.data.ApplicationRoleAssignment;
-import com.blackducksoftware.tools.appedit.core.AppDao;
-import com.blackducksoftware.tools.appedit.core.AppDetails;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
+import com.blackducksoftware.tools.appedit.core.application.AppDao;
+import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
 /**

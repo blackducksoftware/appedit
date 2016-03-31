@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.blackducksoftware.tools.appedit.core.application.AppDetails;
+
 public class AppDetailsTest {
 
     @Test

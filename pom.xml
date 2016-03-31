@@ -4,7 +4,7 @@
 	<groupId>com.blackducksoftware.tools</groupId>
 	<artifactId>appedit</artifactId>
 	<packaging>war</packaging>
-	<version>1.3.0</version>
+	<version>1.4.0-SNAPSHOT</version>
 	<name>Application Details Edit Webapp</name>
 	<url>http://maven.apache.org</url>
 	<licenses>

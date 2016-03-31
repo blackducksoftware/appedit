@@ -15,11 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.core;
+package com.blackducksoftware.tools.appedit.core.application;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
+import com.blackducksoftware.tools.appedit.core.ViewAppBean;
 
 /**
  * Converts back and forth between generic AppDetails (Code Center-centric) and

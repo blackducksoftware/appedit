@@ -39,6 +39,6 @@
     <security:authentication-provider ref="AppEditAuthenticationProvider"/>
 </security:authentication-manager>
 
-<bean id="AppEditAuthenticationProvider" class="com.blackducksoftware.tools.appedit.codecenter.AppEditAuthenticationProvider"/>
+<bean id="AppEditAuthenticationProvider" class="com.blackducksoftware.tools.appedit.core.AppEditAuthenticationProvider"/>
 
 </beans>

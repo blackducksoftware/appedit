@@ -15,40 +15,50 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.core;
-
-import java.util.regex.Pattern;
+package com.blackducksoftware.tools.appedit.core.application;
 
 /**
- * Input validator for the fields (custom attr values) on the editappdetails
- * screen.
- *
- * Not thread-safe (because AppEditConfigManager is not thread-safe), so keep
- * references local.
+ * Application Data Access Object (DAO).
  *
  * @author sbillings
  *
  */
-public class InputValidatorEditAppDetails {
-    private final AppEditConfigManager config; // AppEditConfigManager is not
-					       // thread-safe
-
-    public InputValidatorEditAppDetails(AppEditConfigManager config) {
-	this.config = config;
-    }
+public interface AppDao {
 
     /**
-     * Returns true if the given attribute value matches the regex pattern for
-     * the given attribute name.
+     * Attempt to authorize the given user.
      *
-     * @param attrLabel
-     * @param attrValue
+     * @param appId
+     * @param username
      * @return
      */
-    public boolean validateAttributeValue(String attrLabel, String attrValue) {
-	String patternString = config
-		.getFieldInputValidationRegexAttr(attrLabel);
-	Pattern pattern = Pattern.compile(patternString);
-	return InputValidatorLogin.validate(attrValue, pattern);
-    }
+    boolean authorizeUser(String appId, String username);
+
+    /**
+     * Load an application's details by ID.
+     *
+     * @param appId
+     * @return
+     * @throws Exception
+     */
+    AppDetails loadFromId(String appId) throws Exception;
+
+    /**
+     * Load an application's details by name.
+     *
+     * @param appName
+     * @return
+     * @throws Exception
+     */
+    AppDetails loadFromName(String appName) throws Exception;
+
+    /**
+     * Update an application. Both the application to update and the changes to
+     * make are specified in the argument.
+     *
+     * @param app
+     * @throws Exception
+     */
+    void update(AppDetails app) throws Exception;
+
 }

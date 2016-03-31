@@ -31,13 +31,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.blackducksoftware.tools.appedit.codecenter.CcAppDao;
-import com.blackducksoftware.tools.appedit.core.AppDao;
-import com.blackducksoftware.tools.appedit.core.AppDetails;
-import com.blackducksoftware.tools.appedit.core.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
-import com.blackducksoftware.tools.appedit.core.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.core.ViewAppBean;
+import com.blackducksoftware.tools.appedit.core.application.AppDao;
+import com.blackducksoftware.tools.appedit.core.application.AppDetails;
+import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
+import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details

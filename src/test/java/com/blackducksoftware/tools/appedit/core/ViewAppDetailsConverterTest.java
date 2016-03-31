@@ -26,6 +26,9 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.blackducksoftware.tools.appedit.core.application.AppDetails;
+import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
+
 public class ViewAppDetailsConverterTest {
     private static final String ITSM_ATTR_NAME = "Sample Textfield";
     private static final String ITRC_ATTR_NAME = "Other Textfield";

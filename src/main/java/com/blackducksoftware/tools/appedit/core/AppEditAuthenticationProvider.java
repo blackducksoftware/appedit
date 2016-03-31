@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.codecenter;
+package com.blackducksoftware.tools.appedit.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.AppEditConstants;
-import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
-import com.blackducksoftware.tools.appedit.core.InputValidatorLogin;
-import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.codecenter.CcUserAuthenticator;
 
 /**
  * A Spring Security AuthenticationProvider. Decides whether or not a given set
