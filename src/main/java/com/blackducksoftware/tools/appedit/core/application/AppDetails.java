@@ -20,6 +20,8 @@ package com.blackducksoftware.tools.appedit.core.application;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
+
 /**
  * Code Center-centric application details bean. Attribute values are stored by
  * Code Center attribute name, but it ONLY has the attributes that the config
@@ -33,7 +35,7 @@ public class AppDetails {
 
     private final String appId;
 
-    private final Map<String, String> customAttributeValues = new HashMap<String, String>();
+    private final Map<String, AttributeValuePojo> customAttributeValues = new HashMap<>();
 
     public AppDetails(String appId, String appName) {
         this.appId = appId;
@@ -64,7 +66,7 @@ public class AppDetails {
      * @param attrName
      * @param attrValue
      */
-    public void addCustomAttributeValue(String attrName, String attrValue) {
+    public void addCustomAttributeValue(String attrName, AttributeValuePojo attrValue) {
         customAttributeValues.put(attrName, attrValue);
     }
 
@@ -74,7 +76,7 @@ public class AppDetails {
      * @param attrName
      * @return
      */
-    public String getCustomAttributeValue(String attrName) {
+    public AttributeValuePojo getCustomAttributeValue(String attrName) {
         if (customAttributeValues.containsKey(attrName)) {
             return customAttributeValues.get(attrName);
         } else {

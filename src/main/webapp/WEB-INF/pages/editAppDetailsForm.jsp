@@ -29,7 +29,7 @@
 				<c:forEach items="${app.attrNames}" var="attrName" varStatus="x"> 
 					<tr>
 						<td><label class="field-label">${attrName}:</label></td>
-						<td><form:input path="attrValues[${x.index}]" cssClass="form-control"/></td> 
+						<td><form:input path="attrValues[${x.index}].value" cssClass="form-control"/></td> 
 					</tr>
 				</c:forEach>
 				

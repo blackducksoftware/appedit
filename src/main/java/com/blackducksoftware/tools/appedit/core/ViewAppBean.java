@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core;
 
@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 /**
  * View-friendly version of AppDetails. Attribute values are stored by UI label.
@@ -33,64 +35,66 @@ import org.slf4j.LoggerFactory;
  */
 public class ViewAppBean {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+            .getName());
 
     private String appId;
+
     private String appName;
 
     private List<String> attrNames = new ArrayList<String>();
-    private List<String> attrValues = new ArrayList<String>();
+
+    private List<AttributeValuePojo> attrValues = new ArrayList<>();
 
     public ViewAppBean() {
-	logger.info("ViewAppBean: default constructor called");
+        logger.info("ViewAppBean: default constructor called");
     }
 
     public ViewAppBean(String appId, String appName, List<String> attrNames,
-	    List<String> attrValues) {
-	logger.info("ViewAppBean: parameterized constructor called");
-	this.appId = appId;
-	this.appName = appName;
+            List<AttributeValuePojo> attrValues) {
+        logger.info("ViewAppBean: parameterized constructor called");
+        this.appId = appId;
+        this.appName = appName;
 
-	this.attrNames = attrNames;
-	this.attrValues = attrValues;
+        this.attrNames = attrNames;
+        this.attrValues = attrValues;
     }
 
     public String getAppId() {
-	return appId;
+        return appId;
     }
 
     public void setAppId(String appId) {
-	this.appId = appId;
+        this.appId = appId;
     }
 
     public String getAppName() {
-	return appName;
+        return appName;
     }
 
     public void setAppName(String appName) {
-	this.appName = appName;
+        this.appName = appName;
     }
 
     public List<String> getAttrNames() {
-	return attrNames;
+        return attrNames;
     }
 
     public void setAttrNames(List<String> attrNames) {
-	this.attrNames = attrNames;
+        this.attrNames = attrNames;
     }
 
-    public List<String> getAttrValues() {
-	return attrValues;
+    public List<AttributeValuePojo> getAttrValues() {
+        return attrValues;
     }
 
-    public void setAttrValues(List<String> attrValues) {
-	this.attrValues = attrValues;
+    public void setAttrValues(List<AttributeValuePojo> attrValues) {
+        this.attrValues = attrValues;
     }
 
     @Override
     public String toString() {
-	return "AppImpl [appId=" + appId + ", appName=" + appName
-		+ ", attrNames=" + attrNames + "]" + ", attrValues="
-		+ attrValues + "]";
+        return "AppImpl [appId=" + appId + ", appName=" + appName
+                + ", attrNames=" + attrNames + "]" + ", attrValues="
+                + attrValues + "]";
     }
 }

@@ -21,7 +21,7 @@
     <c:forEach items="${app.attrNames}" var="attrName" varStatus="x"> 
 		<tr>
 			<td><label class="field-label">${attrName}:</label></td>
-			<td>${app.attrValues[x.index]}</td> 
+			<td>${app.attrValues[x.index].value}</td> 
 		</tr>
 	</c:forEach>
 				

@@ -19,17 +19,14 @@ package com.blackducksoftware.tools.appedit.codecenter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
-import com.blackducksoftware.sdk.codecenter.application.data.ApplicationUpdate;
-import com.blackducksoftware.sdk.codecenter.attribute.data.AbstractAttribute;
-import com.blackducksoftware.sdk.codecenter.attribute.data.AttributeNameToken;
-import com.blackducksoftware.sdk.codecenter.common.data.AttributeValue;
-import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
@@ -139,11 +136,7 @@ public class CcAppDao implements AppDao {
             AttributeValuePojo attrValue = attrValues.get(attrName);
 
             if (config.getCcAttributeNames().contains(attrName)) {
-                String attrValueString = "";
-                if (attrValue.getValue() != null) {
-                    attrValueString = attrValue.getValue();
-                }
-                appDetails.addCustomAttributeValue(attrName, attrValueString);
+                appDetails.addCustomAttributeValue(attrName, attrValue);
             }
         }
         return appDetails;
@@ -157,42 +150,15 @@ public class CcAppDao implements AppDao {
     public void update(AppDetails app) throws Exception {
         logger.info("CcDataSource.update called for app: " + app);
 
-        ApplicationUpdate appUpdate = new ApplicationUpdate();
-
-        ApplicationIdToken appIdToken = new ApplicationIdToken();
-        appIdToken.setId(app.getAppId());
-        appUpdate.setId(appIdToken);
-
+        Set<AttributeValuePojo> changedAttrValues = new TreeSet<>();
         for (String attrName : config.getCcAttributeNames()) {
-            // AbstractAttribute's used to be cached, avoiding (in some
-            // cases) the need to fetch them from CC here, but making this class
-            // mutable. The negligible performance benefit does not
-            // seem worth the risk. Without that caching, this class
-            // is now immutable.
-
-            logger.info("Looking up attribute definition");
-            AttributeNameToken attrToken = new AttributeNameToken();
-            attrToken.setName(attrName);
-            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy() // LEFT OFF HERE PORTING TO MANAGERS
-                    .getAttributeApi().getAttribute(attrToken);
-
-            logger.debug("attr type: " + attrDef.getName());
-            logger.debug("attr type: " + attrDef.getAttrType());
-
-            AttributeValue attrValueObject = new AttributeValue();
-            attrValueObject.setAttributeId(attrDef.getId());
-            attrValueObject.getValues().add(
-                    app.getCustomAttributeValue(attrName));
-
-            logger.info("Setting attribute " + attrName + " to "
-                    + app.getCustomAttributeValue(attrName));
-            appUpdate.getAttributeValues().add(attrValueObject);
+            logger.debug("Will update attribute " + attrName);
+            changedAttrValues.add(app.getCustomAttributeValue(attrName));
         }
 
         try {
-            ccsw.getInternalApiWrapper().getApplicationApi()
-                    .updateApplication(appUpdate);
-        } catch (SdkFault e) {
+            ccsw.getApplicationManager().updateAttributeValues(app.getAppId(), changedAttrValues);
+        } catch (CommonFrameworkException e) {
             throw new Exception("Error updating app " + app.getAppName() + ": "
                     + e.getMessage());
         }

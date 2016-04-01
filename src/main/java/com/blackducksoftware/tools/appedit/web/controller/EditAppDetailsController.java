@@ -166,7 +166,7 @@ public class EditAppDetailsController {
             InputValidatorEditAppDetails inputValidator = new InputValidatorEditAppDetails(
                     config);
             if (!inputValidator.validateAttributeValue(attrLabel, app
-                    .getAttrValues().get(i++))) {
+                    .getAttrValues().get(i++).getValue())) {
                 String msg = "The value of " + attrLabel + " is invalid.";
                 logger.error(msg);
                 model.addAttribute("message", msg);

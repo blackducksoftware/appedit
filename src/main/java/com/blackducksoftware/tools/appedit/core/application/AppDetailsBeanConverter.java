@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.application;
 
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.ViewAppBean;
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 /**
  * Converts back and forth between generic AppDetails (Code Center-centric) and
@@ -35,7 +36,7 @@ public class AppDetailsBeanConverter {
     private final AppEditConfigManager config;
 
     public AppDetailsBeanConverter(AppEditConfigManager config) {
-	this.config = config;
+        this.config = config;
     }
 
     /**
@@ -46,28 +47,28 @@ public class AppDetailsBeanConverter {
      * @return
      */
     public ViewAppBean createViewAppBean(AppDetails appDetails) {
-	Map<String, String> attrMap = config.getAttributeMap();
+        Map<String, String> attrMap = config.getAttributeMap();
 
-	ViewAppBean viewAppBean = new ViewAppBean();
-	viewAppBean.setAppId(appDetails.getAppId());
-	viewAppBean.setAppName(appDetails.getAppName());
+        ViewAppBean viewAppBean = new ViewAppBean();
+        viewAppBean.setAppId(appDetails.getAppId());
+        viewAppBean.setAppName(appDetails.getAppName());
 
-	List<String> attrNames = new ArrayList<String>(attrMap.keySet().size());
-	List<String> attrValues = new ArrayList<String>(attrMap.keySet().size());
+        List<String> attrNames = new ArrayList<String>(attrMap.keySet().size());
+        List<AttributeValuePojo> attrValues = new ArrayList<>(attrMap.keySet().size());
 
-	// Copy custom attributes, preserving the order in the config file
-	for (int i = 0; i < attrMap.keySet().size(); i++) {
-	    String attrLabel = config.getAttrLabel(i);
-	    String attrCodeCenterName = attrMap.get(attrLabel);
-	    attrNames.add(attrLabel);
-	    attrValues.add(appDetails
-		    .getCustomAttributeValue(attrCodeCenterName));
-	}
+        // Copy custom attributes, preserving the order in the config file
+        for (int i = 0; i < attrMap.keySet().size(); i++) {
+            String attrLabel = config.getAttrLabel(i);
+            String attrCodeCenterName = attrMap.get(attrLabel);
+            attrNames.add(attrLabel);
+            attrValues.add(appDetails
+                    .getCustomAttributeValue(attrCodeCenterName));
+        }
 
-	viewAppBean.setAttrNames(attrNames);
-	viewAppBean.setAttrValues(attrValues);
+        viewAppBean.setAttrNames(attrNames);
+        viewAppBean.setAttrValues(attrValues);
 
-	return viewAppBean;
+        return viewAppBean;
     }
 
     /**
@@ -78,15 +79,15 @@ public class AppDetailsBeanConverter {
      * @return
      */
     public AppDetails createAppDetails(ViewAppBean viewAppBean) {
-	AppDetails appDetails = new AppDetails(viewAppBean.getAppId(),
-		viewAppBean.getAppName());
+        AppDetails appDetails = new AppDetails(viewAppBean.getAppId(),
+                viewAppBean.getAppName());
 
-	Map<String, String> attrMap = config.getAttributeMap();
-	for (String attrLabel : attrMap.keySet()) {
-	    int attrValueIndex = viewAppBean.getAttrNames().indexOf(attrLabel);
-	    appDetails.addCustomAttributeValue(attrMap.get(attrLabel),
-		    viewAppBean.getAttrValues().get(attrValueIndex));
-	}
-	return appDetails;
+        Map<String, String> attrMap = config.getAttributeMap();
+        for (String attrLabel : attrMap.keySet()) {
+            int attrValueIndex = viewAppBean.getAttrNames().indexOf(attrLabel);
+            appDetails.addCustomAttributeValue(attrMap.get(attrLabel),
+                    viewAppBean.getAttrValues().get(attrValueIndex));
+        }
+        return appDetails;
     }
 }
