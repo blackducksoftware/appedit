@@ -18,24 +18,26 @@
 package com.blackducksoftware.tools.appedit.codecenter;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.sdk.codecenter.application.data.Application;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationUpdate;
 import com.blackducksoftware.sdk.codecenter.attribute.data.AbstractAttribute;
-import com.blackducksoftware.sdk.codecenter.attribute.data.AttributeNameOrIdToken;
 import com.blackducksoftware.sdk.codecenter.attribute.data.AttributeNameToken;
 import com.blackducksoftware.sdk.codecenter.common.data.AttributeValue;
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
-import com.blackducksoftware.sdk.codecenter.role.data.ApplicationRoleAssignment;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
+import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationUserPojo;
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 /**
  * Loads AppDetails data from Code Center / Updates Code Center with data from a
@@ -76,15 +78,13 @@ public class CcAppDao implements AppDao {
         appIdToken.setId(appId);
 
         try {
-            List<ApplicationRoleAssignment> roles = ccsw
-                    .getInternalApiWrapper().getProxy().getRoleApi()
-                    .getApplicationRoles(appIdToken);
-            for (ApplicationRoleAssignment role : roles) {
+            List<ApplicationUserPojo> roles = ccsw.getApplicationManager().getAllUsersAssignedToApplication(appId);
+            for (ApplicationUserPojo role : roles) {
                 logger.debug("Found a role for user: "
-                        + role.getUserNameToken().getName() + ": "
-                        + role.getRoleNameToken().getName());
+                        + role.getUserName() + ": "
+                        + role.getRoleName());
 
-                if (username.equals(role.getUserNameToken().getName())) {
+                if (username.equals(role.getUserName())) {
                     logger.info("Access by user " + username + " to app ID "
                             + appId + " is granted");
                     return true;
@@ -93,7 +93,7 @@ public class CcAppDao implements AppDao {
             logger.warn("Access by user " + username + " to app ID " + appId
                     + " is denied: User is not assigned to application's team.");
             return false;
-        } catch (SdkFault e) {
+        } catch (CommonFrameworkException e) {
             logger.error("Error retrieving application roles: "
                     + e.getMessage());
             return false;
@@ -109,8 +109,7 @@ public class CcAppDao implements AppDao {
         ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
         appNameToken.setName(appName);
         appNameToken.setVersion(config.getAppVersion());
-        Application app = ccsw.getInternalApiWrapper().getProxy()
-                .getApplicationApi().getApplication(appNameToken);
+        ApplicationPojo app = ccsw.getApplicationManager().getApplicationByNameVersion(appName, config.getAppVersion());
         AppDetails appDetails = deriveAppDetails(app);
 
         return appDetails;
@@ -122,33 +121,27 @@ public class CcAppDao implements AppDao {
     @Override
     public AppDetails loadFromId(String appId) throws Exception {
 
-        ApplicationIdToken appIdToken = new ApplicationIdToken();
-        appIdToken.setId(appId);
-        Application app = ccsw.getInternalApiWrapper().getProxy()
-                .getApplicationApi().getApplication(appIdToken);
+        ApplicationPojo app = ccsw.getApplicationManager().getApplicationById(appId);
         AppDetails appDetails = deriveAppDetails(app);
 
         return appDetails;
     }
 
-    private AppDetails deriveAppDetails(Application app) throws Exception {
-        AppDetails appDetails = new AppDetails(app.getId().getId(),
+    private AppDetails deriveAppDetails(ApplicationPojo app) throws Exception {
+        AppDetails appDetails = new AppDetails(app.getId(),
                 app.getName());
 
         // Look through all custom attrs for this app, and add to appDetails any
         // attrs (and their values) that the config says we care about
         // This pulls any existing values from Code Center.
-        List<AttributeValue> attrValues = app.getAttributeValues();
-        for (AttributeValue attrValue : attrValues) {
-            AttributeNameOrIdToken attrToken = attrValue.getAttributeId();
-            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
-                    .getAttributeApi().getAttribute(attrToken);
+        Map<String, AttributeValuePojo> attrValues = app.getAttributeValuesByName();
+        for (String attrName : attrValues.keySet()) {
+            AttributeValuePojo attrValue = attrValues.get(attrName);
 
-            String attrName = attrDef.getName();
             if (config.getCcAttributeNames().contains(attrName)) {
                 String attrValueString = "";
-                if (attrValue.getValues().size() > 0) {
-                    attrValueString = attrValue.getValues().get(0);
+                if (attrValue.getValue() != null) {
+                    attrValueString = attrValue.getValue();
                 }
                 appDetails.addCustomAttributeValue(attrName, attrValueString);
             }
@@ -180,7 +173,7 @@ public class CcAppDao implements AppDao {
             logger.info("Looking up attribute definition");
             AttributeNameToken attrToken = new AttributeNameToken();
             attrToken.setName(attrName);
-            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy()
+            AbstractAttribute attrDef = ccsw.getInternalApiWrapper().getProxy() // LEFT OFF HERE PORTING TO MANAGERS
                     .getAttributeApi().getAttribute(attrToken);
 
             logger.debug("attr type: " + attrDef.getName());

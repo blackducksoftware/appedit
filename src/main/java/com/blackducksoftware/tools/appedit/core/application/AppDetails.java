@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.application;
 
@@ -22,19 +22,22 @@ import java.util.Map;
 
 /**
  * Code Center-centric application details bean. Attribute values are stored by
- * Code Center attribute name.
+ * Code Center attribute name, but it ONLY has the attributes that the config
+ * tells us to manage.
  *
  * @author sbillings
  *
  */
 public class AppDetails {
     private final String appName;
+
     private final String appId;
+
     private final Map<String, String> customAttributeValues = new HashMap<String, String>();
 
     public AppDetails(String appId, String appName) {
-	this.appId = appId;
-	this.appName = appName;
+        this.appId = appId;
+        this.appName = appName;
     }
 
     /**
@@ -43,7 +46,7 @@ public class AppDetails {
      * @return
      */
     public String getAppName() {
-	return appName;
+        return appName;
     }
 
     /**
@@ -52,7 +55,7 @@ public class AppDetails {
      * @return
      */
     public String getAppId() {
-	return appId;
+        return appId;
     }
 
     /**
@@ -62,7 +65,7 @@ public class AppDetails {
      * @param attrValue
      */
     public void addCustomAttributeValue(String attrName, String attrValue) {
-	customAttributeValues.put(attrName, attrValue);
+        customAttributeValues.put(attrName, attrValue);
     }
 
     /**
@@ -72,17 +75,17 @@ public class AppDetails {
      * @return
      */
     public String getCustomAttributeValue(String attrName) {
-	if (customAttributeValues.containsKey(attrName)) {
-	    return customAttributeValues.get(attrName);
-	} else {
-	    return null;
-	}
+        if (customAttributeValues.containsKey(attrName)) {
+            return customAttributeValues.get(attrName);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String toString() {
-	return "AppDetails [appName=" + appName + ", appId=" + appId
-		+ ", customAttributeValues=" + customAttributeValues + "]";
+        return "AppDetails [appName=" + appName + ", appId=" + appId
+                + ", customAttributeValues=" + customAttributeValues + "]";
     }
 
 }
