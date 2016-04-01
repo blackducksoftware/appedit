@@ -17,8 +17,11 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.web.controller;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +36,7 @@ import org.springframework.web.context.request.WebRequest;
 import com.blackducksoftware.tools.appedit.codecenter.CcAppDao;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
+import com.blackducksoftware.tools.appedit.core.Role;
 import com.blackducksoftware.tools.appedit.core.ViewAppBean;
 import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
@@ -59,8 +63,9 @@ public class EditAppDetailsController {
      */
     @RequestMapping(value = "/editappdetails", method = RequestMethod.GET)
     public String showEditForm(WebRequest request, Model model) {
-        logger.info("Rendering Edit Application Details page.");
+        logger.info("Received request for Edit Application Details page.");
 
+        // Load config
         String configFilename = System.getProperty("user.home") + "/"
                 + AppEditConstants.CONFIG_FILENAME;
         AppEditConfigManager config = null;
@@ -74,6 +79,7 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
+        // Connect to Code Center
         AppDao appDao = null;
         try {
             appDao = new CcAppDao(config);
@@ -84,6 +90,7 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
+        // Process URL parameter: app ID/name
         String appId = request.getParameter("appId");
         String appName = request.getParameter("appName");
         if ((appId == null) && (appName == null)) {
@@ -93,6 +100,7 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
+        // Load application
         AppDetails appDetails = null;
         try {
             // load app from Code Center using whatever info we were given (try
@@ -112,6 +120,23 @@ public class EditAppDetailsController {
         // Get the logged-in user's details
         String username = (String) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
+
+        // Get the user's roles
+        Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
+                .getAuthentication().getAuthorities();
+
+        // If this user is an auditor, display the Edit NAI Audit Details form
+        for (GrantedAuthority auth : grantedAuthorities) {
+            String roleString = auth.getAuthority();
+            logger.info("Role: " + roleString);
+            Role role = Role.valueOf(roleString);
+            logger.info("Role enum value: " + role);
+            if (role == Role.ROLE_AUDITOR) {
+                return "editNaiAuditDetailsForm";
+            }
+        }
+
+        // This user is an end-user
 
         // Make sure they are on this app's team (list of users that can access
         // it)

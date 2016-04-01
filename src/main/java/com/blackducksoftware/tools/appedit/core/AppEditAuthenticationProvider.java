@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core;
 
@@ -41,7 +41,7 @@ import com.blackducksoftware.tools.appedit.codecenter.CcUserAuthenticator;
  */
 public class AppEditAuthenticationProvider implements AuthenticationProvider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+            .getName());
 
     /**
      * Returns true when asked if UsernamePassword authentication method is
@@ -52,7 +52,7 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public boolean supports(Class<? extends Object> authentication) {
-	return authentication.equals(UsernamePasswordAuthenticationToken.class);
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
     /**
@@ -60,48 +60,48 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-	try {
-	    // User provided data from login page
-	    String username = (String) authentication.getPrincipal();
-	    String password = (String) authentication.getCredentials();
+        try {
+            // User provided data from login page
+            String username = (String) authentication.getPrincipal();
+            String password = (String) authentication.getCredentials();
 
-	    // Get config
-	    String configFilename = System.getProperty("user.home") + "/"
-		    + AppEditConstants.CONFIG_FILENAME;
-	    AppEditConfigManager config = null;
-	    try {
-		config = new AppEditConfigManager(configFilename);
-	    } catch (Exception e) {
-		logger.error("Error constructing configuration manager");
-		throw new AuthenticationServiceException(e.getMessage(), e);
-	    }
+            // Get config
+            String configFilename = System.getProperty("user.home") + "/"
+                    + AppEditConstants.CONFIG_FILENAME;
+            AppEditConfigManager config = null;
+            try {
+                config = new AppEditConfigManager(configFilename);
+            } catch (Exception e) {
+                logger.error("Error constructing configuration manager");
+                throw new AuthenticationServiceException(e.getMessage(), e);
+            }
 
-	    // Validate input
-	    InputValidatorLogin inputValidator = new InputValidatorLogin(config);
-	    if ((!inputValidator.validateUsername(username))
-		    || (!inputValidator.validatePassword(password))) {
-		String msg = "Authorization failed: The user name or password provided was not valid. ";
-		logger.error(msg);
-		throw new AuthenticationServiceException(msg);
-	    }
+            // Validate input
+            InputValidatorLogin inputValidator = new InputValidatorLogin(config);
+            if ((!inputValidator.validateUsername(username))
+                    || (!inputValidator.validatePassword(password))) {
+                String msg = "Authorization failed: The user name or password provided was not valid. ";
+                logger.error(msg);
+                throw new AuthenticationServiceException(msg);
+            }
 
-	    // Authenticate in Code Center
-	    UserAuthenticator userAuthenticator = new CcUserAuthenticator(
-		    config);
-	    AuthenticationResult authResult = userAuthenticator.authenticate(
-		    username, password);
-	    if (!authResult.isAuthenticated()) {
-		throw new AuthenticationServiceException(
-			authResult.getMessage());
-	    }
+            // Authenticate in Code Center
+            UserAuthenticator userAuthenticator = new CcUserAuthenticator(
+                    config);
+            AuthenticationResult authResult = userAuthenticator.authenticate(
+                    username, password);
+            if (!authResult.isAuthenticated()) {
+                throw new AuthenticationServiceException(
+                        authResult.getMessage());
+            }
 
-	    // Grant access
-	    List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-	    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-	    return new UsernamePasswordAuthenticationToken(username, password,
-		    authorities);
-	} catch (Exception e) {
-	    throw new AuthenticationServiceException(e.getMessage(), e);
-	}
+            // Grant access
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            authorities.add(new SimpleGrantedAuthority(authResult.getRole().name()));
+            return new UsernamePasswordAuthenticationToken(username, password,
+                    authorities);
+        } catch (Exception e) {
+            throw new AuthenticationServiceException(e.getMessage(), e);
+        }
     }
 }

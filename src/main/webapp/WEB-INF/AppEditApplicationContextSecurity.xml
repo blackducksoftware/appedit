@@ -27,7 +27,8 @@
     <!--  Secure all urls except /login -->
     <security:intercept-url pattern="/loginForm" access="permitAll"/>
     <security:intercept-url pattern="/loginRequest" access="permitAll"/>
-    <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+    <security:intercept-url pattern="/editappdetails" access="hasAnyRole('ROLE_USER','ROLE_AUDITOR')"/>
+    <security:intercept-url pattern="/editnaiauditdetails" access="hasRole('ROLE_AUDITOR')"/>
     
     <!-- Enable Cross Site Request Forgery (CSRF) protection -->
     <security:csrf />

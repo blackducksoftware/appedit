@@ -26,9 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
+import com.blackducksoftware.tools.appedit.core.Role;
 import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 
 // import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
 
@@ -53,6 +55,19 @@ public class CcUserAuthenticator implements UserAuthenticator {
      */
     @Override
     public AuthenticationResult authenticate(String username, String password) {
+
+        // Connect to Code Center as superuser
+        // TODO: This will slow it down... any way to avoid this connection
+        // CodeCenterServerWrapper superUserCcsw = null;
+        // try {
+        // superUserCcsw = new CodeCenterServerWrapper(config);
+        // } catch (Exception e) {
+        // String message = "Authentication failed connecting to Code Center as configured superuser: " +
+        // e.getMessage();
+        // logger.error(message);
+        // return new AuthenticationResult(false, message, Role.ROLE_NONE);
+        // }
+
         Properties userSpecificProps = (Properties) config.getProps().clone();
         userSpecificProps.setProperty("cc.user.name", username); // change username
         userSpecificProps.setProperty("cc.password", password); // and password
@@ -62,7 +77,7 @@ public class CcUserAuthenticator implements UserAuthenticator {
         } catch (Exception e1) {
             String message = "Authentication failed: " + e1.getMessage();
             logger.info(message);
-            return new AuthenticationResult(false, message);
+            return new AuthenticationResult(false, message, Role.ROLE_NONE);
         }
 
         CodeCenterServerWrapper userSpecificCcsw = null;
@@ -71,23 +86,29 @@ public class CcUserAuthenticator implements UserAuthenticator {
         } catch (Exception e) {
             String message = "Authentication failed: " + e.getMessage();
             logger.info(message);
-            return new AuthenticationResult(false, message);
+            return new AuthenticationResult(false, message, Role.ROLE_NONE);
         }
 
         // Authorize by performing an operation this user should be able to do
+        CodeCenterUserPojo user;
         try {
-            userSpecificCcsw.getUserManager().getUserByName(username);
+            user = userSpecificCcsw.getUserManager().getUserByName(username);
         } catch (CommonFrameworkException e) {
             String message = "Authorization failed: " + e.getMessage();
             logger.info(message);
-            return new AuthenticationResult(false, message);
+            return new AuthenticationResult(false, message, Role.ROLE_NONE);
         } catch (SOAPFaultException e) {
             String message = "Authorization failed: " + e.getMessage();
             logger.info(message);
-            return new AuthenticationResult(false, message);
+            return new AuthenticationResult(false, message, Role.ROLE_NONE);
         }
 
-        return new AuthenticationResult(true, "Login was successful.");
-    }
+        // Now see if this user is an auditor
+        // superUserCcsw.getUserManager().getUserById(user.getId()).get // TODO: need access to global roles; need to
+        // enhance CF
+        // TODO: Try doing this as the logged in user... if he can see his own roles, then no need to create
+        // the superuser connection to Code Center
 
+        return new AuthenticationResult(true, "Login was successful.", Role.ROLE_USER);
+    }
 }

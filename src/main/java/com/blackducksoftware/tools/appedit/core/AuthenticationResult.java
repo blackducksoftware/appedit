@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core;
 
@@ -27,12 +27,16 @@ package com.blackducksoftware.tools.appedit.core;
  */
 public class AuthenticationResult {
     private final boolean authenticated;
+
     private final String message;
 
-    public AuthenticationResult(boolean authenticated, String message) {
-	super();
-	this.authenticated = authenticated;
-	this.message = message;
+    private final Role role;
+
+    public AuthenticationResult(boolean authenticated, String message, Role role) {
+        super();
+        this.authenticated = authenticated;
+        this.message = message;
+        this.role = role;
     }
 
     /**
@@ -41,7 +45,7 @@ public class AuthenticationResult {
      * @return
      */
     public boolean isAuthenticated() {
-	return authenticated;
+        return authenticated;
     }
 
     /**
@@ -50,6 +54,10 @@ public class AuthenticationResult {
      * @return
      */
     public String getMessage() {
-	return message;
+        return message;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }
