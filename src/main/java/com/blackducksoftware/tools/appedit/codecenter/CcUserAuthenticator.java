@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.codecenter;
 
+import java.util.Properties;
+
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -25,8 +27,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
-import com.blackducksoftware.tools.commonframework.core.config.ConfigConstants.APPLICATION;
-import com.blackducksoftware.tools.commonframework.core.config.server.ServerBean;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
@@ -53,35 +53,41 @@ public class CcUserAuthenticator implements UserAuthenticator {
      */
     @Override
     public AuthenticationResult authenticate(String username, String password) {
-        String message = "";
-        ServerBean serverBean = new ServerBean();
-        serverBean.setApplication(APPLICATION.CODECENTER);
-        serverBean.setServerName(config.getServerBean().getServerName());
-        serverBean.setUserName(username);
-        serverBean.setPassword(password);
-
-        CodeCenterServerWrapper ccsw = null;
+        Properties userSpecificProps = (Properties) config.getProps().clone();
+        userSpecificProps.setProperty("cc.user.name", username); // change username
+        userSpecificProps.setProperty("cc.password", password); // and password
+        AppEditConfigManager userSpecificConfig;
         try {
-            ccsw = new CodeCenterServerWrapper(serverBean, config);
+            userSpecificConfig = new AppEditConfigManager(userSpecificProps);
+        } catch (Exception e1) {
+            String message = "Authentication failed: " + e1.getMessage();
+            logger.info(message);
+            return new AuthenticationResult(false, message);
+        }
+
+        CodeCenterServerWrapper userSpecificCcsw = null;
+        try {
+            userSpecificCcsw = new CodeCenterServerWrapper(userSpecificConfig);
         } catch (Exception e) {
-            message = "Authentication failed: " + e.getMessage();
+            String message = "Authentication failed: " + e.getMessage();
             logger.info(message);
             return new AuthenticationResult(false, message);
         }
 
         // Authorize by performing an operation this user should be able to do
         try {
-            ccsw.getUserManager().getUserByName(username);
+            userSpecificCcsw.getUserManager().getUserByName(username);
         } catch (CommonFrameworkException e) {
-            message = "Authorization failed: " + e.getMessage();
+            String message = "Authorization failed: " + e.getMessage();
             logger.info(message);
             return new AuthenticationResult(false, message);
         } catch (SOAPFaultException e) {
-            message = "Authorization failed: " + e.getMessage();
+            String message = "Authorization failed: " + e.getMessage();
             logger.info(message);
             return new AuthenticationResult(false, message);
         }
-        message = "Login was successful.";
-        return new AuthenticationResult(true, message);
+
+        return new AuthenticationResult(true, "Login was successful.");
     }
+
 }

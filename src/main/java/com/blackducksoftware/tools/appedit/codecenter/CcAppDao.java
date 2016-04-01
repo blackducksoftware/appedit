@@ -61,7 +61,7 @@ public class CcAppDao implements AppDao {
 
     public CcAppDao(AppEditConfigManager config) throws Exception {
         this.config = config;
-        ccsw = new CodeCenterServerWrapper(config.getServerBean(), config);
+        ccsw = new CodeCenterServerWrapper(config);
     }
 
     /**
