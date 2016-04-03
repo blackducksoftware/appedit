@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,8 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     private static final String APP_VERSION_DEFAULT = "Unspecified";
 
+    private static final String AUDITOR_ROLE_NAME_PROPERTY = "auditor.role.name";
+
     private static final String FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY = "field.input.validation.regex.username";
 
     private static final String FIELD_INPUT_VALIDATION_REGEX_PASSWORD_PROPERTY = "field.input.validation.regex.psw";
@@ -63,11 +66,15 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     private String appVersion = "";
 
+    private String auditorRoleName;
+
     private String fieldInputValidationRegexUsername = FIELD_INPUT_VALIDATION_REGEX_USERNAME_DEFAULT;
 
     private String fieldInputValidationRegexPassword = FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT;
 
     private String programVersion = "";
+
+    private boolean editNaiAuditEnabled = false;
 
     private Map<String, String> attributeMap = new HashMap<String, String>();
 
@@ -104,6 +111,11 @@ public class AppEditConfigManager extends ConfigurationManager {
         appVersion = getOptionalProperty(APP_VERSION_PROPERTY);
         if (appVersion == null) {
             appVersion = APP_VERSION_DEFAULT;
+        }
+
+        auditorRoleName = getOptionalProperty(AUDITOR_ROLE_NAME_PROPERTY);
+        if (!StringUtils.isBlank(auditorRoleName)) {
+            editNaiAuditEnabled = true;
         }
 
         fieldInputValidationRegexUsername = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY);
@@ -172,4 +184,13 @@ public class AppEditConfigManager extends ConfigurationManager {
     public String getAttrLabel(int i) {
         return attrLabelsByIndex.get(i);
     }
+
+    public String getAuditorRoleName() {
+        return auditorRoleName;
+    }
+
+    public boolean isEditNaiAuditEnabled() {
+        return editNaiAuditEnabled;
+    }
+
 }

@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.codecenter;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.ws.soap.SOAPFaultException;
@@ -24,6 +25,10 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
+import com.blackducksoftware.sdk.codecenter.role.data.RoleTypeEnum;
+import com.blackducksoftware.sdk.codecenter.role.data.UserRoleAssignment;
+import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.Role;
@@ -56,18 +61,6 @@ public class CcUserAuthenticator implements UserAuthenticator {
     @Override
     public AuthenticationResult authenticate(String username, String password) {
 
-        // Connect to Code Center as superuser
-        // TODO: This will slow it down... any way to avoid this connection
-        // CodeCenterServerWrapper superUserCcsw = null;
-        // try {
-        // superUserCcsw = new CodeCenterServerWrapper(config);
-        // } catch (Exception e) {
-        // String message = "Authentication failed connecting to Code Center as configured superuser: " +
-        // e.getMessage();
-        // logger.error(message);
-        // return new AuthenticationResult(false, message, Role.ROLE_NONE);
-        // }
-
         Properties userSpecificProps = (Properties) config.getProps().clone();
         userSpecificProps.setProperty("cc.user.name", username); // change username
         userSpecificProps.setProperty("cc.password", password); // and password
@@ -82,6 +75,7 @@ public class CcUserAuthenticator implements UserAuthenticator {
 
         CodeCenterServerWrapper userSpecificCcsw = null;
         try {
+            // TODO Creating ALL of the API services is slow; go direct (not via CF)
             userSpecificCcsw = new CodeCenterServerWrapper(userSpecificConfig);
         } catch (Exception e) {
             String message = "Authentication failed: " + e.getMessage();
@@ -104,11 +98,50 @@ public class CcUserAuthenticator implements UserAuthenticator {
         }
 
         // Now see if this user is an auditor
-        // superUserCcsw.getUserManager().getUserById(user.getId()).get // TODO: need access to global roles; need to
-        // enhance CF
-        // TODO: Try doing this as the logged in user... if he can see his own roles, then no need to create
-        // the superuser connection to Code Center
+        boolean isAuditor = false;
+        try {
+            isAuditor = userIsAuditor(username, userSpecificCcsw);
+        } catch (CommonFrameworkException e) {
+            String message = "Error attempting to authorize this user an an auditor: " + e.getMessage() + "; Authorizing this user as an end user";
+            logger.warn(message);
+            return new AuthenticationResult(true, "Login as User was successful.", Role.ROLE_USER);
+        }
+        if (isAuditor) {
+            return new AuthenticationResult(true, "Login as Auditor was successful.", Role.ROLE_AUDITOR);
+        }
 
-        return new AuthenticationResult(true, "Login was successful.", Role.ROLE_USER);
+        return new AuthenticationResult(true, "Login as User was successful.", Role.ROLE_USER);
+    }
+
+    private boolean userIsAuditor(String username, CodeCenterServerWrapper userSpecificCcsw) throws CommonFrameworkException {
+        if (!config.isEditNaiAuditEnabled()) {
+            return false;
+        }
+        // TODO port to CF Managers
+        List<UserRoleAssignment> roleAssignments;
+        UserNameToken userNameToken = new UserNameToken();
+        userNameToken.setName(username);
+        try {
+            roleAssignments = userSpecificCcsw.getInternalApiWrapper().getProxy().getRoleApi().getUserRoles(userNameToken);
+        } catch (SdkFault e) {
+            throw new CommonFrameworkException("Error getting user's roles: " + e.getMessage());
+        }
+        for (UserRoleAssignment roleAssignment : roleAssignments) {
+
+            com.blackducksoftware.sdk.codecenter.role.data.Role ccRole;
+            try {
+                ccRole = userSpecificCcsw.getInternalApiWrapper().getProxy().getRoleApi().getRole(roleAssignment.getRoleIdToken());
+            } catch (SdkFault e) {
+                throw new CommonFrameworkException("Error getting details for user role " + roleAssignment.getRoleNameToken().getName() + ": " + e.getMessage());
+            }
+            if (ccRole.getRoleType() != RoleTypeEnum.OVERALL) {
+                continue;
+            }
+            logger.debug("User: " + username + "; CC Role: " + roleAssignment.getRoleNameToken().getName());
+            if (config.getAuditorRoleName().equals(roleAssignment.getRoleNameToken().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
