@@ -16,6 +16,8 @@
 
 		<form:form method="post" action="editnaiauditdetails" commandName="app">
 			<!-- CSRF token is inserted automatically by form:form tag -->
+			
+			
 			<button type="submit" class="btn btn-primary" name="action"
 				value="submit">
 				<spring:message code="label.naiauditdetailsedit.submit" />
