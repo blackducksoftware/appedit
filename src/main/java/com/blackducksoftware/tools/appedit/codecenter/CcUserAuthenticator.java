@@ -107,14 +107,17 @@ public class CcUserAuthenticator implements UserAuthenticator {
             return new AuthenticationResult(true, "Login as User was successful.", Role.ROLE_USER);
         }
         if (isAuditor) {
+            logger.info("User " + username + " has been authorized as an Auditor");
             return new AuthenticationResult(true, "Login as Auditor was successful.", Role.ROLE_AUDITOR);
         }
 
+        logger.info("User " + username + " has been authorized as a User");
         return new AuthenticationResult(true, "Login as User was successful.", Role.ROLE_USER);
     }
 
     private boolean userIsAuditor(String username, CodeCenterServerWrapper userSpecificCcsw) throws CommonFrameworkException {
         if (!config.isEditNaiAuditEnabled()) {
+            logger.info("The Edit NAI Audit feature has not been enabled");
             return false;
         }
         // TODO port to CF Managers

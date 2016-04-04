@@ -3,21 +3,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-    <title><spring:message code="label.result.title" text="Edit NAI Audit Details" /></title>
+    <title><spring:message code="label.naiauditdetailsedit.title" text="Edit NAI Audit Details" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
 </head>
 <body>
 	<div class="page-header">
     <img src="${pageContext.request.contextPath}/styles/icons/Black_Duck_Logo.png" alt="Black Duck Logo"  width="200" height="50" id=""/>       	
-        <h1><spring:message code="label.result.title" text="Edit NAI Audit Details" /></h1>
+        <h1><spring:message code="label.naiauditdetailsedit.title" text="Edit NAI Audit Details" /></h1>
     </div>
     <div class="regular">
 
 	Coming soon...
 	 
 </div> 
-<p class="advice"><spring:message code="label.result.advice"/></p>
-<button type="button" class="btn btn-primary" value="cancel" onclick="window.close()"><spring:message code="label.result.exit"/></button>
+<p class="advice"><spring:message code="label.naiauditdetailsedit.advice"/></p>
+<button type="button" class="btn btn-primary" value="cancel" onclick="window.close()"><spring:message code="label.naiauditdetailsedit.exit"/></button>
 <br/>
 <br/>
 
