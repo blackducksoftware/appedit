@@ -13,7 +13,14 @@
     </div>
     <div class="regular">
 
-	Coming soon...
+
+		<form:form method="post" action="editnaiauditdetails" commandName="app">
+			<!-- CSRF token is inserted automatically by form:form tag -->
+			<button type="submit" class="btn btn-primary" name="action"
+				value="submit">
+				<spring:message code="label.naiauditdetailsedit.submit" />
+			</button>
+		</form:form>
 	 
 </div> 
 <p class="advice"><spring:message code="label.naiauditdetailsedit.advice"/></p>

@@ -117,6 +117,15 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
+        // Convert the generic appDetails object to view-friendly appDetails
+        // object
+        AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
+        ViewAppBean app = converter.createViewAppBean(appDetails);
+
+        // Put the objects either JSP will need into the model
+        model.addAttribute("app", app);
+        model.addAttribute("dataSource", appDao);
+
         // Get the logged-in user's details
         String username = (String) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -148,14 +157,6 @@ public class EditAppDetailsController {
             model.addAttribute("message", msg);
             return "error/programError";
         }
-
-        // Convert the generic appDetails object to view-friendly appDetails
-        // object
-        AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
-        ViewAppBean app = converter.createViewAppBean(appDetails);
-
-        model.addAttribute("app", app);
-        model.addAttribute("dataSource", appDao);
 
         return "editAppDetailsForm";
     }
