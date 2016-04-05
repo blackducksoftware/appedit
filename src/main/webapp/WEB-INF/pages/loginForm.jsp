@@ -11,6 +11,7 @@
 <head>
     <title><spring:message code="label.login.title" text="Edit Application Details" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
+    
 </head>
 <body>
     <div class="page-header">
@@ -18,11 +19,11 @@
         <h1><spring:message code="label.login.title" text="Edit Application Details" /></h1>
     </div>
 
-		<form action="login/authenticate" method="POST" role="form">
+		<form id='login_form' action="login/authenticate" method="POST" role="form">
                 <!-- CSRF token -->
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-			<table>
+			<table id='input_table'>
 				<tr>
 					<td colspan="2" class=has-error>
 						${fn:replace(SPRING_SECURITY_LAST_EXCEPTION.message, 'Bad credentials', 'Username/Password are incorrect')}
@@ -30,7 +31,7 @@
 				</tr>
 				<tr>
 					<td><label class=field-label><spring:message code="label.login.username" />:</label></td>
-					<td><input type='text' name='username' value=''></td>
+					<td><input id='username_field' type='text' name='username' value='' autofocus ></td>
 				</tr>
 				<tr>
 					<td><label class=field-label><spring:message code="label.login.password" />:</label></td>
@@ -53,5 +54,11 @@
 				</tr>
 			</table>
 		</form>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				document.getElementById('username_field').focus();
+			});
+		</script>
+		
 </body>
 </html>
