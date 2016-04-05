@@ -45,14 +45,12 @@ $(document).ready(function() {
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><form:checkbox path="itemList" value="fakeVulnId1" /></td>
-            <td>Row 1 Data 2</td>
-        </tr>
-        <tr>
-            <td><form:checkbox path="itemList" value="fakeVulnId2" /></td>
-            <td>Row 2 Data 2</td>
-        </tr>
+    	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
+        	<tr>
+            	<td><form:checkbox path="itemList" value="${vulnerability.vulnerabilityId} }" /></td>
+            	<td>Vulnerability ID: ${vulnerability.vulnerabilityId}</td>
+        	</tr>
+        </c:forEach>
     </tbody>
 	</table>
 			

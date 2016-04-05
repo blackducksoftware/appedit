@@ -18,6 +18,9 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
 import java.util.Collection;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,8 @@ import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
+import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details
@@ -54,6 +59,13 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 @Controller
 @SessionAttributes({ "app", "dataSource" })
 public class EditAppDetailsController {
+
+    private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
+
+    @Inject
+    public void setVulnNaiAuditDetailsService(VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
+        this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
+    }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
             .getName());
@@ -123,10 +135,6 @@ public class EditAppDetailsController {
         AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
         ViewAppBean app = converter.createViewAppBean(appDetails);
 
-        // Put the objects either JSP will need into the model
-        model.addAttribute("app", app); // TODO: Not sure audit form will end up using these
-        model.addAttribute("dataSource", appDao);
-
         // Get the logged-in user's details
         String username = (String) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -142,7 +150,9 @@ public class EditAppDetailsController {
             Role role = Role.valueOf(roleString);
             logger.info("Role enum value: " + role);
             if (role == Role.ROLE_AUDITOR) {
+                List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(appId);
                 model.addAttribute("selectedVulnerabilities", new Items());
+                model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
                 return "editNaiAuditDetailsForm";
             }
         }
@@ -159,6 +169,10 @@ public class EditAppDetailsController {
             model.addAttribute("message", msg);
             return "error/programError";
         }
+
+        // Put the objects the JSP will need into the model
+        model.addAttribute("app", app);
+        model.addAttribute("dataSource", appDao);
 
         return "editAppDetailsForm";
     }

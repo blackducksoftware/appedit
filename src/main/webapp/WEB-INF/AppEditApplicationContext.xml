@@ -20,7 +20,15 @@
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="i18n/messages"/>
         <property name="useCodeAsDefaultMessage" value="true"/>
-    </bean>     
+    </bean>   
+    
+    <bean id="ccVulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcVulnNaiAuditDetailsDao">
+    	<!-- Will need properties in here eventually TODO -->
+    </bean>  
+    
+    <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl">
+    	<property name="vulnNaiAuditDetailsDao" ref="ccVulnNaiAuditDetailsDao" />
+    </bean>
     
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
