@@ -34,7 +34,7 @@ $(document).ready(function() {
     <div class="regular">
 
 
-	<form:form method="post" action="editnaiauditdetails" commandName="app">
+	<form:form method="post" commandName="selectedVulnerabilities"  action="editnaiauditdetails">
 	<!-- CSRF token is inserted automatically by form:form tag -->
 			
 	<table id="table_id" class="display">
@@ -46,11 +46,11 @@ $(document).ready(function() {
     </thead>
     <tbody>
         <tr>
-            <td><input type="checkbox" /></td>
+            <td><form:checkbox path="itemList" value="fakeVulnId1" /></td>
             <td>Row 1 Data 2</td>
         </tr>
         <tr>
-            <td><input type="checkbox" /></td>
+            <td><form:checkbox path="itemList" value="fakeVulnId2" /></td>
             <td>Row 2 Data 2</td>
         </tr>
     </tbody>

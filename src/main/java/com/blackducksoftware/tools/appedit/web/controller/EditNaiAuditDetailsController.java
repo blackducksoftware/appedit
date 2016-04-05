@@ -3,15 +3,12 @@ package com.blackducksoftware.tools.appedit.web.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.blackducksoftware.tools.appedit.core.ViewAppBean;
-import com.blackducksoftware.tools.appedit.core.application.AppDao;
+import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 
 /**
  * Controller for requests for and form submissions from the Edit NAI Audit Details
@@ -30,12 +27,9 @@ public class EditNaiAuditDetailsController {
      * Handles Edit NAI Audit Details form submissions. Updates app in Code Center.
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-    public String saveNaiAuditDetails(@ModelAttribute("app") ViewAppBean app,
-            @ModelAttribute("dataSource") AppDao dataSource,
-            @RequestParam String action, ModelMap model) {
+    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items selectedVulnerabilities) {
 
-        logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): app: " + app
-                + "; dataSource: " + dataSource);
+        logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + selectedVulnerabilities);
         /*
          * // Load config
          * String configFilename = System.getProperty("user.home") + "/"

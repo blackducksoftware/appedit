@@ -42,6 +42,7 @@ import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details
@@ -123,7 +124,7 @@ public class EditAppDetailsController {
         ViewAppBean app = converter.createViewAppBean(appDetails);
 
         // Put the objects either JSP will need into the model
-        model.addAttribute("app", app);
+        model.addAttribute("app", app); // TODO: Not sure audit form will end up using these
         model.addAttribute("dataSource", appDao);
 
         // Get the logged-in user's details
@@ -141,6 +142,7 @@ public class EditAppDetailsController {
             Role role = Role.valueOf(roleString);
             logger.info("Role enum value: " + role);
             if (role == Role.ROLE_AUDITOR) {
+                model.addAttribute("selectedVulnerabilities", new Items());
                 return "editNaiAuditDetailsForm";
             }
         }

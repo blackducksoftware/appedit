@@ -14,4 +14,9 @@ public class Items {
         this.itemList = itemList;
     }
 
+    @Override
+    public String toString() {
+        return "Items [itemList=" + itemList + "]";
+    }
+
 }
