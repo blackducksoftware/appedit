@@ -1,6 +1,5 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -106,16 +105,35 @@ public class EditNaiAuditDetailsController {
          * }
          */
         // TODO: Check: None selected / none in list
-        List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
-        if (selectedVulnerabilities.getItemList() == null) {
-            vulnNaiAuditDetailsList = new ArrayList<VulnNaiAuditDetails>();
+        List<String> selectedVulnerabilityIds = selectedVulnerabilities.getItemList();
+        List<VulnNaiAuditDetails> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities
+                .getApplicationId());
+        List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
+        if (selectedVulnerabilityIds == null) {
+            // TODO: The user did not select any rows
         } else {
-            vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
+            // User selected one or more rows
+            // TODO: Read VulnNaiAuditDetails list from DB, then update it
+
+            for (String selectedVulnerabilityId : selectedVulnerabilityIds) {
+                // TODO Find VulnNaiAuditDetails object from the list we just read from the DB
+                // VulnNaiAuditDetails vulnNaiAuditDetails = new
+                // VulnNaiAuditDetails(selectedVulnerabilities.getApplicationId(), componentId, vulnerabilityId,
+                // applicationName, applicationVersion,
+                // componentName, componentVersion, vulnerabilityName,
+                // vulnerabilityRemediationStatus,
+                // vulerabilityNaiAuditStatus,
+                // vulnerabilityNaiAuditComment);
+                // vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(vulnNaiAuditDetails);
+            }
+            // vulnNaiAuditDetailsList =
+            // vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
         }
         Items newValues = new Items();
-        newValues.setComment(selectedVulnerabilities.getComment());
+        newValues.setApplicationId(selectedVulnerabilities.getApplicationId()); // pass appId through to view
         model.addAttribute("selectedVulnerabilities", newValues);
-        model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
+
+        model.addAttribute("vulnNaiAuditDetailsList", fullVulnNaiAuditDetailsList);
         return "editNaiAuditDetailsForm";
     }
 }

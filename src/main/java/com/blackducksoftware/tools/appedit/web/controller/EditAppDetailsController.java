@@ -150,8 +150,11 @@ public class EditAppDetailsController {
             Role role = Role.valueOf(roleString);
             logger.info("Role enum value: " + role);
             if (role == Role.ROLE_AUDITOR) {
-                List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(appId);
-                model.addAttribute("selectedVulnerabilities", new Items());
+                List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(appDetails.getAppId());
+                logger.info("appDetails.getAppId(): " + appDetails.getAppId());
+                Items auditFormData = new Items();
+                auditFormData.setApplicationId(appDetails.getAppId());
+                model.addAttribute("selectedVulnerabilities", auditFormData);
                 model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
                 return "editNaiAuditDetailsForm";
             }

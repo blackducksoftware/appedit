@@ -40,24 +40,47 @@ $(document).ready(function() {
 	<table id="table_id" class="display">
     <thead>
         <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
+            <th></th>
+            <th>Application Name</th>
+            <th>Application Version</th>
+            <th>Component Name</th>
+            <th>Component Version</th>
+            <th>Vulnerability Name</th>
+            <th>Vulnerability Remediation Status</th>
+            <th>Vulnerability NAI Audit Status</th>
+            <th>Vulnerability NAI Audit Comment</th>
         </tr>
     </thead>
     <tbody>
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
         	<tr>
-            	<td><form:checkbox path="itemList" value="${vulnerability.vulnerabilityId} }" /></td>
-            	<td>Vulnerability ID: ${vulnerability.vulnerabilityId}</td>
+            	<td><form:checkbox path="itemList" value="${vulnerability.appCompVulnKey.asString}" /></td>
+            	<td>${vulnerability.applicationName}</td>
+            	<td>${vulnerability.applicationVersion}</td>
+            	<td>${vulnerability.componentName}</td>
+            	<td>${vulnerability.componentVersion}</td>
+            	<td>${vulnerability.vulnerabilityName}</td>
+            	
+            	<td>${vulnerability.vulnerabilityRemediationStatus}</td>
+            	<td>${vulnerability.vulnerabilityNaiAuditStatus}</td>
+            	<td>${vulnerability.vulnerabilityNaiAuditComment}</td>
         	</tr>
         </c:forEach>
     </tbody>
 	</table>
 	<br/>
+	<label for="naiauditstatus_field">NAI Audit Status: </label>
+	<form:input path="vulnerabilityNaiAuditStatus" size="20" id="naiauditstatus_field" /><br/>
+	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" /> 
+	
+	<br/>
 	<label for="comment_field">NAI Audit Comment: </label>
 	<form:input path="comment" size="20" id="comment_field" /><br/>
 	<form:errors path="comment" cssClass="error" /> 
 	<br/>
+	
+	<!-- Pass applicationId through to next controller -->
+	<form:hidden path="applicationId" />
 			
 		<button type="submit" class="btn btn-primary" name="action"
 			value="submit">
