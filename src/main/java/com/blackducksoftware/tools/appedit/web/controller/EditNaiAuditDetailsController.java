@@ -48,20 +48,7 @@ public class EditNaiAuditDetailsController {
 
         logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + formData);
         /*
-         * // Load config
-         * String configFilename = System.getProperty("user.home") + "/"
-         * + AppEditConstants.CONFIG_FILENAME;
-         * AppEditConfigManager config = null;
-         * try {
-         * config = new AppEditConfigManager(configFilename);
-         * } catch (Exception e) {
-         * String msg = "Error constructing configuration manager: "
-         * + e.getMessage();
-         * logger.error(msg);
-         * model.addAttribute("message", msg);
-         * return "error/programError";
-         * }
-         *
+         * TODO: Validate input
          * // Validate input
          * int i = 0;
          * for (String attrLabel : app.getAttrNames()) {
@@ -75,35 +62,6 @@ public class EditNaiAuditDetailsController {
          * return "error/programError";
          * }
          * }
-         *
-         * // Convert the View-friendly appDetails to a generic appDetails object
-         * AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
-         * AppDetails appDetails = converter.createAppDetails(app);
-         *
-         * // Get the logged-in user's details
-         * String username = (String) SecurityContextHolder.getContext()
-         * .getAuthentication().getPrincipal();
-         *
-         * // Make sure they are on this app's team (list of users that can access
-         * // it)
-         * boolean isAuthorized = dataSource.authorizeUser(appDetails.getAppId(),
-         * username);
-         * if (!isAuthorized) {
-         * String msg = "You are not authorized to access this application";
-         * logger.error(msg);
-         * model.addAttribute("message", msg);
-         * return "error/programError";
-         * }
-         *
-         * try {
-         * dataSource.update(appDetails); // update app in Code Center
-         * } catch (Exception e) {
-         * String msg = "Error updating application " + app.getAppName()
-         * + ": " + e.getMessage();
-         * logger.error(msg);
-         * model.addAttribute("message", msg);
-         * return "error/programError";
-         * }
          */
         // TODO: Check: None selected / none in list
         List<String> selectedRows = formData.getItemList();
@@ -111,15 +69,18 @@ public class EditNaiAuditDetailsController {
                 .getApplicationId());
         List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
         if (selectedRows == null) {
-            // TODO: The user did not select any rows
+            String msg = "No rows selected.";
+            logger.warn(msg);
         } else {
             // User selected one or more rows; update each one
             for (String selectedRowKey : selectedRows) {
                 logger.info("Selected vulnerability key: " + selectedRowKey);
                 String[] selectedKeyParts = selectedRowKey.split("\\|");
                 if (selectedKeyParts.length != 3) {
-                    logger.error("selected row key (" + selectedRowKey + ") is invalid; failed extracting IDs.");
-                    // TODO
+                    String msg = "selected row key (" + selectedRowKey + ") is invalid; failed extracting IDs.";
+                    logger.error(msg);
+                    model.addAttribute("message", msg);
+                    return "error/programError";
                 }
                 String applicationId = selectedKeyParts[0];
                 String componentId = selectedKeyParts[1];
@@ -128,8 +89,10 @@ public class EditNaiAuditDetailsController {
 
                 VulnNaiAuditDetails selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
                 if (selectedVuln == null) {
-                    logger.error("selected row key (" + selectedRowKey + ") not found in full vulnerabilities list.");
-                    // TODO
+                    String msg = "selected row key (" + selectedRowKey + ") not found in full vulnerabilities list.";
+                    logger.error(msg);
+                    model.addAttribute("message", msg);
+                    return "error/programError";
                 }
 
                 selectedVuln.setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
