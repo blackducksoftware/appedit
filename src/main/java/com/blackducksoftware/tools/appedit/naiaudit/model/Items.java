@@ -6,6 +6,8 @@ public class Items {
 
     private List<String> itemList;
 
+    private String comment;
+
     public List<String> getItemList() {
         return itemList;
     }
@@ -14,9 +16,17 @@ public class Items {
         this.itemList = itemList;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public String toString() {
-        return "Items [itemList=" + itemList + "]";
+        return "Items [itemList=" + itemList + ", comment=" + comment + "]";
     }
 
 }

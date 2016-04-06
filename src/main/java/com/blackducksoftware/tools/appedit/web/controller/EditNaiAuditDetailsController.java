@@ -1,5 +1,6 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -105,9 +106,15 @@ public class EditNaiAuditDetailsController {
          * }
          */
         // TODO: Check: None selected / none in list
-        List<VulnNaiAuditDetails> vulnNaiAuditDetailsList =
-                vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
-        model.addAttribute("selectedVulnerabilities", new Items());
+        List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
+        if (selectedVulnerabilities.getItemList() == null) {
+            vulnNaiAuditDetailsList = new ArrayList<VulnNaiAuditDetails>();
+        } else {
+            vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
+        }
+        Items newValues = new Items();
+        newValues.setComment(selectedVulnerabilities.getComment());
+        model.addAttribute("selectedVulnerabilities", newValues);
         model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
         return "editNaiAuditDetailsForm";
     }

@@ -34,7 +34,7 @@ $(document).ready(function() {
     <div class="regular">
 
 
-	<form:form method="post" commandName="selectedVulnerabilities"  action="editnaiauditdetails">
+	<form:form method="post" modelAttribute="selectedVulnerabilities"  action="editnaiauditdetails">
 	<!-- CSRF token is inserted automatically by form:form tag -->
 			
 	<table id="table_id" class="display">
@@ -53,6 +53,11 @@ $(document).ready(function() {
         </c:forEach>
     </tbody>
 	</table>
+	<br/>
+	<label for="comment_field">NAI Audit Comment: </label>
+	<form:input path="comment" size="20" id="comment_field" /><br/>
+	<form:errors path="comment" cssClass="error" /> 
+	<br/>
 			
 		<button type="submit" class="btn btn-primary" name="action"
 			value="submit">
