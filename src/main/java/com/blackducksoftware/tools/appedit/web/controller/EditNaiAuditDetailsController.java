@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
@@ -42,10 +43,10 @@ public class EditNaiAuditDetailsController {
      * Handles Edit NAI Audit Details form submissions. Updates app in Code Center.
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items selectedVulnerabilities,
+    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items formData,
             @RequestParam String action, ModelMap model) {
 
-        logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + selectedVulnerabilities);
+        logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + formData);
         /*
          * // Load config
          * String configFilename = System.getProperty("user.home") + "/"
@@ -105,35 +106,52 @@ public class EditNaiAuditDetailsController {
          * }
          */
         // TODO: Check: None selected / none in list
-        List<String> selectedVulnerabilityIds = selectedVulnerabilities.getItemList();
-        List<VulnNaiAuditDetails> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities
+        List<String> selectedRows = formData.getItemList();
+        List<VulnNaiAuditDetails> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(formData
                 .getApplicationId());
         List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
-        if (selectedVulnerabilityIds == null) {
+        if (selectedRows == null) {
             // TODO: The user did not select any rows
         } else {
-            // User selected one or more rows
-            // TODO: Read VulnNaiAuditDetails list from DB, then update it
+            // User selected one or more rows; update each one
+            for (String selectedRowKey : selectedRows) {
+                logger.info("Selected vulnerability key: " + selectedRowKey);
+                String[] selectedKeyParts = selectedRowKey.split("\\|");
+                if (selectedKeyParts.length != 3) {
+                    logger.error("selected row key (" + selectedRowKey + ") is invalid; failed extracting IDs.");
+                    // TODO
+                }
+                String applicationId = selectedKeyParts[0];
+                String componentId = selectedKeyParts[1];
+                String vulnerabilityId = selectedKeyParts[2];
+                AppCompVulnKey key = new AppCompVulnKey(applicationId, componentId, vulnerabilityId);
 
-            for (String selectedVulnerabilityId : selectedVulnerabilityIds) {
-                // TODO Find VulnNaiAuditDetails object from the list we just read from the DB
-                // VulnNaiAuditDetails vulnNaiAuditDetails = new
-                // VulnNaiAuditDetails(selectedVulnerabilities.getApplicationId(), componentId, vulnerabilityId,
-                // applicationName, applicationVersion,
-                // componentName, componentVersion, vulnerabilityName,
-                // vulnerabilityRemediationStatus,
-                // vulerabilityNaiAuditStatus,
-                // vulnerabilityNaiAuditComment);
-                // vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(vulnNaiAuditDetails);
+                VulnNaiAuditDetails selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
+                if (selectedVuln == null) {
+                    logger.error("selected row key (" + selectedRowKey + ") not found in full vulnerabilities list.");
+                    // TODO
+                }
+
+                selectedVuln.setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
+                selectedVuln.setVulnerabilityNaiAuditComment(formData.getComment());
+                logger.info("Updating vulnerability with: " + selectedVuln);
+                vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
             }
-            // vulnNaiAuditDetailsList =
-            // vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
         }
         Items newValues = new Items();
-        newValues.setApplicationId(selectedVulnerabilities.getApplicationId()); // pass appId through to view
+        newValues.setApplicationId(formData.getApplicationId()); // pass appId through to view
         model.addAttribute("selectedVulnerabilities", newValues);
 
         model.addAttribute("vulnNaiAuditDetailsList", fullVulnNaiAuditDetailsList);
         return "editNaiAuditDetailsForm";
+    }
+
+    private VulnNaiAuditDetails findVuln(List<VulnNaiAuditDetails> vulnList, AppCompVulnKey key) {
+        for (VulnNaiAuditDetails vuln : vulnList) {
+            if (vuln.getAppCompVulnKey().equals(key)) {
+                return vuln;
+            }
+        }
+        return null;
     }
 }
