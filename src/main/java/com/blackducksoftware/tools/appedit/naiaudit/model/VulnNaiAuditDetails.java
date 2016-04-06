@@ -104,4 +104,11 @@ public class VulnNaiAuditDetails {
         this.vulnerabilityName = vulnerabilityName;
     }
 
+    @Override
+    public String toString() {
+        return "VulnNaiAuditDetails [applicationId=" + applicationId + ", componentId=" + componentId + ", vulnerabilityId=" + vulnerabilityId
+                + ", applicationName=" + applicationName + ", applicationVersion=" + applicationVersion + ", componentName=" + componentName
+                + ", componentVersion=" + componentVersion + ", vulnerabilityName=" + vulnerabilityName + "]";
+    }
+
 }

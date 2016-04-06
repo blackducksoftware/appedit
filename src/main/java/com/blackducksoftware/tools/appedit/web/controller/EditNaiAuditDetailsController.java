@@ -1,14 +1,22 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
+import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 
 /**
  * Controller for requests for and form submissions from the Edit NAI Audit Details
@@ -20,6 +28,13 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 @Controller
 @SessionAttributes({ "app", "dataSource" })
 public class EditNaiAuditDetailsController {
+    private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
+
+    @Inject
+    public void setVulnNaiAuditDetailsService(VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
+        this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
+    }
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
             .getName());
 
@@ -27,7 +42,8 @@ public class EditNaiAuditDetailsController {
      * Handles Edit NAI Audit Details form submissions. Updates app in Code Center.
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items selectedVulnerabilities) {
+    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items selectedVulnerabilities,
+            @RequestParam String action, ModelMap model) {
 
         logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + selectedVulnerabilities);
         /*
@@ -44,7 +60,7 @@ public class EditNaiAuditDetailsController {
          * model.addAttribute("message", msg);
          * return "error/programError";
          * }
-         * 
+         *
          * // Validate input
          * int i = 0;
          * for (String attrLabel : app.getAttrNames()) {
@@ -58,15 +74,15 @@ public class EditNaiAuditDetailsController {
          * return "error/programError";
          * }
          * }
-         * 
+         *
          * // Convert the View-friendly appDetails to a generic appDetails object
          * AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
          * AppDetails appDetails = converter.createAppDetails(app);
-         * 
+         *
          * // Get the logged-in user's details
          * String username = (String) SecurityContextHolder.getContext()
          * .getAuthentication().getPrincipal();
-         * 
+         *
          * // Make sure they are on this app's team (list of users that can access
          * // it)
          * boolean isAuthorized = dataSource.authorizeUser(appDetails.getAppId(),
@@ -77,7 +93,7 @@ public class EditNaiAuditDetailsController {
          * model.addAttribute("message", msg);
          * return "error/programError";
          * }
-         * 
+         *
          * try {
          * dataSource.update(appDetails); // update app in Code Center
          * } catch (Exception e) {
@@ -88,6 +104,11 @@ public class EditNaiAuditDetailsController {
          * return "error/programError";
          * }
          */
+        // TODO: Check: None selected / none in list
+        List<VulnNaiAuditDetails> vulnNaiAuditDetailsList =
+                vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(selectedVulnerabilities.getItemList().get(0));
+        model.addAttribute("selectedVulnerabilities", new Items());
+        model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
         return "editNaiAuditDetailsForm";
     }
 }
