@@ -79,17 +79,6 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
             String username = (String) authentication.getPrincipal();
             String password = (String) authentication.getCredentials();
 
-            // Get config
-            // String configFilename = System.getProperty("user.home") + "/"
-            // + AppEditConstants.CONFIG_FILENAME;
-            // AppEditConfigManager config = null;
-            // try {
-            // config = new AppEditConfigManager(configFilename);
-            // } catch (Exception e) {
-            // logger.error("Error constructing configuration manager");
-            // throw new AuthenticationServiceException(e.getMessage(), e);
-            // }
-
             // Validate input
             if ((!inputValidatorLogin.validateUsername(username))
                     || (!inputValidatorLogin.validatePassword(password))) {

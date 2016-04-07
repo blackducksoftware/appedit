@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
@@ -65,7 +66,7 @@ public class EditNaiAuditDetailsController {
          */
         // TODO: Check: None selected / none in list
         List<String> selectedRows = formData.getItemList();
-        List<VulnNaiAuditDetails> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(formData
+        List<AppCompVulnComposite> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(formData
                 .getApplicationId());
         List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
         if (selectedRows == null) {
@@ -87,7 +88,7 @@ public class EditNaiAuditDetailsController {
                 String vulnerabilityId = selectedKeyParts[2];
                 AppCompVulnKey key = new AppCompVulnKey(applicationId, componentId, vulnerabilityId);
 
-                VulnNaiAuditDetails selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
+                AppCompVulnComposite selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
                 if (selectedVuln == null) {
                     String msg = "selected row key (" + selectedRowKey + ") not found in full vulnerabilities list.";
                     logger.error(msg);
@@ -95,8 +96,8 @@ public class EditNaiAuditDetailsController {
                     return "error/programError";
                 }
 
-                selectedVuln.setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
-                selectedVuln.setVulnerabilityNaiAuditComment(formData.getComment());
+                selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
+                selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(formData.getComment());
                 logger.info("Updating vulnerability with: " + selectedVuln);
                 vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
             }
@@ -109,9 +110,9 @@ public class EditNaiAuditDetailsController {
         return "editNaiAuditDetailsForm";
     }
 
-    private VulnNaiAuditDetails findVuln(List<VulnNaiAuditDetails> vulnList, AppCompVulnKey key) {
-        for (VulnNaiAuditDetails vuln : vulnList) {
-            if (vuln.getAppCompVulnKey().equals(key)) {
+    private AppCompVulnComposite findVuln(List<AppCompVulnComposite> vulnList, AppCompVulnKey key) {
+        for (AppCompVulnComposite vuln : vulnList) {
+            if (vuln.getKey().equals(key)) {
                 return vuln;
             }
         }

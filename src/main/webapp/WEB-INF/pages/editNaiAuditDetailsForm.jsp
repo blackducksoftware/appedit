@@ -54,16 +54,16 @@ $(document).ready(function() {
     <tbody>
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
         	<tr>
-            	<td><form:checkbox path="itemList" value="${vulnerability.appCompVulnKey.asString}" /></td>
-            	<td>${vulnerability.applicationName}</td>
-            	<td>${vulnerability.applicationVersion}</td>
-            	<td>${vulnerability.componentName}</td>
-            	<td>${vulnerability.componentVersion}</td>
-            	<td>${vulnerability.vulnerabilityName}</td>
+            	<td><form:checkbox path="itemList" value="${vulnerability.key.asString}" /></td>
+            	<td>${vulnerability.ccPart.applicationName}</td>
+            	<td>${vulnerability.ccPart.applicationVersion}</td>
+            	<td>${vulnerability.ccPart.componentName}</td>
+            	<td>${vulnerability.ccPart.componentVersion}</td>
+            	<td>${vulnerability.ccPart.vulnerabilityName}</td>
             	
-            	<td>${vulnerability.vulnerabilityRemediationStatus}</td>
-            	<td>${vulnerability.vulnerabilityNaiAuditStatus}</td>
-            	<td>${vulnerability.vulnerabilityNaiAuditComment}</td>
+            	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
+            	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
+            	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>
         	</tr>
         </c:forEach>
     </tbody>

@@ -44,8 +44,8 @@ import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
-import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 
 /**
@@ -137,7 +137,7 @@ public class EditAppDetailsController {
             Role role = Role.valueOf(roleString);
             logger.info("Role enum value: " + role);
             if (role == Role.ROLE_AUDITOR) {
-                List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getVulnNaiAuditDetailsList(appDetails.getAppId());
+                List<AppCompVulnComposite> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(appDetails.getAppId());
                 logger.info("appDetails.getAppId(): " + appDetails.getAppId());
                 Items auditFormData = new Items();
                 auditFormData.setApplicationId(appDetails.getAppId());

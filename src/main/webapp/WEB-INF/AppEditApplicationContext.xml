@@ -41,12 +41,16 @@
     	<property name="ccsw" ref="ccsw" />
     </bean>
  
-    <bean id="ccVulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcVulnNaiAuditDetailsDao">
+    <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcVulnNaiAuditDetailsDao">
     	<constructor-arg ref="ccsw" />
     </bean>  
+    <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao">
+    	<constructor-arg ref="ccsw" />
+    </bean>
     
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton">
-    	<property name="vulnNaiAuditDetailsDao" ref="ccVulnNaiAuditDetailsDao" />
+    	<property name="appCompVulnDetailsDao" ref="appCompVulnDetailsDao" />
+    	<property name="vulnNaiAuditDetailsDao" ref="vulnNaiAuditDetailsDao" />
     </bean>
     
 <!--

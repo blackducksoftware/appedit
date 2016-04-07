@@ -2,10 +2,10 @@ package com.blackducksoftware.tools.appedit.naiaudit.service;
 
 import java.util.List;
 
-import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 
 public interface VulnNaiAuditDetailsService {
-    List<VulnNaiAuditDetails> getVulnNaiAuditDetailsList(String applicationId);
+    List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId);
 
-    VulnNaiAuditDetails updateVulnNaiAuditDetails(VulnNaiAuditDetails vulnNaiAuditDetails);
+    AppCompVulnComposite updateVulnNaiAuditDetails(AppCompVulnComposite appCompVulnComposite);
 }
