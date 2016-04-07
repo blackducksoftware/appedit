@@ -47,6 +47,7 @@ $(document).ready(function() {
             <th>Component Version</th>
             <th>Vulnerability Name</th>
             <th>Vulnerability Remediation Status</th>
+            <th>Vulnerability Remediation Comment</th>
             <th>Vulnerability NAI Audit Status</th>
             <th>Vulnerability NAI Audit Comment</th>
         </tr>
@@ -62,6 +63,7 @@ $(document).ready(function() {
             	<td>${vulnerability.ccPart.vulnerabilityName}</td>
             	
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
+            	<td>${vulnerability.ccPart.vulnerabilityRemediationComments}</td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>
         	</tr>

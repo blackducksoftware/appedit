@@ -1,41 +1,52 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 public class AppCompVulnDetails {
-    private AppCompVulnKey appCompVulnKey;
+    private final AppCompVulnKey appCompVulnKey;
 
-    private String applicationName;
+    private final String componentName;
 
-    private String applicationVersion;
+    private final String componentVersion;
 
-    private String componentName;
+    private final String vulnerabilityName;
 
-    private String componentVersion;
+    private final String vulnerabilitySeverity;
 
-    private String vulnerabilityName;
+    private final String vulnerabilityPublishDate;
 
-    private String vulnerabilityRemediationStatus;
+    private final String vulnerabilityDescription;
 
-    public AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String applicationName, String applicationVersion, String componentName, String componentVersion,
-            String vulnerabilityName, String vulnerabilityRemediationStatus) {
+    private final String vulnerabilityTargetRemediationDate;
+
+    private final String vulnerabilityActualRemediationDate;
+
+    private final String vulnerabilityRemediationStatus;
+
+    private final String vulnerabilityRemediationComments;
+
+    public AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName, String componentVersion,
+            String vulnerabilityName,
+            String vulnerabilitySeverity,
+            String vulnerabilityPublishDate,
+            String vulnerabilityDescription,
+            String vulnerabilityTargetRemediationDate,
+            String vulnerabilityActualRemediationDate,
+            String vulnerabilityRemediationStatus,
+            String vulnerabilityRemediationComments) {
         this.appCompVulnKey = appCompVulnKey;
-        this.applicationName = applicationName;
-        this.applicationVersion = applicationVersion;
         this.componentName = componentName;
         this.componentVersion = componentVersion;
         this.vulnerabilityName = vulnerabilityName;
+        this.vulnerabilitySeverity = vulnerabilitySeverity;
+        this.vulnerabilityPublishDate = vulnerabilityPublishDate;
+        this.vulnerabilityDescription = vulnerabilityDescription;
+        this.vulnerabilityTargetRemediationDate = vulnerabilityTargetRemediationDate;
+        this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
         this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
+        this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
         return appCompVulnKey;
-    }
-
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public String getApplicationVersion() {
-        return applicationVersion;
     }
 
     public String getComponentName() {
@@ -56,9 +67,36 @@ public class AppCompVulnDetails {
 
     @Override
     public String toString() {
-        return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey + ", applicationName=" + applicationName + ", applicationVersion=" + applicationVersion
-                + ", componentName=" + componentName + ", componentVersion=" + componentVersion + ", vulnerabilityName=" + vulnerabilityName
-                + ", vulnerabilityRemediationStatus=" + vulnerabilityRemediationStatus + "]";
+        return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey + ", componentName=" + componentName + ", componentVersion=" + componentVersion
+                + ", vulnerabilityName=" + vulnerabilityName + ", vulnerabilitySeverity=" + vulnerabilitySeverity + ", vulnerabilityPublishDate="
+                + vulnerabilityPublishDate + ", vulnerabilityDescription=" + vulnerabilityDescription + ", vulnerabilityTargetRemediationDate="
+                + vulnerabilityTargetRemediationDate + ", vulnerabilityActualRemediationDate=" + vulnerabilityActualRemediationDate
+                + ", vulnerabilityRemediationStatus=" + vulnerabilityRemediationStatus + ", vulnerabilityRemediationComments="
+                + vulnerabilityRemediationComments + "]";
+    }
+
+    public String getVulnerabilitySeverity() {
+        return vulnerabilitySeverity;
+    }
+
+    public String getVulnerabilityPublishDate() {
+        return vulnerabilityPublishDate;
+    }
+
+    public String getVulnerabilityDescription() {
+        return vulnerabilityDescription;
+    }
+
+    public String getVulnerabilityTargetRemediationDate() {
+        return vulnerabilityTargetRemediationDate;
+    }
+
+    public String getVulnerabilityActualRemediationDate() {
+        return vulnerabilityActualRemediationDate;
+    }
+
+    public String getVulnerabilityRemediationComments() {
+        return vulnerabilityRemediationComments;
     }
 
     @Override
