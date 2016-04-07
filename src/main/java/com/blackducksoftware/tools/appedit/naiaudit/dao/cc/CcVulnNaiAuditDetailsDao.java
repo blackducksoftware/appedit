@@ -6,8 +6,26 @@ import java.util.List;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
+import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
+import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 public class CcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
+    private final CodeCenterServerWrapper ccsw;
+
+    public CcVulnNaiAuditDetailsDao(CodeCenterServerWrapper ccsw) {
+        this.ccsw = ccsw;
+
+        // TODO TEMP code:
+        ApplicationPojo app;
+        try {
+            app = ccsw.getApplicationManager().getApplicationByNameVersion("SB001", "Unspecified");
+        } catch (CommonFrameworkException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+        System.out.println("\n\n\nLoaded app: " + app.getName());
+    }
 
     @Override
     public VulnNaiAuditDetails updateVulnNaiAuditDetails(VulnNaiAuditDetails vulnNaiAuditDetails) {

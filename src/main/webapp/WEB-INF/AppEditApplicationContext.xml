@@ -20,16 +20,34 @@
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="i18n/messages"/>
         <property name="useCodeAsDefaultMessage" value="true"/>
-    </bean>   
+    </bean>
+    
+    <!-- Config, CodeCenterServerWrapper -->
+    <bean id="config" class="com.blackducksoftware.tools.appedit.core.AppEditConfigManager" >
+    	<constructor-arg value="#{systemEnvironment['HOME']}/appedit.properties" />
+    </bean>
+    <bean id="ccsw" class="com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper" >
+    	<constructor-arg ref="config" />
+    </bean>
     
     <bean id="ccVulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcVulnNaiAuditDetailsDao">
-    	<!-- Will need properties in here eventually TODO -->
+    	<constructor-arg ref="ccsw" />
     </bean>  
     
-    <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl">
+    <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton">
     	<property name="vulnNaiAuditDetailsDao" ref="ccVulnNaiAuditDetailsDao" />
     </bean>
     
+<!--
+    <bean id="editAppDetailsController" class="com.blackducksoftware.tools.appedit.web.controller.EditAppDetailsController" >
+    	<property name="vulnNaiAuditDetailsService" ref="vulnNaiAuditDetailsService" />
+    </bean>
+    
+    <bean id="editNaiAuditDetailsController" class="com.blackducksoftware.tools.appedit.web.controller.EditNaiAuditDetailsController" >
+    	<property name="vulnNaiAuditDetailsService" ref="vulnNaiAuditDetailsService" />
+    </bean>
+-->
+      
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 	  <property name="exceptionMappings">
