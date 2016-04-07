@@ -42,7 +42,6 @@
     </bean>
  
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao">
-    	<constructor-arg ref="ccsw" />
     </bean>  
     <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao">
     	<constructor-arg ref="ccsw" />

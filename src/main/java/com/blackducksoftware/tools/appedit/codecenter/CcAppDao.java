@@ -34,6 +34,7 @@ import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationUserPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
@@ -63,10 +64,10 @@ public class CcAppDao implements AppDao {
         this.config = config;
     }
 
-    private CodeCenterServerWrapper ccsw;
+    private ICodeCenterServerWrapper ccsw;
 
     @Inject
-    public void setCcsw(CodeCenterServerWrapper ccsw) {
+    public void setCcsw(ICodeCenterServerWrapper ccsw) {
         this.ccsw = ccsw;
     }
 

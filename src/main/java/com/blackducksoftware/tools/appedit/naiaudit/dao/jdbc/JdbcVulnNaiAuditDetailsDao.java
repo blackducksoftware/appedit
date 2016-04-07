@@ -6,13 +6,11 @@ import java.util.Map;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
-import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
 public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
-    private final CodeCenterServerWrapper ccsw;
 
-    public JdbcVulnNaiAuditDetailsDao(CodeCenterServerWrapper ccsw) {
-        this.ccsw = ccsw;
+    public JdbcVulnNaiAuditDetailsDao() {
+
     }
 
     @Override

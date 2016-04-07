@@ -7,13 +7,13 @@ import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
-import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
+import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
-    private final CodeCenterServerWrapper ccsw;
+    private final ICodeCenterServerWrapper ccsw;
 
-    public CcAppCompVulnDetailsDao(CodeCenterServerWrapper ccsw) {
+    public CcAppCompVulnDetailsDao(ICodeCenterServerWrapper ccsw) {
         this.ccsw = ccsw;
 
         // TODO TEMP code:
