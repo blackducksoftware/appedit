@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import com.blackducksoftware.tools.appedit.codecenter.CcAppDao;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.Role;
@@ -59,8 +58,21 @@ import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsS
 @Controller
 @SessionAttributes({ "app", "dataSource" })
 public class EditAppDetailsController {
+    private AppEditConfigManager config;
 
     private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
+
+    @Inject
+    public void setConfig(AppEditConfigManager config) {
+        this.config = config;
+    }
+
+    private AppDao appDao;
+
+    @Inject
+    public void setAppDao(AppDao appDao) {
+        this.appDao = appDao;
+    }
 
     @Inject
     public void setVulnNaiAuditDetailsService(VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
@@ -77,31 +89,6 @@ public class EditAppDetailsController {
     @RequestMapping(value = "/editappdetails", method = RequestMethod.GET)
     public String showEditForm(WebRequest request, Model model) {
         logger.info("Received request for Edit Application Details page.");
-
-        // Load config
-        String configFilename = System.getProperty("user.home") + "/"
-                + AppEditConstants.CONFIG_FILENAME;
-        AppEditConfigManager config = null;
-        try {
-            config = new AppEditConfigManager(configFilename);
-        } catch (Exception e) {
-            String msg = "Error constructing configuration manager: "
-                    + e.getMessage();
-            logger.error(msg);
-            model.addAttribute("message", msg);
-            return "error/programError";
-        }
-
-        // Connect to Code Center
-        AppDao appDao = null;
-        try {
-            appDao = new CcAppDao(config);
-        } catch (Exception e) {
-            String msg = "Error constructing data source: " + e.getMessage();
-            logger.error(msg);
-            model.addAttribute("message", msg);
-            return "error/programError";
-        }
 
         // Process URL parameter: app ID/name
         String appId = request.getParameter("appId");

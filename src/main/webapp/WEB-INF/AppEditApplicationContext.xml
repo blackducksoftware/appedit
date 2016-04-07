@@ -21,8 +21,7 @@
         <property name="basename" value="i18n/messages"/>
         <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>
-    
-    <!-- Config, CodeCenterServerWrapper -->
+
     <bean id="config" class="com.blackducksoftware.tools.appedit.core.AppEditConfigManager" >
     	<constructor-arg value="#{systemEnvironment['HOME']}/appedit.properties" />
     </bean>
@@ -30,6 +29,10 @@
     	<constructor-arg ref="config" />
     </bean>
     
+    <bean id="appDao" class="com.blackducksoftware.tools.appedit.codecenter.CcAppDao">
+    	<property name="ccsw" ref="ccsw" />
+    </bean>
+ 
     <bean id="ccVulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcVulnNaiAuditDetailsDao">
     	<constructor-arg ref="ccsw" />
     </bean>  

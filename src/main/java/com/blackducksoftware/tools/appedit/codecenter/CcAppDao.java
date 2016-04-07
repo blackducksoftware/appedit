@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +56,26 @@ public class CcAppDao implements AppDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
             .getName());
 
-    private final AppEditConfigManager config;
+    private AppEditConfigManager config;
 
-    private final CodeCenterServerWrapper ccsw;
+    private CodeCenterServerWrapper ccsw;
+
+    @Inject
+    public void setConfig(AppEditConfigManager config) {
+        this.config = config;
+    }
+
+    @Inject
+    public void setCcsw(CodeCenterServerWrapper ccsw) {
+        this.ccsw = ccsw;
+    }
+
+    public CcAppDao() throws Exception {
+        logger.debug("Default constructor called");
+    }
 
     public CcAppDao(AppEditConfigManager config) throws Exception {
+        logger.debug("Constructor passed config; creating CodeCenterServerWrapper");
         this.config = config;
         ccsw = new CodeCenterServerWrapper(config);
     }
