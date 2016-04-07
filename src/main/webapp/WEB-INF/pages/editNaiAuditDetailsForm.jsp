@@ -55,8 +55,8 @@ $(document).ready(function() {
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
         	<tr>
             	<td><form:checkbox path="itemList" value="${vulnerability.key.asString}" /></td>
-            	<td>${vulnerability.ccPart.applicationName}</td>
-            	<td>${vulnerability.ccPart.applicationVersion}</td>
+            	<td>${selectedVulnerabilities.applicationName}</td>
+            	<td>${selectedVulnerabilities.applicationVersion}</td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
             	<td>${vulnerability.ccPart.vulnerabilityName}</td>

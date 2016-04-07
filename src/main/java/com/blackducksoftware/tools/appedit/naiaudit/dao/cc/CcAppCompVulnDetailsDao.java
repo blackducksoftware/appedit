@@ -78,8 +78,8 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
             for (VulnerabilitySummary vuln : vulnerabilities) {
                 logger.debug("Processing: Comp: " + comp.getName() + " / " + comp.getVersion() + ": Vuln: " + vuln.getName().getName());
                 AppCompVulnKey key = new AppCompVulnKey(applicationId, comp.getId(), vuln.getId().getId());
-                AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(key, "appName belongs in Items",
-                        "appVersion belongs in Items", comp.getName(), comp.getVersion(),
+                AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(key, "appName belongs in NaiAuditViewData",
+                        "appVersion belongs in NaiAuditViewData", comp.getName(), comp.getVersion(),
                         vuln.getName().getName(), "RemStatus: don't have yet");
                 result.put(key, appCompVulnDetails);
             }
@@ -95,6 +95,17 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
             app = ccsw.getApplicationManager().getApplicationByNameVersion(appName, appVersion);
         } catch (CommonFrameworkException e) {
             throw new AppEditException("Error getting application " + appName + " / " + appVersion + ": " + e.getMessage(), e);
+        }
+        return app;
+    }
+
+    @Override
+    public ApplicationPojo getApplicationById(String appId) throws AppEditException {
+        ApplicationPojo app;
+        try {
+            app = ccsw.getApplicationManager().getApplicationById(appId);
+        } catch (CommonFrameworkException e) {
+            throw new AppEditException("Error getting application with ID " + appId + ": " + e.getMessage(), e);
         }
         return app;
     }

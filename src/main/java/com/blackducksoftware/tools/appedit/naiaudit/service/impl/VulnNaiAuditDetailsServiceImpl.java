@@ -66,4 +66,10 @@ public class VulnNaiAuditDetailsServiceImpl implements VulnNaiAuditDetailsServic
         return app;
     }
 
+    @Override
+    public ApplicationPojo getApplicationById(String appId) throws AppEditException {
+        ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId);
+        return app;
+    }
+
 }

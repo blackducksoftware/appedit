@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
-import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
+import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 
@@ -45,7 +45,7 @@ public class EditNaiAuditDetailsController {
      * Handles Edit NAI Audit Details form submissions. Updates app in Code Center.
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") Items formData,
+    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") NaiAuditViewData formData,
             @RequestParam String action, ModelMap model) {
 
         logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + formData);
@@ -118,8 +118,10 @@ public class EditNaiAuditDetailsController {
                 }
             }
         }
-        Items newValues = new Items();
+        NaiAuditViewData newValues = new NaiAuditViewData();
         newValues.setApplicationId(formData.getApplicationId()); // pass appId through to view
+        newValues.setApplicationName(formData.getApplicationName());
+        newValues.setApplicationVersion(formData.getApplicationVersion());
         model.addAttribute("selectedVulnerabilities", newValues);
 
         model.addAttribute("vulnNaiAuditDetailsList", fullVulnNaiAuditDetailsList);

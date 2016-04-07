@@ -46,7 +46,7 @@ import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
-import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
+import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
@@ -117,9 +117,9 @@ public class EditAppDetailsController {
             Role role = Role.valueOf(roleString);
             logger.info("Role enum value: " + role);
             if (role == Role.ROLE_AUDITOR) {
-                // if we don't have the appId, get it
+                ApplicationPojo app;
+                // Load the app (so we have name, version)
                 if (appId == null) {
-                    ApplicationPojo app;
                     try {
                         app = vulnNaiAuditDetailsService.getApplicationByNameVersion(appName, config.getAppVersion());
                     } catch (AppEditException e) {
@@ -129,6 +129,16 @@ public class EditAppDetailsController {
                         return "error/programError";
                     }
                     appId = app.getId();
+                } else {
+                    try {
+                        app = vulnNaiAuditDetailsService.getApplicationById(appId);
+                    } catch (AppEditException e) {
+                        String msg = "Error loading application with ID " + appId + ": " + e.getMessage();
+                        logger.error(msg);
+                        model.addAttribute("message", msg);
+                        return "error/programError";
+                    }
+                    appName = app.getName();
                 }
                 List<AppCompVulnComposite> vulnNaiAuditDetailsList;
                 try {
@@ -140,8 +150,10 @@ public class EditAppDetailsController {
                     return "error/programError";
                 }
                 logger.info("appDetails.getAppId(): " + appId);
-                Items auditFormData = new Items();
-                auditFormData.setApplicationId(appId);
+                NaiAuditViewData auditFormData = new NaiAuditViewData();
+                auditFormData.setApplicationId(app.getId());
+                auditFormData.setApplicationName(app.getName());
+                auditFormData.setApplicationVersion(app.getVersion());
                 model.addAttribute("selectedVulnerabilities", auditFormData);
                 model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
                 return "editNaiAuditDetailsForm";

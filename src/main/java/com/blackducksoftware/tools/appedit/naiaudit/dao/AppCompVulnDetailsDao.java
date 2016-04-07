@@ -12,5 +12,7 @@ public interface AppCompVulnDetailsDao {
 
     ApplicationPojo getApplicationByNameVersion(String appName, String appVersion) throws AppEditException;
 
+    ApplicationPojo getApplicationById(String appId) throws AppEditException;
+
     Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(String applicationId) throws AppEditException;
 }

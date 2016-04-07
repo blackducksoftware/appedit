@@ -9,6 +9,8 @@ import com.blackducksoftware.tools.connector.codecenter.application.ApplicationP
 public interface VulnNaiAuditDetailsService {
     ApplicationPojo getApplicationByNameVersion(String appName, String appVersion) throws AppEditException;
 
+    ApplicationPojo getApplicationById(String appId) throws AppEditException;
+
     List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId) throws AppEditException;
 
     AppCompVulnComposite updateVulnNaiAuditDetails(AppCompVulnComposite appCompVulnComposite) throws AppEditException;
