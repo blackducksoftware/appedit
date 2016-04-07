@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.Role;
@@ -47,6 +48,7 @@ import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAp
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details
@@ -100,6 +102,53 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
+        // Get the logged-in user's details
+        String username = (String) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // Get the user's roles
+        Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
+                .getAuthentication().getAuthorities();
+
+        // If this user is an auditor, display the Edit NAI Audit Details form
+        for (GrantedAuthority auth : grantedAuthorities) {
+            String roleString = auth.getAuthority();
+            logger.info("Role: " + roleString);
+            Role role = Role.valueOf(roleString);
+            logger.info("Role enum value: " + role);
+            if (role == Role.ROLE_AUDITOR) {
+                // if we don't have the appId, get it
+                if (appId == null) {
+                    ApplicationPojo app;
+                    try {
+                        app = vulnNaiAuditDetailsService.getApplicationByNameVersion(appName, config.getAppVersion());
+                    } catch (AppEditException e) {
+                        String msg = "Error loading application" + appName + ": " + e.getMessage();
+                        logger.error(msg);
+                        model.addAttribute("message", msg);
+                        return "error/programError";
+                    }
+                    appId = app.getId();
+                }
+                List<AppCompVulnComposite> vulnNaiAuditDetailsList;
+                try {
+                    vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(appId);
+                } catch (AppEditException e) {
+                    String msg = "Error getting vulnerability details for application: " + e.getMessage();
+                    logger.error(msg);
+                    model.addAttribute("message", msg);
+                    return "error/programError";
+                }
+                logger.info("appDetails.getAppId(): " + appId);
+                Items auditFormData = new Items();
+                auditFormData.setApplicationId(appId);
+                model.addAttribute("selectedVulnerabilities", auditFormData);
+                model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
+                return "editNaiAuditDetailsForm";
+            }
+        }
+
+        // This user is an end-user
         // Load application
         AppDetails appDetails = null;
         try {
@@ -117,38 +166,6 @@ public class EditAppDetailsController {
             return "error/programError";
         }
 
-        // Convert the generic appDetails object to view-friendly appDetails
-        // object
-        AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
-        ViewAppBean app = converter.createViewAppBean(appDetails);
-
-        // Get the logged-in user's details
-        String username = (String) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        // Get the user's roles
-        Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
-                .getAuthentication().getAuthorities();
-
-        // If this user is an auditor, display the Edit NAI Audit Details form
-        for (GrantedAuthority auth : grantedAuthorities) {
-            String roleString = auth.getAuthority();
-            logger.info("Role: " + roleString);
-            Role role = Role.valueOf(roleString);
-            logger.info("Role enum value: " + role);
-            if (role == Role.ROLE_AUDITOR) {
-                List<AppCompVulnComposite> vulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(appDetails.getAppId());
-                logger.info("appDetails.getAppId(): " + appDetails.getAppId());
-                Items auditFormData = new Items();
-                auditFormData.setApplicationId(appDetails.getAppId());
-                model.addAttribute("selectedVulnerabilities", auditFormData);
-                model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
-                return "editNaiAuditDetailsForm";
-            }
-        }
-
-        // This user is an end-user
-
         // Make sure they are on this app's team (list of users that can access
         // it)
         boolean isAuthorized = appDao.authorizeUser(appDetails.getAppId(),
@@ -159,6 +176,11 @@ public class EditAppDetailsController {
             model.addAttribute("message", msg);
             return "error/programError";
         }
+
+        // Convert the generic appDetails object to view-friendly appDetails
+        // object
+        AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
+        ViewAppBean app = converter.createViewAppBean(appDetails);
 
         // Put the objects the JSP will need into the model
         model.addAttribute("app", app);

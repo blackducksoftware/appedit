@@ -3,6 +3,7 @@ package com.blackducksoftware.tools.appedit.naiaudit.dao.cc;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
@@ -15,16 +16,6 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
     public CcAppCompVulnDetailsDao(ICodeCenterServerWrapper ccsw) {
         this.ccsw = ccsw;
-
-        // TODO TEMP code:
-        ApplicationPojo app;
-        try {
-            app = ccsw.getApplicationManager().getApplicationByNameVersion("SB001", "Unspecified");
-        } catch (CommonFrameworkException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
-        System.out.println("\n\n\nLoaded app: " + app.getName());
     }
 
     @Override
@@ -36,7 +27,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     }
 
     @Override
-    public Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(String applicationId) {
+    public Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(String applicationId) throws AppEditException {
         Map<AppCompVulnKey, AppCompVulnDetails> result = new HashMap<>();
 
         AppCompVulnKey key = new AppCompVulnKey("test_app_id1", "test_comp_id1", "test_vuln_id1");
@@ -50,7 +41,26 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
                 "test app version2", "test comp name2", "test comp version2",
                 "test vuln name2", "test remediation status2");
         result.put(key, appCompVulnDetails);
+
+        try {
+            ccsw.getApplicationManager().getApplicationById(applicationId);
+        } catch (CommonFrameworkException e) {
+            // TODO Auto-generated catch block
+            throw new AppEditException("Error getting application with ID " + applicationId + ": " + e.getMessage(), e);
+        }
+
         return result;
+    }
+
+    @Override
+    public ApplicationPojo getApplicationByNameVersion(String appName, String appVersion) throws AppEditException {
+        ApplicationPojo app;
+        try {
+            app = ccsw.getApplicationManager().getApplicationByNameVersion(appName, appVersion);
+        } catch (CommonFrameworkException e) {
+            throw new AppEditException("Error getting application " + appName + " / " + appVersion + ": " + e.getMessage(), e);
+        }
+        return app;
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.Items;
@@ -66,8 +67,16 @@ public class EditNaiAuditDetailsController {
          */
         // TODO: Check: None selected / none in list
         List<String> selectedRows = formData.getItemList();
-        List<AppCompVulnComposite> fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(formData
-                .getApplicationId());
+        List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
+        try {
+            fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(formData
+                    .getApplicationId());
+        } catch (AppEditException e) {
+            String msg = "Error getting vulnerability details for application with ID " + formData.getApplicationId() + e.getMessage();
+            logger.error(msg);
+            model.addAttribute("message", msg);
+            return "error/programError";
+        }
         List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
         if (selectedRows == null) {
             String msg = "No rows selected.";
@@ -99,7 +108,14 @@ public class EditNaiAuditDetailsController {
                 selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
                 selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(formData.getComment());
                 logger.info("Updating vulnerability with: " + selectedVuln);
-                vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
+                try {
+                    vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
+                } catch (AppEditException e) {
+                    String msg = "Error updating NAI Audit details: " + e.getMessage();
+                    logger.error(msg);
+                    model.addAttribute("message", msg);
+                    return "error/programError";
+                }
             }
         }
         Items newValues = new Items();

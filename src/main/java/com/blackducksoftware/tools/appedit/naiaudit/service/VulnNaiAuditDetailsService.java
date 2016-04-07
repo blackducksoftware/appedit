@@ -2,10 +2,14 @@ package com.blackducksoftware.tools.appedit.naiaudit.service;
 
 import java.util.List;
 
+import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 public interface VulnNaiAuditDetailsService {
-    List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId);
+    ApplicationPojo getApplicationByNameVersion(String appName, String appVersion) throws AppEditException;
 
-    AppCompVulnComposite updateVulnNaiAuditDetails(AppCompVulnComposite appCompVulnComposite);
+    List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId) throws AppEditException;
+
+    AppCompVulnComposite updateVulnNaiAuditDetails(AppCompVulnComposite appCompVulnComposite) throws AppEditException;
 }
