@@ -58,12 +58,12 @@ public class CcAppDao implements AppDao {
 
     private AppEditConfigManager config;
 
-    private CodeCenterServerWrapper ccsw;
-
     @Inject
     public void setConfig(AppEditConfigManager config) {
         this.config = config;
     }
+
+    private CodeCenterServerWrapper ccsw;
 
     @Inject
     public void setCcsw(CodeCenterServerWrapper ccsw) {

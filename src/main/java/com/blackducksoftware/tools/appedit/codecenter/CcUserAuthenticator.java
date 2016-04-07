@@ -20,6 +20,7 @@ package com.blackducksoftware.tools.appedit.codecenter;
 import java.util.List;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -49,9 +50,19 @@ public class CcUserAuthenticator implements UserAuthenticator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
             .getName());
 
-    private final AppEditConfigManager config;
+    private AppEditConfigManager config;
+
+    @Inject
+    public void setConfig(AppEditConfigManager config) {
+        this.config = config;
+    }
+
+    public CcUserAuthenticator() throws Exception {
+        logger.debug("Default constructor called");
+    }
 
     public CcUserAuthenticator(AppEditConfigManager config) throws Exception {
+        logger.debug("Config passed via constructor");
         this.config = config;
     }
 

@@ -20,6 +20,9 @@ package com.blackducksoftware.tools.appedit.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Input validator for the login screen fields.
  *
@@ -27,11 +30,22 @@ import java.util.regex.Pattern;
  *
  */
 public class InputValidatorLogin {
-    private final Pattern usernamePattern;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass()
+            .getName());
 
-    private final Pattern passwordPattern;
+    private AppEditConfigManager config;
+
+    private Pattern usernamePattern;
+
+    private Pattern passwordPattern;
 
     public InputValidatorLogin(AppEditConfigManager config) {
+        logger.debug("Constructor passed config");
+        this.config = config;
+        init();
+    }
+
+    private void init() {
         String usernameRegexString = config
                 .getFieldInputValidationRegexUsername();
         String passwordRegexString = config

@@ -20,6 +20,8 @@ package com.blackducksoftware.tools.appedit.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,8 +30,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import com.blackducksoftware.tools.appedit.codecenter.CcUserAuthenticator;
 
 /**
  * A Spring Security AuthenticationProvider. Decides whether or not a given set
@@ -42,6 +42,20 @@ import com.blackducksoftware.tools.appedit.codecenter.CcUserAuthenticator;
 public class AppEditAuthenticationProvider implements AuthenticationProvider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
             .getName());
+
+    private UserAuthenticator userAuthenticator;
+
+    @Inject
+    public void setUserAuthenticator(UserAuthenticator userAuthenticator) {
+        this.userAuthenticator = userAuthenticator;
+    }
+
+    private InputValidatorLogin inputValidatorLogin;
+
+    @Inject
+    public void setInputValidatorLogin(InputValidatorLogin inputValidatorLogin) {
+        this.inputValidatorLogin = inputValidatorLogin;
+    }
 
     /**
      * Returns true when asked if UsernamePassword authentication method is
@@ -66,28 +80,26 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
             String password = (String) authentication.getCredentials();
 
             // Get config
-            String configFilename = System.getProperty("user.home") + "/"
-                    + AppEditConstants.CONFIG_FILENAME;
-            AppEditConfigManager config = null;
-            try {
-                config = new AppEditConfigManager(configFilename);
-            } catch (Exception e) {
-                logger.error("Error constructing configuration manager");
-                throw new AuthenticationServiceException(e.getMessage(), e);
-            }
+            // String configFilename = System.getProperty("user.home") + "/"
+            // + AppEditConstants.CONFIG_FILENAME;
+            // AppEditConfigManager config = null;
+            // try {
+            // config = new AppEditConfigManager(configFilename);
+            // } catch (Exception e) {
+            // logger.error("Error constructing configuration manager");
+            // throw new AuthenticationServiceException(e.getMessage(), e);
+            // }
 
             // Validate input
-            InputValidatorLogin inputValidator = new InputValidatorLogin(config);
-            if ((!inputValidator.validateUsername(username))
-                    || (!inputValidator.validatePassword(password))) {
+            if ((!inputValidatorLogin.validateUsername(username))
+                    || (!inputValidatorLogin.validatePassword(password))) {
                 String msg = "Authorization failed: The user name or password provided was not valid. ";
                 logger.error(msg);
                 throw new AuthenticationServiceException(msg);
             }
 
             // Authenticate in Code Center
-            UserAuthenticator userAuthenticator = new CcUserAuthenticator(
-                    config);
+
             AuthenticationResult authResult = userAuthenticator.authenticate(
                     username, password);
             if (!authResult.isAuthenticated()) {
