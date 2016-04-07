@@ -30,8 +30,8 @@ public class VulnNaiAuditDetailsServiceImpl implements VulnNaiAuditDetailsServic
     @Override
     public List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId) {
         List<AppCompVulnComposite> result = new ArrayList<>();
-        Map<AppCompVulnKey, AppCompVulnDetails> ccParts = appCompVulnDetailsDao.getAppCompVulnDetailsList(applicationId);
-        Map<AppCompVulnKey, VulnNaiAuditDetails> auditParts = vulnNaiAuditDetailsDao.getVulnNaiAuditDetailsList(applicationId);
+        Map<AppCompVulnKey, AppCompVulnDetails> ccParts = appCompVulnDetailsDao.getAppCompVulnDetailsMap(applicationId);
+        Map<AppCompVulnKey, VulnNaiAuditDetails> auditParts = vulnNaiAuditDetailsDao.getVulnNaiAuditDetailsMap(applicationId);
         for (AppCompVulnKey key : ccParts.keySet()) {
             VulnNaiAuditDetails auditDetails;
             if (auditParts.containsKey(key)) {

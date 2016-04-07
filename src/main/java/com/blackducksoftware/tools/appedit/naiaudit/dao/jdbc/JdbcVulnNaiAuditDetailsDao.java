@@ -1,4 +1,4 @@
-package com.blackducksoftware.tools.appedit.naiaudit.dao.cc;
+package com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +8,10 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 
-public class CcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
+public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
     private final CodeCenterServerWrapper ccsw;
 
-    public CcVulnNaiAuditDetailsDao(CodeCenterServerWrapper ccsw) {
+    public JdbcVulnNaiAuditDetailsDao(CodeCenterServerWrapper ccsw) {
         this.ccsw = ccsw;
     }
 
@@ -23,7 +23,7 @@ public class CcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
     }
 
     @Override
-    public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsList(String applicationId) {
+    public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(String applicationId) {
         Map<AppCompVulnKey, VulnNaiAuditDetails> vulnNaiAuditDetailsMap = new HashMap<>();
         AppCompVulnKey key = new AppCompVulnKey("test_applicationId1", "test_componentId1",
                 "test_vulnerabilityId1");

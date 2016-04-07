@@ -36,7 +36,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     }
 
     @Override
-    public Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsList(String applicationId) {
+    public Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(String applicationId) {
         Map<AppCompVulnKey, AppCompVulnDetails> result = new HashMap<>();
 
         AppCompVulnKey key = new AppCompVulnKey("test_app_id1", "test_comp_id1", "test_vuln_id1");

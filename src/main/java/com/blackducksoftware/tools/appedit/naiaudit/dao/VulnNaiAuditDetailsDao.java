@@ -8,5 +8,5 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 public interface VulnNaiAuditDetailsDao {
     VulnNaiAuditDetails updateVulnNaiAuditDetails(VulnNaiAuditDetails vunlNaiAuditDetails);
 
-    Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsList(String applicationId);
+    Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(String applicationId);
 }
