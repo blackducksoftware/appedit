@@ -51,6 +51,9 @@ $(document).ready(function() {
             <th>Component Version</th>
             <th>Severity</th>
             
+            <th>Date Published</th>
+            <th>Description</th>
+            
             <th>Target Remediation Date</th>
             <th>Actual Remediation Date</th>
             <th>Remediation Status</th>
@@ -72,6 +75,9 @@ $(document).ready(function() {
             	<td>${vulnerability.ccPart.componentVersion}</td>
             	<td>${vulnerability.ccPart.vulnerabilitySeverity}</td>
             	
+            	<td><fmt:formatDate type="date" 
+            		value="${vulnerability.ccPart.vulnerabilityPublishDate}" /></td>
+            	<td>${vulnerability.ccPart.vulnerabilityDescription}</td>
             	
             	<td><fmt:formatDate type="date" 
             		value="${vulnerability.ccPart.vulnerabilityTargetRemediationDate}" /></td>
