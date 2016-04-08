@@ -38,8 +38,8 @@ public class AppDetails {
     private final Map<String, AttributeValuePojo> customAttributeValues = new HashMap<>();
 
     public AppDetails(String appId, String appName) {
-        this.appId = appId;
-        this.appName = appName;
+	this.appId = appId;
+	this.appName = appName;
     }
 
     /**
@@ -48,7 +48,7 @@ public class AppDetails {
      * @return
      */
     public String getAppName() {
-        return appName;
+	return appName;
     }
 
     /**
@@ -57,7 +57,7 @@ public class AppDetails {
      * @return
      */
     public String getAppId() {
-        return appId;
+	return appId;
     }
 
     /**
@@ -66,8 +66,9 @@ public class AppDetails {
      * @param attrName
      * @param attrValue
      */
-    public void addCustomAttributeValue(String attrName, AttributeValuePojo attrValue) {
-        customAttributeValues.put(attrName, attrValue);
+    public void addCustomAttributeValue(String attrName,
+	    AttributeValuePojo attrValue) {
+	customAttributeValues.put(attrName, attrValue);
     }
 
     /**
@@ -77,17 +78,17 @@ public class AppDetails {
      * @return
      */
     public AttributeValuePojo getCustomAttributeValue(String attrName) {
-        if (customAttributeValues.containsKey(attrName)) {
-            return customAttributeValues.get(attrName);
-        } else {
-            return null;
-        }
+	if (customAttributeValues.containsKey(attrName)) {
+	    return customAttributeValues.get(attrName);
+	} else {
+	    return null;
+	}
     }
 
     @Override
     public String toString() {
-        return "AppDetails [appName=" + appName + ", appId=" + appId
-                + ", customAttributeValues=" + customAttributeValues + "]";
+	return "AppDetails [appName=" + appName + ", appId=" + appId
+		+ ", customAttributeValues=" + customAttributeValues + "]";
     }
 
 }

@@ -36,7 +36,7 @@ public class AppDetailsBeanConverter {
     private final AppEditConfigManager config;
 
     public AppDetailsBeanConverter(AppEditConfigManager config) {
-        this.config = config;
+	this.config = config;
     }
 
     /**
@@ -47,28 +47,29 @@ public class AppDetailsBeanConverter {
      * @return
      */
     public ViewAppBean createViewAppBean(AppDetails appDetails) {
-        Map<String, String> attrMap = config.getAttributeMap();
+	Map<String, String> attrMap = config.getAttributeMap();
 
-        ViewAppBean viewAppBean = new ViewAppBean();
-        viewAppBean.setAppId(appDetails.getAppId());
-        viewAppBean.setAppName(appDetails.getAppName());
+	ViewAppBean viewAppBean = new ViewAppBean();
+	viewAppBean.setAppId(appDetails.getAppId());
+	viewAppBean.setAppName(appDetails.getAppName());
 
-        List<String> attrNames = new ArrayList<String>(attrMap.keySet().size());
-        List<AttributeValuePojo> attrValues = new ArrayList<>(attrMap.keySet().size());
+	List<String> attrNames = new ArrayList<String>(attrMap.keySet().size());
+	List<AttributeValuePojo> attrValues = new ArrayList<>(attrMap.keySet()
+		.size());
 
-        // Copy custom attributes, preserving the order in the config file
-        for (int i = 0; i < attrMap.keySet().size(); i++) {
-            String attrLabel = config.getAttrLabel(i);
-            String attrCodeCenterName = attrMap.get(attrLabel);
-            attrNames.add(attrLabel);
-            attrValues.add(appDetails
-                    .getCustomAttributeValue(attrCodeCenterName));
-        }
+	// Copy custom attributes, preserving the order in the config file
+	for (int i = 0; i < attrMap.keySet().size(); i++) {
+	    String attrLabel = config.getAttrLabel(i);
+	    String attrCodeCenterName = attrMap.get(attrLabel);
+	    attrNames.add(attrLabel);
+	    attrValues.add(appDetails
+		    .getCustomAttributeValue(attrCodeCenterName));
+	}
 
-        viewAppBean.setAttrNames(attrNames);
-        viewAppBean.setAttrValues(attrValues);
+	viewAppBean.setAttrNames(attrNames);
+	viewAppBean.setAttrValues(attrValues);
 
-        return viewAppBean;
+	return viewAppBean;
     }
 
     /**
@@ -79,15 +80,15 @@ public class AppDetailsBeanConverter {
      * @return
      */
     public AppDetails createAppDetails(ViewAppBean viewAppBean) {
-        AppDetails appDetails = new AppDetails(viewAppBean.getAppId(),
-                viewAppBean.getAppName());
+	AppDetails appDetails = new AppDetails(viewAppBean.getAppId(),
+		viewAppBean.getAppName());
 
-        Map<String, String> attrMap = config.getAttributeMap();
-        for (String attrLabel : attrMap.keySet()) {
-            int attrValueIndex = viewAppBean.getAttrNames().indexOf(attrLabel);
-            appDetails.addCustomAttributeValue(attrMap.get(attrLabel),
-                    viewAppBean.getAttrValues().get(attrValueIndex));
-        }
-        return appDetails;
+	Map<String, String> attrMap = config.getAttributeMap();
+	for (String attrLabel : attrMap.keySet()) {
+	    int attrValueIndex = viewAppBean.getAttrNames().indexOf(attrLabel);
+	    appDetails.addCustomAttributeValue(attrMap.get(attrLabel),
+		    viewAppBean.getAttrValues().get(attrValueIndex));
+	}
+	return appDetails;
     }
 }

@@ -33,10 +33,10 @@ public class AuthenticationResult {
     private final Role role;
 
     public AuthenticationResult(boolean authenticated, String message, Role role) {
-        super();
-        this.authenticated = authenticated;
-        this.message = message;
-        this.role = role;
+	super();
+	this.authenticated = authenticated;
+	this.message = message;
+	this.role = role;
     }
 
     /**
@@ -45,7 +45,7 @@ public class AuthenticationResult {
      * @return
      */
     public boolean isAuthenticated() {
-        return authenticated;
+	return authenticated;
     }
 
     /**
@@ -54,10 +54,10 @@ public class AuthenticationResult {
      * @return
      */
     public String getMessage() {
-        return message;
+	return message;
     }
 
     public Role getRole() {
-        return role;
+	return role;
     }
 }

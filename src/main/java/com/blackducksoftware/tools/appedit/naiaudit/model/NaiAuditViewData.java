@@ -16,57 +16,61 @@ public class NaiAuditViewData {
     private String comment;
 
     public List<String> getItemList() {
-        return itemList;
+	return itemList;
     }
 
     public void setItemList(List<String> itemList) {
-        this.itemList = itemList;
+	this.itemList = itemList;
     }
 
     public String getComment() {
-        return comment;
+	return comment;
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+	this.comment = comment;
     }
 
     public String getVulnerabilityNaiAuditStatus() {
-        return vulnerabilityNaiAuditStatus;
+	return vulnerabilityNaiAuditStatus;
     }
 
-    public void setVulnerabilityNaiAuditStatus(String vulnerabilityNaiAuditStatus) {
-        this.vulnerabilityNaiAuditStatus = vulnerabilityNaiAuditStatus;
+    public void setVulnerabilityNaiAuditStatus(
+	    String vulnerabilityNaiAuditStatus) {
+	this.vulnerabilityNaiAuditStatus = vulnerabilityNaiAuditStatus;
     }
 
     public String getApplicationId() {
-        return applicationId;
+	return applicationId;
     }
 
     public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
+	this.applicationId = applicationId;
     }
 
     public String getApplicationName() {
-        return applicationName;
+	return applicationName;
     }
 
     public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
+	this.applicationName = applicationName;
     }
 
     public String getApplicationVersion() {
-        return applicationVersion;
+	return applicationVersion;
     }
 
     public void setApplicationVersion(String applicationVersion) {
-        this.applicationVersion = applicationVersion;
+	this.applicationVersion = applicationVersion;
     }
 
     @Override
     public String toString() {
-        return "NaiAuditViewData [applicationId=" + applicationId + ", applicationName=" + applicationName + ", applicationVersion=" + applicationVersion
-                + ", itemList=" + itemList + ", vulnerabilityNaiAuditStatus=" + vulnerabilityNaiAuditStatus + ", comment=" + comment + "]";
+	return "NaiAuditViewData [applicationId=" + applicationId
+		+ ", applicationName=" + applicationName
+		+ ", applicationVersion=" + applicationVersion + ", itemList="
+		+ itemList + ", vulnerabilityNaiAuditStatus="
+		+ vulnerabilityNaiAuditStatus + ", comment=" + comment + "]";
     }
 
 }

@@ -35,7 +35,7 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
  */
 public class ViewAppBean {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     private String appId;
 
@@ -46,55 +46,55 @@ public class ViewAppBean {
     private List<AttributeValuePojo> attrValues = new ArrayList<>();
 
     public ViewAppBean() {
-        logger.info("ViewAppBean: default constructor called");
+	logger.info("ViewAppBean: default constructor called");
     }
 
     public ViewAppBean(String appId, String appName, List<String> attrNames,
-            List<AttributeValuePojo> attrValues) {
-        logger.info("ViewAppBean: parameterized constructor called");
-        this.appId = appId;
-        this.appName = appName;
+	    List<AttributeValuePojo> attrValues) {
+	logger.info("ViewAppBean: parameterized constructor called");
+	this.appId = appId;
+	this.appName = appName;
 
-        this.attrNames = attrNames;
-        this.attrValues = attrValues;
+	this.attrNames = attrNames;
+	this.attrValues = attrValues;
     }
 
     public String getAppId() {
-        return appId;
+	return appId;
     }
 
     public void setAppId(String appId) {
-        this.appId = appId;
+	this.appId = appId;
     }
 
     public String getAppName() {
-        return appName;
+	return appName;
     }
 
     public void setAppName(String appName) {
-        this.appName = appName;
+	this.appName = appName;
     }
 
     public List<String> getAttrNames() {
-        return attrNames;
+	return attrNames;
     }
 
     public void setAttrNames(List<String> attrNames) {
-        this.attrNames = attrNames;
+	this.attrNames = attrNames;
     }
 
     public List<AttributeValuePojo> getAttrValues() {
-        return attrValues;
+	return attrValues;
     }
 
     public void setAttrValues(List<AttributeValuePojo> attrValues) {
-        this.attrValues = attrValues;
+	this.attrValues = attrValues;
     }
 
     @Override
     public String toString() {
-        return "AppImpl [appId=" + appId + ", appName=" + appName
-                + ", attrNames=" + attrNames + "]" + ", attrValues="
-                + attrValues + "]";
+	return "AppImpl [appId=" + appId + ", appName=" + appName
+		+ ", attrNames=" + attrNames + "]" + ", attrValues="
+		+ attrValues + "]";
     }
 }

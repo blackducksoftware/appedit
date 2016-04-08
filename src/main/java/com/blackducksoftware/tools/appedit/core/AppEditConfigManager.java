@@ -62,7 +62,7 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT = ".+";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     private String appVersion = "";
 
@@ -83,114 +83,114 @@ public class AppEditConfigManager extends ConfigurationManager {
     private Map<Integer, String> attrLabelsByIndex = new HashMap<Integer, String>();
 
     public AppEditConfigManager() {
-        super();
+	super();
     }
 
     public AppEditConfigManager(String filename) throws Exception {
-        super(filename);
-        init();
+	super(filename);
+	init();
     }
 
     public AppEditConfigManager(Properties props) throws Exception {
-        super(props, APPLICATION.CODECENTER);
-        init();
+	super(props, APPLICATION.CODECENTER);
+	init();
     }
 
     private void init() throws Exception {
-        log.info("init()");
-        try {
-            String dynamicVersion = getClass().getPackage()
-                    .getImplementationVersion();
-            if (dynamicVersion != null) {
-                programVersion = dynamicVersion;
-            }
-        } catch (Throwable t) {
-            log.debug("Could not determine version for this program", t);
-        }
+	log.info("init()");
+	try {
+	    String dynamicVersion = getClass().getPackage()
+		    .getImplementationVersion();
+	    if (dynamicVersion != null) {
+		programVersion = dynamicVersion;
+	    }
+	} catch (Throwable t) {
+	    log.debug("Could not determine version for this program", t);
+	}
 
-        appVersion = getOptionalProperty(APP_VERSION_PROPERTY);
-        if (appVersion == null) {
-            appVersion = APP_VERSION_DEFAULT;
-        }
+	appVersion = getOptionalProperty(APP_VERSION_PROPERTY);
+	if (appVersion == null) {
+	    appVersion = APP_VERSION_DEFAULT;
+	}
 
-        auditorRoleName = getOptionalProperty(AUDITOR_ROLE_NAME_PROPERTY);
-        if (!StringUtils.isBlank(auditorRoleName)) {
-            editNaiAuditEnabled = true;
-        }
+	auditorRoleName = getOptionalProperty(AUDITOR_ROLE_NAME_PROPERTY);
+	if (!StringUtils.isBlank(auditorRoleName)) {
+	    editNaiAuditEnabled = true;
+	}
 
-        fieldInputValidationRegexUsername = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY);
-        if (fieldInputValidationRegexUsername == null) {
-            fieldInputValidationRegexUsername = FIELD_INPUT_VALIDATION_REGEX_USERNAME_DEFAULT;
-        }
+	fieldInputValidationRegexUsername = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY);
+	if (fieldInputValidationRegexUsername == null) {
+	    fieldInputValidationRegexUsername = FIELD_INPUT_VALIDATION_REGEX_USERNAME_DEFAULT;
+	}
 
-        fieldInputValidationRegexPassword = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_PASSWORD_PROPERTY);
-        if (fieldInputValidationRegexPassword == null) {
-            fieldInputValidationRegexPassword = FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT;
-        }
+	fieldInputValidationRegexPassword = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_PASSWORD_PROPERTY);
+	if (fieldInputValidationRegexPassword == null) {
+	    fieldInputValidationRegexPassword = FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT;
+	}
 
-        for (int i = 0;; i++) {
-            String keyBase = ATTR_PROPERTY_PREFIX + "." + i + ".";
-            String label = getOptionalProperty(keyBase
-                    + ATTR_PROPERTY_LABEL_SUFFIX);
-            if (label == null) {
-                break;
-            }
-            String ccName = getProperty(keyBase + ATTR_PROPERTY_CCNAME_SUFFIX);
-            String regex = getProperty(keyBase + ATTR_PROPERTY_REGEX_SUFFIX);
+	for (int i = 0;; i++) {
+	    String keyBase = ATTR_PROPERTY_PREFIX + "." + i + ".";
+	    String label = getOptionalProperty(keyBase
+		    + ATTR_PROPERTY_LABEL_SUFFIX);
+	    if (label == null) {
+		break;
+	    }
+	    String ccName = getProperty(keyBase + ATTR_PROPERTY_CCNAME_SUFFIX);
+	    String regex = getProperty(keyBase + ATTR_PROPERTY_REGEX_SUFFIX);
 
-            attributeMap.put(label, ccName);
-            attrRegexMap.put(label, regex);
-            attrLabelsByIndex.put(i, label); // remember the sequence
-        }
+	    attributeMap.put(label, ccName);
+	    attrRegexMap.put(label, regex);
+	    attrLabelsByIndex.put(i, label); // remember the sequence
+	}
     }
 
     public String getAppVersion() {
-        return appVersion;
+	return appVersion;
     }
 
     public String getProgramVersion() {
-        return programVersion;
+	return programVersion;
     }
 
     public Map<String, String> getAttributeMap() {
-        return attributeMap;
+	return attributeMap;
     }
 
     public Set<String> getAttributeNames() {
-        return attributeMap.keySet();
+	return attributeMap.keySet();
     }
 
     public Set<String> getCcAttributeNames() {
-        Set<String> ccAttributeNames = new HashSet<String>();
-        for (String key : attributeMap.keySet()) {
-            ccAttributeNames.add(attributeMap.get(key));
-        }
-        return ccAttributeNames;
+	Set<String> ccAttributeNames = new HashSet<String>();
+	for (String key : attributeMap.keySet()) {
+	    ccAttributeNames.add(attributeMap.get(key));
+	}
+	return ccAttributeNames;
     }
 
     public String getFieldInputValidationRegexUsername() {
-        return fieldInputValidationRegexUsername;
+	return fieldInputValidationRegexUsername;
     }
 
     public String getFieldInputValidationRegexPassword() {
-        return fieldInputValidationRegexPassword;
+	return fieldInputValidationRegexPassword;
     }
 
     public String getFieldInputValidationRegexAttr(String attrLabel) {
 
-        return attrRegexMap.get(attrLabel);
+	return attrRegexMap.get(attrLabel);
     }
 
     public String getAttrLabel(int i) {
-        return attrLabelsByIndex.get(i);
+	return attrLabelsByIndex.get(i);
     }
 
     public String getAuditorRoleName() {
-        return auditorRoleName;
+	return auditorRoleName;
     }
 
     public boolean isEditNaiAuditEnabled() {
-        return editNaiAuditEnabled;
+	return editNaiAuditEnabled;
     }
 
 }

@@ -22,8 +22,8 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 
 /**
- * Controller for requests for and form submissions from the Edit NAI Audit Details
- * screen.
+ * Controller for requests for and form submissions from the Edit NAI Audit
+ * Details screen.
  *
  * @author sbillings
  *
@@ -34,107 +34,117 @@ public class EditNaiAuditDetailsController {
     private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
 
     @Inject
-    public void setVulnNaiAuditDetailsService(VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
-        this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
+    public void setVulnNaiAuditDetailsService(
+	    VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
+	this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     /**
-     * Handles Edit NAI Audit Details form submissions. Updates app in Code Center.
+     * Handles Edit NAI Audit Details form submissions. Updates app in Code
+     * Center.
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-    public String saveNaiAuditDetails(@ModelAttribute("selectedVulnerabilities") NaiAuditViewData formData,
-            @RequestParam String action, ModelMap model) {
+    public String saveNaiAuditDetails(
+	    @ModelAttribute("selectedVulnerabilities") NaiAuditViewData formData,
+	    @RequestParam String action, ModelMap model) {
 
-        logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: " + formData);
-        /*
-         * TODO: Validate input
-         * // Validate input
-         * int i = 0;
-         * for (String attrLabel : app.getAttrNames()) {
-         * InputValidatorEditAppDetails inputValidator = new InputValidatorEditAppDetails(
-         * config);
-         * if (!inputValidator.validateAttributeValue(attrLabel, app
-         * .getAttrValues().get(i++).getValue())) {
-         * String msg = "The value of " + attrLabel + " is invalid.";
-         * logger.error(msg);
-         * model.addAttribute("message", msg);
-         * return "error/programError";
-         * }
-         * }
-         */
-        // TODO: Check: None selected / none in list
-        List<String> selectedRows = formData.getItemList();
-        List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
-        try {
-            fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService.getAppCompVulnCompositeList(formData
-                    .getApplicationId());
-        } catch (AppEditException e) {
-            String msg = "Error getting vulnerability details for application with ID " + formData.getApplicationId() + e.getMessage();
-            logger.error(msg);
-            model.addAttribute("message", msg);
-            return "error/programError";
-        }
-        List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
-        if (selectedRows == null) {
-            String msg = "No rows selected.";
-            logger.warn(msg);
-        } else {
-            // User selected one or more rows; update each one
-            for (String selectedRowKey : selectedRows) {
-                logger.info("Selected vulnerability key: " + selectedRowKey);
-                String[] selectedKeyParts = selectedRowKey.split("\\|");
-                if (selectedKeyParts.length != 3) {
-                    String msg = "selected row key (" + selectedRowKey + ") is invalid; failed extracting IDs.";
-                    logger.error(msg);
-                    model.addAttribute("message", msg);
-                    return "error/programError";
-                }
-                String applicationId = selectedKeyParts[0];
-                String requestId = selectedKeyParts[1];
-                String componentId = selectedKeyParts[2];
-                String vulnerabilityId = selectedKeyParts[3];
-                AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId, componentId, vulnerabilityId);
+	logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: "
+		+ formData);
+	/*
+	 * TODO: Validate input // Validate input int i = 0; for (String
+	 * attrLabel : app.getAttrNames()) { InputValidatorEditAppDetails
+	 * inputValidator = new InputValidatorEditAppDetails( config); if
+	 * (!inputValidator.validateAttributeValue(attrLabel, app
+	 * .getAttrValues().get(i++).getValue())) { String msg = "The value of "
+	 * + attrLabel + " is invalid."; logger.error(msg);
+	 * model.addAttribute("message", msg); return "error/programError"; } }
+	 */
+	// TODO: Check: None selected / none in list
+	List<String> selectedRows = formData.getItemList();
+	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
+	try {
+	    fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService
+		    .getAppCompVulnCompositeList(formData.getApplicationId());
+	} catch (AppEditException e) {
+	    String msg = "Error getting vulnerability details for application with ID "
+		    + formData.getApplicationId() + e.getMessage();
+	    logger.error(msg);
+	    model.addAttribute("message", msg);
+	    return "error/programError";
+	}
+	List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
+	if (selectedRows == null) {
+	    String msg = "No rows selected.";
+	    logger.warn(msg);
+	} else {
+	    // User selected one or more rows; update each one
+	    for (String selectedRowKey : selectedRows) {
+		logger.info("Selected vulnerability key: " + selectedRowKey);
+		String[] selectedKeyParts = selectedRowKey.split("\\|");
+		if (selectedKeyParts.length != 3) {
+		    String msg = "selected row key (" + selectedRowKey
+			    + ") is invalid; failed extracting IDs.";
+		    logger.error(msg);
+		    model.addAttribute("message", msg);
+		    return "error/programError";
+		}
+		String applicationId = selectedKeyParts[0];
+		String requestId = selectedKeyParts[1];
+		String componentId = selectedKeyParts[2];
+		String vulnerabilityId = selectedKeyParts[3];
+		AppCompVulnKey key = new AppCompVulnKey(applicationId,
+			requestId, componentId, vulnerabilityId);
 
-                AppCompVulnComposite selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
-                if (selectedVuln == null) {
-                    String msg = "selected row key (" + selectedRowKey + ") not found in full vulnerabilities list.";
-                    logger.error(msg);
-                    model.addAttribute("message", msg);
-                    return "error/programError";
-                }
+		AppCompVulnComposite selectedVuln = findVuln(
+			fullVulnNaiAuditDetailsList, key);
+		if (selectedVuln == null) {
+		    String msg = "selected row key (" + selectedRowKey
+			    + ") not found in full vulnerabilities list.";
+		    logger.error(msg);
+		    model.addAttribute("message", msg);
+		    return "error/programError";
+		}
 
-                selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(formData.getVulnerabilityNaiAuditStatus());
-                selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(formData.getComment());
-                logger.info("Updating vulnerability with: " + selectedVuln);
-                try {
-                    vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
-                } catch (AppEditException e) {
-                    String msg = "Error updating NAI Audit details: " + e.getMessage();
-                    logger.error(msg);
-                    model.addAttribute("message", msg);
-                    return "error/programError";
-                }
-            }
-        }
-        NaiAuditViewData newValues = new NaiAuditViewData();
-        newValues.setApplicationId(formData.getApplicationId()); // pass appId through to view
-        newValues.setApplicationName(formData.getApplicationName());
-        newValues.setApplicationVersion(formData.getApplicationVersion());
-        model.addAttribute("selectedVulnerabilities", newValues);
+		selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(
+			formData.getVulnerabilityNaiAuditStatus());
+		selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(
+			formData.getComment());
+		logger.info("Updating vulnerability with: " + selectedVuln);
+		try {
+		    vulnNaiAuditDetailsService
+			    .updateVulnNaiAuditDetails(selectedVuln);
+		} catch (AppEditException e) {
+		    String msg = "Error updating NAI Audit details: "
+			    + e.getMessage();
+		    logger.error(msg);
+		    model.addAttribute("message", msg);
+		    return "error/programError";
+		}
+	    }
+	}
+	NaiAuditViewData newValues = new NaiAuditViewData();
+	newValues.setApplicationId(formData.getApplicationId()); // pass appId
+								 // through to
+								 // view
+	newValues.setApplicationName(formData.getApplicationName());
+	newValues.setApplicationVersion(formData.getApplicationVersion());
+	model.addAttribute("selectedVulnerabilities", newValues);
 
-        model.addAttribute("vulnNaiAuditDetailsList", fullVulnNaiAuditDetailsList);
-        return "editNaiAuditDetailsForm";
+	model.addAttribute("vulnNaiAuditDetailsList",
+		fullVulnNaiAuditDetailsList);
+	return "editNaiAuditDetailsForm";
     }
 
-    private AppCompVulnComposite findVuln(List<AppCompVulnComposite> vulnList, AppCompVulnKey key) {
-        for (AppCompVulnComposite vuln : vulnList) {
-            if (vuln.getKey().equals(key)) {
-                return vuln;
-            }
-        }
-        return null;
+    private AppCompVulnComposite findVuln(List<AppCompVulnComposite> vulnList,
+	    AppCompVulnKey key) {
+	for (AppCompVulnComposite vuln : vulnList) {
+	    if (vuln.getKey().equals(key)) {
+		return vuln;
+	    }
+	}
+	return null;
     }
 }

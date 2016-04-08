@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class InputValidatorLogin {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     private AppEditConfigManager config;
 
@@ -40,19 +40,19 @@ public class InputValidatorLogin {
     private Pattern passwordPattern;
 
     public InputValidatorLogin(AppEditConfigManager config) {
-        logger.debug("Constructor passed config");
-        this.config = config;
-        init();
+	logger.debug("Constructor passed config");
+	this.config = config;
+	init();
     }
 
     private void init() {
-        String usernameRegexString = config
-                .getFieldInputValidationRegexUsername();
-        String passwordRegexString = config
-                .getFieldInputValidationRegexPassword();
+	String usernameRegexString = config
+		.getFieldInputValidationRegexUsername();
+	String passwordRegexString = config
+		.getFieldInputValidationRegexPassword();
 
-        usernamePattern = Pattern.compile(usernameRegexString);
-        passwordPattern = Pattern.compile(passwordRegexString);
+	usernamePattern = Pattern.compile(usernameRegexString);
+	passwordPattern = Pattern.compile(passwordRegexString);
     }
 
     /**
@@ -62,7 +62,7 @@ public class InputValidatorLogin {
      * @return
      */
     public boolean validateUsername(String username) {
-        return validate(username, usernamePattern);
+	return validate(username, usernamePattern);
     }
 
     /**
@@ -72,13 +72,13 @@ public class InputValidatorLogin {
      * @return
      */
     public boolean validatePassword(String password) {
-        return validate(password, passwordPattern);
+	return validate(password, passwordPattern);
     }
 
     public static boolean validate(String s, Pattern pattern) {
-        Matcher matcher = pattern.matcher(s);
-        boolean matches = matcher.matches();
-        return matches;
+	Matcher matcher = pattern.matcher(s);
+	boolean matches = matcher.matches();
+	return matches;
     }
 
 }

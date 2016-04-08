@@ -3,19 +3,20 @@ package com.blackducksoftware.tools.appedit;
 public class AppEditException extends Exception {
 
     public AppEditException(String message) {
-        super(message);
+	super(message);
     }
 
     public AppEditException(Throwable cause) {
-        super(cause);
+	super(cause);
     }
 
     public AppEditException(String message, Throwable cause) {
-        super(message, cause);
+	super(message, cause);
     }
 
-    public AppEditException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public AppEditException(String message, Throwable cause,
+	    boolean enableSuppression, boolean writableStackTrace) {
+	super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

@@ -41,20 +41,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 public class AppEditAuthenticationProvider implements AuthenticationProvider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     private UserAuthenticator userAuthenticator;
 
     @Inject
     public void setUserAuthenticator(UserAuthenticator userAuthenticator) {
-        this.userAuthenticator = userAuthenticator;
+	this.userAuthenticator = userAuthenticator;
     }
 
     private InputValidatorLogin inputValidatorLogin;
 
     @Inject
     public void setInputValidatorLogin(InputValidatorLogin inputValidatorLogin) {
-        this.inputValidatorLogin = inputValidatorLogin;
+	this.inputValidatorLogin = inputValidatorLogin;
     }
 
     /**
@@ -66,7 +66,7 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public boolean supports(Class<? extends Object> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+	return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
     /**
@@ -74,35 +74,36 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        try {
-            // User provided data from login page
-            String username = (String) authentication.getPrincipal();
-            String password = (String) authentication.getCredentials();
+	try {
+	    // User provided data from login page
+	    String username = (String) authentication.getPrincipal();
+	    String password = (String) authentication.getCredentials();
 
-            // Validate input
-            if ((!inputValidatorLogin.validateUsername(username))
-                    || (!inputValidatorLogin.validatePassword(password))) {
-                String msg = "Authorization failed: The user name or password provided was not valid. ";
-                logger.error(msg);
-                throw new AuthenticationServiceException(msg);
-            }
+	    // Validate input
+	    if ((!inputValidatorLogin.validateUsername(username))
+		    || (!inputValidatorLogin.validatePassword(password))) {
+		String msg = "Authorization failed: The user name or password provided was not valid. ";
+		logger.error(msg);
+		throw new AuthenticationServiceException(msg);
+	    }
 
-            // Authenticate in Code Center
+	    // Authenticate in Code Center
 
-            AuthenticationResult authResult = userAuthenticator.authenticate(
-                    username, password);
-            if (!authResult.isAuthenticated()) {
-                throw new AuthenticationServiceException(
-                        authResult.getMessage());
-            }
+	    AuthenticationResult authResult = userAuthenticator.authenticate(
+		    username, password);
+	    if (!authResult.isAuthenticated()) {
+		throw new AuthenticationServiceException(
+			authResult.getMessage());
+	    }
 
-            // Grant access
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            authorities.add(new SimpleGrantedAuthority(authResult.getRole().name()));
-            return new UsernamePasswordAuthenticationToken(username, password,
-                    authorities);
-        } catch (Exception e) {
-            throw new AuthenticationServiceException(e.getMessage(), e);
-        }
+	    // Grant access
+	    List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	    authorities.add(new SimpleGrantedAuthority(authResult.getRole()
+		    .name()));
+	    return new UsernamePasswordAuthenticationToken(username, password,
+		    authorities);
+	} catch (Exception e) {
+	    throw new AuthenticationServiceException(e.getMessage(), e);
+	}
     }
 }

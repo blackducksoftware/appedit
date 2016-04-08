@@ -7,7 +7,9 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
 public interface VulnNaiAuditDetailsDao {
-    VulnNaiAuditDetails updateVulnNaiAuditDetails(VulnNaiAuditDetails vunlNaiAuditDetails) throws AppEditException;
+    VulnNaiAuditDetails updateVulnNaiAuditDetails(
+	    VulnNaiAuditDetails vunlNaiAuditDetails) throws AppEditException;
 
-    Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(String applicationId) throws AppEditException;
+    Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
+	    String applicationId) throws AppEditException;
 }

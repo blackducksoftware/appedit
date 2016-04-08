@@ -55,30 +55,30 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
  */
 public class CcAppDao implements AppDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
-            .getName());
+	    .getName());
 
     private AppEditConfigManager config;
 
     @Inject
     public void setConfig(AppEditConfigManager config) {
-        this.config = config;
+	this.config = config;
     }
 
     private ICodeCenterServerWrapper ccsw;
 
     @Inject
     public void setCcsw(ICodeCenterServerWrapper ccsw) {
-        this.ccsw = ccsw;
+	this.ccsw = ccsw;
     }
 
     public CcAppDao() throws Exception {
-        logger.debug("Default constructor called");
+	logger.debug("Default constructor called");
     }
 
     public CcAppDao(AppEditConfigManager config) throws Exception {
-        logger.debug("Constructor passed config; creating CodeCenterServerWrapper");
-        this.config = config;
-        ccsw = new CodeCenterServerWrapper(config);
+	logger.debug("Constructor passed config; creating CodeCenterServerWrapper");
+	this.config = config;
+	ccsw = new CodeCenterServerWrapper(config);
     }
 
     /**
@@ -87,32 +87,32 @@ public class CcAppDao implements AppDao {
      */
     @Override
     public boolean authorizeUser(String appId, String username) {
-        logger.debug("Verifying that user " + username
-                + " has access to app ID " + appId);
-        ApplicationIdToken appIdToken = new ApplicationIdToken();
-        appIdToken.setId(appId);
+	logger.debug("Verifying that user " + username
+		+ " has access to app ID " + appId);
+	ApplicationIdToken appIdToken = new ApplicationIdToken();
+	appIdToken.setId(appId);
 
-        try {
-            List<ApplicationUserPojo> roles = ccsw.getApplicationManager().getAllUsersAssignedToApplication(appId);
-            for (ApplicationUserPojo role : roles) {
-                logger.debug("Found a role for user: "
-                        + role.getUserName() + ": "
-                        + role.getRoleName());
+	try {
+	    List<ApplicationUserPojo> roles = ccsw.getApplicationManager()
+		    .getAllUsersAssignedToApplication(appId);
+	    for (ApplicationUserPojo role : roles) {
+		logger.debug("Found a role for user: " + role.getUserName()
+			+ ": " + role.getRoleName());
 
-                if (username.equals(role.getUserName())) {
-                    logger.info("Access by user " + username + " to app ID "
-                            + appId + " is granted");
-                    return true;
-                }
-            }
-            logger.warn("Access by user " + username + " to app ID " + appId
-                    + " is denied: User is not assigned to application's team.");
-            return false;
-        } catch (CommonFrameworkException e) {
-            logger.error("Error retrieving application roles: "
-                    + e.getMessage());
-            return false;
-        }
+		if (username.equals(role.getUserName())) {
+		    logger.info("Access by user " + username + " to app ID "
+			    + appId + " is granted");
+		    return true;
+		}
+	    }
+	    logger.warn("Access by user " + username + " to app ID " + appId
+		    + " is denied: User is not assigned to application's team.");
+	    return false;
+	} catch (CommonFrameworkException e) {
+	    logger.error("Error retrieving application roles: "
+		    + e.getMessage());
+	    return false;
+	}
     }
 
     /**
@@ -121,13 +121,14 @@ public class CcAppDao implements AppDao {
     @Override
     public AppDetails loadFromName(String appName) throws Exception {
 
-        ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
-        appNameToken.setName(appName);
-        appNameToken.setVersion(config.getAppVersion());
-        ApplicationPojo app = ccsw.getApplicationManager().getApplicationByNameVersion(appName, config.getAppVersion());
-        AppDetails appDetails = deriveAppDetails(app);
+	ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
+	appNameToken.setName(appName);
+	appNameToken.setVersion(config.getAppVersion());
+	ApplicationPojo app = ccsw.getApplicationManager()
+		.getApplicationByNameVersion(appName, config.getAppVersion());
+	AppDetails appDetails = deriveAppDetails(app);
 
-        return appDetails;
+	return appDetails;
     }
 
     /**
@@ -136,28 +137,29 @@ public class CcAppDao implements AppDao {
     @Override
     public AppDetails loadFromId(String appId) throws Exception {
 
-        ApplicationPojo app = ccsw.getApplicationManager().getApplicationById(appId);
-        AppDetails appDetails = deriveAppDetails(app);
+	ApplicationPojo app = ccsw.getApplicationManager().getApplicationById(
+		appId);
+	AppDetails appDetails = deriveAppDetails(app);
 
-        return appDetails;
+	return appDetails;
     }
 
     private AppDetails deriveAppDetails(ApplicationPojo app) throws Exception {
-        AppDetails appDetails = new AppDetails(app.getId(),
-                app.getName());
+	AppDetails appDetails = new AppDetails(app.getId(), app.getName());
 
-        // Look through all custom attrs for this app, and add to appDetails any
-        // attrs (and their values) that the config says we care about
-        // This pulls any existing values from Code Center.
-        Map<String, AttributeValuePojo> attrValues = app.getAttributeValuesByName();
-        for (String attrName : attrValues.keySet()) {
-            AttributeValuePojo attrValue = attrValues.get(attrName);
+	// Look through all custom attrs for this app, and add to appDetails any
+	// attrs (and their values) that the config says we care about
+	// This pulls any existing values from Code Center.
+	Map<String, AttributeValuePojo> attrValues = app
+		.getAttributeValuesByName();
+	for (String attrName : attrValues.keySet()) {
+	    AttributeValuePojo attrValue = attrValues.get(attrName);
 
-            if (config.getCcAttributeNames().contains(attrName)) {
-                appDetails.addCustomAttributeValue(attrName, attrValue);
-            }
-        }
-        return appDetails;
+	    if (config.getCcAttributeNames().contains(attrName)) {
+		appDetails.addCustomAttributeValue(attrName, attrValue);
+	    }
+	}
+	return appDetails;
     }
 
     /**
@@ -166,26 +168,27 @@ public class CcAppDao implements AppDao {
      */
     @Override
     public void update(AppDetails app) throws Exception {
-        logger.info("CcDataSource.update called for app: " + app);
+	logger.info("CcDataSource.update called for app: " + app);
 
-        Set<AttributeValuePojo> changedAttrValues = new TreeSet<>();
-        for (String attrName : config.getCcAttributeNames()) {
-            logger.debug("Will update attribute " + attrName);
-            changedAttrValues.add(app.getCustomAttributeValue(attrName));
-        }
+	Set<AttributeValuePojo> changedAttrValues = new TreeSet<>();
+	for (String attrName : config.getCcAttributeNames()) {
+	    logger.debug("Will update attribute " + attrName);
+	    changedAttrValues.add(app.getCustomAttributeValue(attrName));
+	}
 
-        try {
-            ccsw.getApplicationManager().updateAttributeValues(app.getAppId(), changedAttrValues);
-        } catch (CommonFrameworkException e) {
-            throw new Exception("Error updating app " + app.getAppName() + ": "
-                    + e.getMessage());
-        }
+	try {
+	    ccsw.getApplicationManager().updateAttributeValues(app.getAppId(),
+		    changedAttrValues);
+	} catch (CommonFrameworkException e) {
+	    throw new Exception("Error updating app " + app.getAppName() + ": "
+		    + e.getMessage());
+	}
     }
 
     @Override
     public String toString() {
-        return "CcDataSource [customAttributeNames="
-                + config.getCcAttributeNames() + "]";
+	return "CcDataSource [customAttributeNames="
+		+ config.getCcAttributeNames() + "]";
     }
 
 }

@@ -7,11 +7,14 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 public interface VulnNaiAuditDetailsService {
-    ApplicationPojo getApplicationByNameVersion(String appName, String appVersion) throws AppEditException;
+    ApplicationPojo getApplicationByNameVersion(String appName,
+	    String appVersion) throws AppEditException;
 
     ApplicationPojo getApplicationById(String appId) throws AppEditException;
 
-    List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId) throws AppEditException;
+    List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId)
+	    throws AppEditException;
 
-    AppCompVulnComposite updateVulnNaiAuditDetails(AppCompVulnComposite appCompVulnComposite) throws AppEditException;
+    AppCompVulnComposite updateVulnNaiAuditDetails(
+	    AppCompVulnComposite appCompVulnComposite) throws AppEditException;
 }
