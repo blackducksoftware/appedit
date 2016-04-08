@@ -84,7 +84,7 @@ public class EditNaiAuditDetailsController {
 	    for (String selectedRowKey : selectedRows) {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
 		String[] selectedKeyParts = selectedRowKey.split("\\|");
-		if (selectedKeyParts.length != 3) {
+		if (selectedKeyParts.length != 4) {
 		    String msg = "selected row key (" + selectedRowKey
 			    + ") is invalid; failed extracting IDs.";
 		    logger.error(msg);

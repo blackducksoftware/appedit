@@ -30,39 +30,39 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
     @Override
     public AppCompVulnDetails updateAppCompVulnDetails(
-	    AppCompVulnDetails appCompVulnDetails) {
+	    AppCompVulnDetails appCompVulnDetails) throws AppEditException {
 	logger.debug("updateAppCompVulnDetails(); called with: "
 		+ appCompVulnDetails);
 
-	// RequestVulnerabilityPojo updatedRequestVulnerability = new
-	// RequestVulnerabilityPojo(
-	// appCompVulnDetails.getAppCompVulnKey().getVulnerabilityId(),
-	// appCompVulnDetails.getVulnerabilityName(),
-	// appCompVulnDetails.getVulnerabilityDescription(),
-	// appCompVulnDetails.getVulnerabilitySeverity(),
-	// appCompVulnDetails.getVulnerabilityBaseScore(),
-	// appCompVulnDetails.getVulnerabilityExploitableScore(),
-	// appCompVulnDetails.getVulnerabilityImpactScore(),
-	// appCompVulnDetails.getVulnerabilityDateCreated(),
-	// appCompVulnDetails.getVulnerabilityDateModified(),
-	// appCompVulnDetails.getVulnerabilityDatePublished(),
-	// appCompVulnDetails.getAppCompVulnKey().getRequestId(),
-	// appCompVulnDetails.getVulnerabilityRemediationComments(),
-	// appCompVulnDetails.getVulnerabilityRemediationStatus(),
-	// appCompVulnDetails.getVulnerabilityTargetRemediationDate(),
-	// appCompVulnDetails.getVulnerabilityActualRemediationDate());
-	// ccsw.getRequestManager().updateRequestVulnerability(
-	// updatedRequestVulnerability);
+	RequestVulnerabilityPojo updatedRequestVulnerability = new RequestVulnerabilityPojo(
+		appCompVulnDetails.getAppCompVulnKey().getVulnerabilityId(),
+		appCompVulnDetails.getVulnerabilityName(),
+		appCompVulnDetails.getVulnerabilityDescription(),
+		appCompVulnDetails.getVulnerabilitySeverity(),
+		appCompVulnDetails.getVulnerabilityBaseScore(),
+		appCompVulnDetails.getVulnerabilityExploitableScore(),
+		appCompVulnDetails.getVulnerabilityImpactScore(),
+		appCompVulnDetails.getVulnerabilityDateCreated(),
+		appCompVulnDetails.getVulnerabilityDateModified(),
+		appCompVulnDetails.getVulnerabilityDatePublished(),
+		appCompVulnDetails.getAppCompVulnKey().getRequestId(),
+		appCompVulnDetails.getVulnerabilityRemediationComments(),
+		appCompVulnDetails.getVulnerabilityRemediationStatus(),
+		appCompVulnDetails.getVulnerabilityTargetRemediationDate(),
+		appCompVulnDetails.getVulnerabilityActualRemediationDate());
+	logger.debug("updatedRequestVulnerability: "
+		+ updatedRequestVulnerability);
+	try {
+	    ccsw.getRequestManager().updateRequestVulnerability(
+		    updatedRequestVulnerability);
+	} catch (CommonFrameworkException e) {
+	    throw new AppEditException(
+		    "Error updating Vulnerability metadata for "
+			    + appCompVulnDetails.getAppCompVulnKey() + ": "
+			    + e.getMessage(), e);
+	}
 
-	// Date now = new Date();
-	// return new AppCompVulnDetails(new AppCompVulnKey("test_app_id1",
-	// "test_request_id1", "test_comp_id1", "test_vuln_id1"),
-	// "test comp name1", "test comp version1", "test vuln name1",
-	// "vulnerabilitySeverity", now, "vulnerabilityDescription", now,
-	// now, "test remediation status1",
-	// "vulnerabilityRemediationComments");
-
-	return null;
+	return appCompVulnDetails;
     }
 
     @Override

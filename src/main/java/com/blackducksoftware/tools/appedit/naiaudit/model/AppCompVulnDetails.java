@@ -32,7 +32,7 @@ public class AppCompVulnDetails {
 
     private final String vulnerabilityRemediationStatus;
 
-    private final String vulnerabilityRemediationComments;
+    private String vulnerabilityRemediationComments;
 
     // TODO: This should have a builder
     public AppCompVulnDetails(AppCompVulnKey appCompVulnKey,
@@ -162,6 +162,11 @@ public class AppCompVulnDetails {
 
     public String getVulnerabilityRemediationComments() {
 	return vulnerabilityRemediationComments;
+    }
+
+    public void setVulnerabilityRemediationComments(
+	    String vulnerabilityRemediationComments) {
+	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
     }
 
     @Override

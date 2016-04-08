@@ -1,6 +1,7 @@
 package com.blackducksoftware.tools.appedit.naiaudit.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,20 @@ public class VulnNaiAuditDetailsServiceImpl implements
     @Override
     public AppCompVulnComposite updateVulnNaiAuditDetails(
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
+
+	// Prepend the NAI Audit comment to the Remediation Comment
+	Date now = new Date();
+	String origRemediationComment = appCompVulnComposite.getCcPart()
+		.getVulnerabilityRemediationComments();
+	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
+		.getVulnerabilityNaiAuditComment();
+	String newRemediationComment = "[" + now.toString()
+		+ "NAI Audit Comment: " + incomingNaiAuditComment + "] "
+		+ origRemediationComment;
+
+	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
+		newRemediationComment);
+
 	AppCompVulnDetails ccPart = appCompVulnDetailsDao
 		.updateAppCompVulnDetails(appCompVulnComposite.getCcPart());
 	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
