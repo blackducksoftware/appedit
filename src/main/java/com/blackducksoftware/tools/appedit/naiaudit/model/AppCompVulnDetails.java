@@ -2,6 +2,8 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 import java.util.Date;
 
+import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeverity;
+
 public class AppCompVulnDetails {
     private final AppCompVulnKey appCompVulnKey;
 
@@ -11,7 +13,8 @@ public class AppCompVulnDetails {
 
     private final String vulnerabilityName;
 
-    private final String vulnerabilitySeverity;
+    private final VulnerabilitySeverity vulnerabilitySeverity;
+    private final String vulnerabilitySeverityString;
 
     private final String vulnerabilityBaseScore;
     private final String vulnerabilityExploitableScore;
@@ -34,7 +37,8 @@ public class AppCompVulnDetails {
     // TODO: This should have a builder
     public AppCompVulnDetails(AppCompVulnKey appCompVulnKey,
 	    String componentName, String componentVersion,
-	    String vulnerabilityName, String vulnerabilitySeverity,
+	    String vulnerabilityName,
+	    VulnerabilitySeverity vulnerabilitySeverity,
 
 	    String vulnerabilityBaseScore,
 	    String vulnerabilityExploitableScore,
@@ -52,6 +56,7 @@ public class AppCompVulnDetails {
 	this.componentVersion = componentVersion;
 	this.vulnerabilityName = vulnerabilityName;
 	this.vulnerabilitySeverity = vulnerabilitySeverity;
+	this.vulnerabilitySeverityString = vulnerabilitySeverity.name();
 
 	this.vulnerabilityBaseScore = vulnerabilityBaseScore;
 	this.vulnerabilityExploitableScore = vulnerabilityExploitableScore;
@@ -92,7 +97,7 @@ public class AppCompVulnDetails {
 	return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey
 		+ ", componentName=" + componentName + ", componentVersion="
 		+ componentVersion + ", vulnerabilityName=" + vulnerabilityName
-		+ ", vulnerabilitySeverity=" + vulnerabilitySeverity
+		+ ", vulnerabilitySeverity=" + vulnerabilitySeverityString
 		+ ", vulnerabilityBaseScore=" + vulnerabilityBaseScore
 		+ ", vulnerabilityExploitableScore="
 		+ vulnerabilityExploitableScore + ", vulnerabilityImpactScore="
@@ -111,7 +116,11 @@ public class AppCompVulnDetails {
 		+ vulnerabilityRemediationComments + "]";
     }
 
-    public String getVulnerabilitySeverity() {
+    public String getVulnerabilitySeverityString() {
+	return vulnerabilitySeverityString;
+    }
+
+    public VulnerabilitySeverity getVulnerabilitySeverity() {
 	return vulnerabilitySeverity;
     }
 

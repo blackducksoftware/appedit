@@ -113,7 +113,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 		AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(
 			key, comp.getName(), comp.getVersion(),
 			requestVulnerability.getVulnerabilityName(),
-			requestVulnerability.getSeverity().toString(),
+			requestVulnerability.getSeverity(),
 
 			requestVulnerability.getBaseScore(),
 			requestVulnerability.getExploitabilityScore(),
