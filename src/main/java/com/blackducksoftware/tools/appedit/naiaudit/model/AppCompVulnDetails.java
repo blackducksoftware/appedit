@@ -1,5 +1,7 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+import java.util.Date;
+
 public class AppCompVulnDetails {
     private final AppCompVulnKey appCompVulnKey;
 
@@ -11,13 +13,13 @@ public class AppCompVulnDetails {
 
     private final String vulnerabilitySeverity;
 
-    private final String vulnerabilityPublishDate;
+    private final Date vulnerabilityPublishDate;
 
     private final String vulnerabilityDescription;
 
-    private final String vulnerabilityTargetRemediationDate;
+    private final Date vulnerabilityTargetRemediationDate;
 
-    private final String vulnerabilityActualRemediationDate;
+    private final Date vulnerabilityActualRemediationDate;
 
     private final String vulnerabilityRemediationStatus;
 
@@ -26,10 +28,10 @@ public class AppCompVulnDetails {
     public AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName, String componentVersion,
             String vulnerabilityName,
             String vulnerabilitySeverity,
-            String vulnerabilityPublishDate,
+            Date vulnerabilityPublishDate,
             String vulnerabilityDescription,
-            String vulnerabilityTargetRemediationDate,
-            String vulnerabilityActualRemediationDate,
+            Date vulnerabilityTargetRemediationDate,
+            Date vulnerabilityActualRemediationDate,
             String vulnerabilityRemediationStatus,
             String vulnerabilityRemediationComments) {
         this.appCompVulnKey = appCompVulnKey;
@@ -79,7 +81,7 @@ public class AppCompVulnDetails {
         return vulnerabilitySeverity;
     }
 
-    public String getVulnerabilityPublishDate() {
+    public Date getVulnerabilityPublishDate() {
         return vulnerabilityPublishDate;
     }
 
@@ -87,11 +89,11 @@ public class AppCompVulnDetails {
         return vulnerabilityDescription;
     }
 
-    public String getVulnerabilityTargetRemediationDate() {
+    public Date getVulnerabilityTargetRemediationDate() {
         return vulnerabilityTargetRemediationDate;
     }
 
-    public String getVulnerabilityActualRemediationDate() {
+    public Date getVulnerabilityActualRemediationDate() {
         return vulnerabilityActualRemediationDate;
     }
 

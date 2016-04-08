@@ -1,6 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title><spring:message code="label.naiauditdetailsedit.title" text="Edit NAI Audit Details" /></title>
@@ -41,29 +42,45 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th></th>
+            <!-- 
             <th>Application Name</th>
             <th>Application Version</th>
+            -->
+            <th>Vulnerability Name</th>
             <th>Component Name</th>
             <th>Component Version</th>
-            <th>Vulnerability Name</th>
-            <th>Vulnerability Remediation Status</th>
-            <th>Vulnerability Remediation Comment</th>
-            <th>Vulnerability NAI Audit Status</th>
-            <th>Vulnerability NAI Audit Comment</th>
+            <th>Severity</th>
+            
+            <th>Target Remediation Date</th>
+            <th>Actual Remediation Date</th>
+            <th>Remediation Status</th>
+            <th>Remediation Comment</th>
+            <th>NAI Audit Status</th>
+            <th>NAI Audit Comment</th>
         </tr>
     </thead>
     <tbody>
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
         	<tr>
             	<td><form:checkbox path="itemList" value="${vulnerability.key.asString}" /></td>
+            	<!--
             	<td>${selectedVulnerabilities.applicationName}</td>
             	<td>${selectedVulnerabilities.applicationVersion}</td>
+            	-->
+            	<td>${vulnerability.ccPart.vulnerabilityName}</td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
-            	<td>${vulnerability.ccPart.vulnerabilityName}</td>
+            	<td>${vulnerability.ccPart.vulnerabilitySeverity}</td>
             	
+            	
+            	<td><fmt:formatDate type="date" 
+            		value="${vulnerability.ccPart.vulnerabilityTargetRemediationDate}" /></td>
+            	<td><fmt:formatDate type="date" 
+            		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
+            		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
             	<td>${vulnerability.ccPart.vulnerabilityRemediationComments}</td>
+            	
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>
         	</tr>
