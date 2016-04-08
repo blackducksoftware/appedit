@@ -93,9 +93,10 @@ public class EditNaiAuditDetailsController {
                     return "error/programError";
                 }
                 String applicationId = selectedKeyParts[0];
-                String componentId = selectedKeyParts[1];
-                String vulnerabilityId = selectedKeyParts[2];
-                AppCompVulnKey key = new AppCompVulnKey(applicationId, componentId, vulnerabilityId);
+                String requestId = selectedKeyParts[1];
+                String componentId = selectedKeyParts[2];
+                String vulnerabilityId = selectedKeyParts[3];
+                AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId, componentId, vulnerabilityId);
 
                 AppCompVulnComposite selectedVuln = findVuln(fullVulnNaiAuditDetailsList, key);
                 if (selectedVuln == null) {

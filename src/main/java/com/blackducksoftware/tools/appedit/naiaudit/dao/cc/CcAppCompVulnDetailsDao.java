@@ -46,7 +46,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
         // ccsw.getRequestManager().updateRequestVulnerability(updatedRequestVulnerability );
 
         Date now = new Date();
-        return new AppCompVulnDetails(new AppCompVulnKey("test_app_id1", "test_comp_id1", "test_vuln_id1"),
+        return new AppCompVulnDetails(new AppCompVulnKey("test_app_id1", "test_request_id1", "test_comp_id1", "test_vuln_id1"),
                 "test comp name1", "test comp version1",
                 "test vuln name1",
                 "vulnerabilitySeverity",
@@ -87,7 +87,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
             for (RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
 
                 logger.debug("Processing: Comp: " + comp.getName() + " / " + comp.getVersion() + ": Vuln: " + requestVulnerability.getVulnerabilityName());
-                AppCompVulnKey key = new AppCompVulnKey(applicationId, comp.getId(), requestVulnerability.getVulnerabilityId());
+                AppCompVulnKey key = new AppCompVulnKey(applicationId, requestVulnerability.getRequestId(), comp.getId(), requestVulnerability.getVulnerabilityId());
 
                 AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(key, comp.getName(), comp.getVersion(),
                         requestVulnerability.getVulnerabilityName(),
