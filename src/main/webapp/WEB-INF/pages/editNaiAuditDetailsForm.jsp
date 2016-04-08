@@ -76,7 +76,7 @@ $(document).ready(function() {
             	<td>${vulnerability.ccPart.vulnerabilitySeverity}</td>
             	
             	<td><fmt:formatDate type="date" 
-            		value="${vulnerability.ccPart.vulnerabilityPublishDate}" /></td>
+            		value="${vulnerability.ccPart.vulnerabilityDatePublished}" /></td>
             	<td>${vulnerability.ccPart.vulnerabilityDescription}</td>
             	
             	<td><fmt:formatDate type="date" 

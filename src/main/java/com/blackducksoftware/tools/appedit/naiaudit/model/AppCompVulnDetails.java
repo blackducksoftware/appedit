@@ -13,9 +13,14 @@ public class AppCompVulnDetails {
 
     private final String vulnerabilitySeverity;
 
-    private final Date vulnerabilityPublishDate;
+    private final Date vulnerabilityDatePublished;
 
     private final String vulnerabilityDescription;
+//    private final String vulnerabilityBaseScore;
+//    private final String vulnerabilityExploitableScore;
+//    private final String vulnerabilityImpactScore;
+//    private final Date vulnerabilityDateCreated;
+//    private final Date vulnerabilityDateModified;
 
     private final Date vulnerabilityTargetRemediationDate;
 
@@ -28,7 +33,7 @@ public class AppCompVulnDetails {
     public AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName, String componentVersion,
             String vulnerabilityName,
             String vulnerabilitySeverity,
-            Date vulnerabilityPublishDate,
+            Date vulnerabilityDatePublished,
             String vulnerabilityDescription,
             Date vulnerabilityTargetRemediationDate,
             Date vulnerabilityActualRemediationDate,
@@ -39,7 +44,7 @@ public class AppCompVulnDetails {
         this.componentVersion = componentVersion;
         this.vulnerabilityName = vulnerabilityName;
         this.vulnerabilitySeverity = vulnerabilitySeverity;
-        this.vulnerabilityPublishDate = vulnerabilityPublishDate;
+        this.vulnerabilityDatePublished = vulnerabilityDatePublished;
         this.vulnerabilityDescription = vulnerabilityDescription;
         this.vulnerabilityTargetRemediationDate = vulnerabilityTargetRemediationDate;
         this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
@@ -71,7 +76,7 @@ public class AppCompVulnDetails {
     public String toString() {
         return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey + ", componentName=" + componentName + ", componentVersion=" + componentVersion
                 + ", vulnerabilityName=" + vulnerabilityName + ", vulnerabilitySeverity=" + vulnerabilitySeverity + ", vulnerabilityPublishDate="
-                + vulnerabilityPublishDate + ", vulnerabilityDescription=" + vulnerabilityDescription + ", vulnerabilityTargetRemediationDate="
+                + vulnerabilityDatePublished + ", vulnerabilityDescription=" + vulnerabilityDescription + ", vulnerabilityTargetRemediationDate="
                 + vulnerabilityTargetRemediationDate + ", vulnerabilityActualRemediationDate=" + vulnerabilityActualRemediationDate
                 + ", vulnerabilityRemediationStatus=" + vulnerabilityRemediationStatus + ", vulnerabilityRemediationComments="
                 + vulnerabilityRemediationComments + "]";
@@ -81,8 +86,8 @@ public class AppCompVulnDetails {
         return vulnerabilitySeverity;
     }
 
-    public Date getVulnerabilityPublishDate() {
-        return vulnerabilityPublishDate;
+    public Date getVulnerabilityDatePublished() {
+        return vulnerabilityDatePublished;
     }
 
     public String getVulnerabilityDescription() {

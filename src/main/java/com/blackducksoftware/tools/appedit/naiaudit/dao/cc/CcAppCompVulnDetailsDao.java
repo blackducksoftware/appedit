@@ -31,19 +31,20 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
     @Override
     public AppCompVulnDetails updateAppCompVulnDetails(AppCompVulnDetails appCompVulnDetails) {
-
-        // RequestVulnerabilityPojo updatedRequestVulnerability = new
-        // RequestVulnerabilityPojo(appCompVulnDetails.getAppCompVulnKey().getVulnerabilityId(),
-        // appCompVulnDetails.getVulnerabilityName(), appCompVulnDetails.getVulnerabilityDescription(),
-        // appCompVulnDetails.getVulnerabilityBaseScore(), appCompVulnDetails.getVulnerabilityExploitableScore(),
-        // appCompVulnDetails.getVulnerabilityImpactScore(), appCompVulnDetails.getVulnerabilityDateCreated(),
-        // appCompVulnDetails.getVulnerabilityDateModified(), appCompVulnDetails.getVulnerabilityDatePublished(),
-        // appCompVulnDetails.getAppCompVulnKey().getRequestId,
-        // appCompVulnDetails.getVulnerabilityRemediationComments(),
-        // appCompVulnDetails.getVulnerabilityRemediationStatus(),
-        // appCompVulnDetails.getVulnerabilityTargetRemediationDate(),
-        // appCompVulnDetails.getVulnerabilityActualRemediationDate());
-        // ccsw.getRequestManager().updateRequestVulnerability(updatedRequestVulnerability );
+    	logger.debug("updateAppCompVulnDetails(); called with: " + appCompVulnDetails);
+    	
+//         RequestVulnerabilityPojo updatedRequestVulnerability = new
+//         RequestVulnerabilityPojo(appCompVulnDetails.getAppCompVulnKey().getVulnerabilityId(),
+//         appCompVulnDetails.getVulnerabilityName(), appCompVulnDetails.getVulnerabilityDescription(),
+//         appCompVulnDetails.getVulnerabilityBaseScore(), appCompVulnDetails.getVulnerabilityExploitableScore(),
+//         appCompVulnDetails.getVulnerabilityImpactScore(), appCompVulnDetails.getVulnerabilityDateCreated(),
+//         appCompVulnDetails.getVulnerabilityDateModified(), appCompVulnDetails.getVulnerabilityDatePublished(),
+//         appCompVulnDetails.getAppCompVulnKey().getRequestId,
+//         appCompVulnDetails.getVulnerabilityRemediationComments(),
+//         appCompVulnDetails.getVulnerabilityRemediationStatus(),
+//         appCompVulnDetails.getVulnerabilityTargetRemediationDate(),
+//         appCompVulnDetails.getVulnerabilityActualRemediationDate());
+//         ccsw.getRequestManager().updateRequestVulnerability(updatedRequestVulnerability );
 
         Date now = new Date();
         return new AppCompVulnDetails(new AppCompVulnKey("test_app_id1", "test_request_id1", "test_comp_id1", "test_vuln_id1"),
