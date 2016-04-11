@@ -33,7 +33,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	    VulnNaiAuditDetails vulnNaiAuditDetails) {
 
 	String SQL = "INSERT INTO vuln_nai_audit (application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) "
-		+ "VALUES (:appId, :requestId, :compId, :vulnId, naiAuditStatus, naiAuditComment)";
+		+ "VALUES (:appId, :requestId, :compId, :vulnId, :naiAuditStatus, :naiAuditComment)";
 	Map<String, String> namedParameters = new HashMap<>();
 	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
 		.getApplicationId());
@@ -86,7 +86,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
     public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
 	    String applicationId) {
 
-	String SQL = "SELECT request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit "
+	String SQL = "SELECT application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit "
 		+ "WHERE application_id = :appId";
 	SqlParameterSource namedParameters = new MapSqlParameterSource("appId",
 		applicationId);

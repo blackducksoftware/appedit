@@ -52,6 +52,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
 		auditDetails = auditParts.get(key);
 	    } else {
 		auditDetails = new VulnNaiAuditDetails(key, "", "");
+		vulnNaiAuditDetailsDao.insertVulnNaiAuditDetails(auditDetails);
 	    }
 	    AppCompVulnComposite appCompVulnComposite = new AppCompVulnComposite(
 		    key, ccParts.get(key), auditDetails);
