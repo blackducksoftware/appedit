@@ -71,11 +71,19 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
 		.getVulnerabilityNaiAuditComment();
 	String newRemediationComment = "[" + now.toString()
-		+ "NAI Audit Comment: " + incomingNaiAuditComment + "] "
+		+ ": NAI Audit Comment: " + incomingNaiAuditComment + "] "
 		+ origRemediationComment;
+
+	// append nai comment to previous nai comment
+	String newNaiAuditComment = "[" + now.toString() + ": "
+		+ incomingNaiAuditComment + "] ";
 
 	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
 		newRemediationComment);
+
+	// append nai comment to previous nai comment
+	appCompVulnComposite.getAuditPart().setVulnerabilityNaiAuditComment(
+		newNaiAuditComment);
 
 	AppCompVulnDetails ccPart = appCompVulnDetailsDao
 		.updateAppCompVulnDetails(appCompVulnComposite.getCcPart());

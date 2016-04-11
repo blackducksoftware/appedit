@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+ 
+ 	<bean id="vulnNaiAuditDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://int-cc-dev.blackducksoftware.com:55433/bds_catalog" />
+		<property name="username" value="blackduck" />
+    	<property name="password" value="mallard" /> 
+	</bean>
+	
+	<bean  id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  
+   		<constructor-arg ref="vulnNaiAuditDS"></constructor-arg> 
+	</bean> 
+
+</beans>

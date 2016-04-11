@@ -8,3 +8,4 @@ AppEdit.log
 .classpath
 *.swp
 t_dep.txt
+/target/

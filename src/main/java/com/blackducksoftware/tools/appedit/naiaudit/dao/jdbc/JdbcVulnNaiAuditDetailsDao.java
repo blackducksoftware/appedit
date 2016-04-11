@@ -1,10 +1,14 @@
 package com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
@@ -14,35 +18,91 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
+    private NamedParameterJdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+    }
+
     public JdbcVulnNaiAuditDetailsDao() {
 
+    }
+
+    @Override
+    public VulnNaiAuditDetails insertVulnNaiAuditDetails(
+	    VulnNaiAuditDetails vulnNaiAuditDetails) {
+
+	String SQL = "INSERT INTO vuln_nai_audit (application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) "
+		+ "VALUES (:appId, :requestId, :compId, :vulnId, naiAuditStatus, naiAuditComment)";
+	Map<String, String> namedParameters = new HashMap<>();
+	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getApplicationId());
+	namedParameters.put("requestId", vulnNaiAuditDetails
+		.getAppCompVulnKey().getRequestId());
+	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getComponentId());
+	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getVulnerabilityId());
+	namedParameters.put("naiAuditStatus",
+		vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
+	namedParameters.put("naiAuditComment",
+		vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
+
+	jdbcTemplate.update(SQL, namedParameters);
+	logger.debug("Inserted Vuln NAI Audit Details Record for: "
+		+ vulnNaiAuditDetails);
+
+	return vulnNaiAuditDetails;
     }
 
     @Override
     public VulnNaiAuditDetails updateVulnNaiAuditDetails(
 	    VulnNaiAuditDetails vulnNaiAuditDetails) {
 
-	return new VulnNaiAuditDetails(new AppCompVulnKey("test_applicationId",
-		"test_requestId", "test_componentId", "test_vulnerabilityId"),
-		"test_naiAuditStatus", "test_naiAuditComment");
+	String SQL = "UPDATE vuln_nai_audit SET nai_audit_status=:naiAuditStatus, nai_audit_comment=:naiAuditComment "
+		+ "WHERE application_id = :appId AND request_id = :requestId AND component_id = :compId AND vulnerability_id = :vulnId";
+	Map<String, String> namedParameters = new HashMap<>();
+	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getApplicationId());
+	namedParameters.put("requestId", vulnNaiAuditDetails
+		.getAppCompVulnKey().getRequestId());
+	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getComponentId());
+	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
+		.getVulnerabilityId());
+	namedParameters.put("naiAuditStatus",
+		vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
+	namedParameters.put("naiAuditComment",
+		vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
+
+	jdbcTemplate.update(SQL, namedParameters);
+	logger.debug("Updated Vuln NAI Audit Details Record for: "
+		+ vulnNaiAuditDetails);
+
+	return vulnNaiAuditDetails;
     }
 
     @Override
     public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
 	    String applicationId) {
+
+	String SQL = "SELECT request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit "
+		+ "WHERE application_id = :appId";
+	SqlParameterSource namedParameters = new MapSqlParameterSource("appId",
+		applicationId);
+	logger.debug("Getting vulnNaiAuditDetails for appID " + applicationId
+		+ "; SQL: " + SQL);
+	List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = (List<VulnNaiAuditDetails>) jdbcTemplate
+		.query(SQL, namedParameters, new VulnNaiAuditDetailsMapper());
+
+	logger.debug("Read " + vulnNaiAuditDetailsList.size()
+		+ " vulnNaiAuditDetail records.");
 	Map<AppCompVulnKey, VulnNaiAuditDetails> vulnNaiAuditDetailsMap = new HashMap<>();
-	AppCompVulnKey key = new AppCompVulnKey("test_applicationId1",
-		"test_requestId1", "test_componentId1", "test_vulnerabilityId1");
-	VulnNaiAuditDetails vulnNaiAuditDetails = new VulnNaiAuditDetails(key,
-		"test_naiAuditStatus1", "test_naiAuditComment1");
-	vulnNaiAuditDetailsMap.put(key, vulnNaiAuditDetails);
-
-	key = new AppCompVulnKey("test_applicationId2", "test_requestId2",
-		"test_componentId2", "test_vulnerabilityId2");
-	vulnNaiAuditDetails = new VulnNaiAuditDetails(key,
-		"test_naiAuditStatus2", "test_naiAuditComment2");
-	vulnNaiAuditDetailsMap.put(key, vulnNaiAuditDetails);
-
+	for (VulnNaiAuditDetails vulnNaiAuditDetails : vulnNaiAuditDetailsList) {
+	    logger.info("VulnNaiAuditDetails: " + vulnNaiAuditDetails);
+	    vulnNaiAuditDetailsMap.put(vulnNaiAuditDetails.getAppCompVulnKey(),
+		    vulnNaiAuditDetails);
+	}
 	return vulnNaiAuditDetailsMap;
     }
 

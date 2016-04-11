@@ -16,6 +16,7 @@
 	<mvc:annotation-driven />
 	
 	<import resource="AppEditApplicationContextSecurity.xml"/> 
+	<import resource="AppEditDatasource.xml" />
 
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="i18n/messages"/>
@@ -42,6 +43,7 @@
     </bean>
  
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao">
+    	<property name="jdbcTemplate" ref="namedParameterJdbcTemplate" />
     </bean>  
     <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao">
     	<constructor-arg ref="ccsw" />
