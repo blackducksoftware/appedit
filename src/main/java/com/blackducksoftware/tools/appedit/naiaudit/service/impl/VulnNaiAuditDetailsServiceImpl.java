@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
+import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditChangeHistoryDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
+import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditChange;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
@@ -36,6 +38,13 @@ public class VulnNaiAuditDetailsServiceImpl implements
     public void setAppCompVulnDetailsDao(
 	    AppCompVulnDetailsDao appCompVulnDetailsDao) {
 	this.appCompVulnDetailsDao = appCompVulnDetailsDao;
+    }
+
+    private VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao;
+
+    public void setVulnNaiAuditChangeHistoryDao(
+	    VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao) {
+	this.vulnNaiAuditChangeHistoryDao = vulnNaiAuditChangeHistoryDao;
     }
 
     @Override
@@ -91,6 +100,14 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
 		.updateVulnNaiAuditDetails(appCompVulnComposite.getAuditPart());
 
+	VulnNaiAuditChange vulnNaiAuditChange = new VulnNaiAuditChange(
+		new Date(), appCompVulnComposite.getKey(), "no idea",
+		"no idea", "no idea", "no idea", appCompVulnComposite
+			.getAuditPart().getVulnerabilityNaiAuditStatus(),
+		appCompVulnComposite.getAuditPart()
+			.getVulnerabilityNaiAuditComment());
+	insertVulnNaiAuditChange(vulnNaiAuditChange);
+
 	return new AppCompVulnComposite(ccPart.getAppCompVulnKey(), ccPart,
 		auditPart);
     }
@@ -108,6 +125,12 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	    throws AppEditException {
 	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId);
 	return app;
+    }
+
+    private void insertVulnNaiAuditChange(VulnNaiAuditChange vulnNaiAuditChange)
+	    throws AppEditException {
+	vulnNaiAuditChangeHistoryDao
+		.insertVulnNaiAuditChange(vulnNaiAuditChange);
     }
 
 }

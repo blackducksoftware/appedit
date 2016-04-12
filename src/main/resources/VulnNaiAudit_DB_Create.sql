@@ -3,7 +3,22 @@ CREATE TABLE vuln_nai_audit (
 	request_id VARCHAR(32) NOT NULL,
 	component_id VARCHAR(32) NOT NULL,
 	vulnerability_id VARCHAR(32) NOT NULL,
-	nai_audit_status VARCHAR(32),
-	nai_audit_comment VARCHAR(512)
+	nai_audit_status VARCHAR(32) NOT NULL,
+	nai_audit_comment VARCHAR(512) NOT NULL
 );
-commit;
+
+CREATE TABLE vuln_nai_audit_change_history (
+	change_time TIMESTAMP NOT NULL,
+	application_id VARCHAR(32) NOT NULL,
+	request_id VARCHAR(32) NOT NULL,
+	component_id VARCHAR(32) NOT NULL,
+	vulnerability_id VARCHAR(32) NOT NULL,
+	cc_user_id VARCHAR(32) NOT NULL,
+	cc_user_name VARCHAR(32) NOT NULL,
+	old_nai_audit_status VARCHAR(32) NOT NULL,
+	old_nai_audit_comment VARCHAR(512) NOT NULL,
+	new_nai_audit_status VARCHAR(32) NOT NULL,
+	new_nai_audit_comment VARCHAR(512) NOT NULL
+);
+
+

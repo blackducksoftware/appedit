@@ -40,21 +40,15 @@
     <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao">
     	<constructor-arg ref="ccsw" />
     </bean>
+    <bean id="vulnNaiAuditChangeHistoryDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditChangeHistoryDao">
+    	<property name="jdbcTemplate" ref="namedParameterJdbcTemplate" />
+    </bean> 
     
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton">
     	<property name="appCompVulnDetailsDao" ref="appCompVulnDetailsDao" />
     	<property name="vulnNaiAuditDetailsDao" ref="vulnNaiAuditDetailsDao" />
+    	<property name="vulnNaiAuditChangeHistoryDao" ref="vulnNaiAuditChangeHistoryDao" />
     </bean>
-    
-<!--
-    <bean id="editAppDetailsController" class="com.blackducksoftware.tools.appedit.web.controller.EditAppDetailsController" >
-    	<property name="vulnNaiAuditDetailsService" ref="vulnNaiAuditDetailsService" />
-    </bean>
-    
-    <bean id="editNaiAuditDetailsController" class="com.blackducksoftware.tools.appedit.web.controller.EditNaiAuditDetailsController" >
-    	<property name="vulnNaiAuditDetailsService" ref="vulnNaiAuditDetailsService" />
-    </bean>
--->
       
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

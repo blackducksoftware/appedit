@@ -1,2 +1,2 @@
 drop table vuln_nai_audit;
-commit;
+drop table vuln_nai_audit_change_history;

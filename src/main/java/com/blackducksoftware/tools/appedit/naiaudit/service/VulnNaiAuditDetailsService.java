@@ -17,4 +17,5 @@ public interface VulnNaiAuditDetailsService {
 
     AppCompVulnComposite updateVulnNaiAuditDetails(
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException;
+
 }
