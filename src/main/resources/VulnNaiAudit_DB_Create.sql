@@ -8,7 +8,7 @@ CREATE TABLE vuln_nai_audit (
 );
 
 CREATE TABLE vuln_nai_audit_change_history (
-	change_time TIMESTAMP NOT NULL,
+	change_time timestamp with time zone NOT NULL,
 	application_id VARCHAR(32) NOT NULL,
 	request_id VARCHAR(32) NOT NULL,
 	component_id VARCHAR(32) NOT NULL,
