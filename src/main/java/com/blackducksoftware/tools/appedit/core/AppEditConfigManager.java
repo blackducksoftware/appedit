@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.commonframework.core.config.ConfigurationManager;
+import com.blackducksoftware.tools.commonframework.core.config.ConfigurationPassword;
 
 /**
  * Configuration Manager for the AppEdit application.
@@ -39,6 +40,13 @@ import com.blackducksoftware.tools.commonframework.core.config.ConfigurationMana
  * Not thread-safe, so keep references local.
  */
 public class AppEditConfigManager extends ConfigurationManager {
+    private static final String DB_PASSWORD_DEFAULT = "mallard";
+
+    private static final String DB_USER_DEFAULT = "blackduck";
+
+    private static final String DB_PORT_DEFAULT = "55433";
+    private static final String DB_DATABASE_DEFAULT = "bds_catalog";
+
     private static final String ATTR_PROPERTY_REGEX_SUFFIX = "regex";
 
     private static final String ATTR_PROPERTY_CCNAME_SUFFIX = "ccname";
@@ -61,6 +69,12 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     private static final String FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT = ".+";
 
+    private static final String DB_SERVER_PROPERTY = "db.server";
+    private static final String DB_PORT_PROPERTY = "db.port";
+    private static final String DB_USER_PROPERTY = "db.user";
+    private static final String DB_PASSWORD_PROPERTY_PREFIX = "db";
+    private static final String DB_DATABASE_PROPERTY = "db.database";
+
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
@@ -81,6 +95,12 @@ public class AppEditConfigManager extends ConfigurationManager {
     private Map<String, String> attrRegexMap = new HashMap<String, String>();
 
     private Map<Integer, String> attrLabelsByIndex = new HashMap<Integer, String>();
+
+    private String dbServer;
+    private String dbDatabase = DB_DATABASE_DEFAULT;
+    private String dbPort = DB_PORT_DEFAULT;
+    private String dbUser = DB_USER_DEFAULT;
+    private String dbPassword = DB_PASSWORD_DEFAULT;
 
     public AppEditConfigManager() {
 	super();
@@ -107,6 +127,42 @@ public class AppEditConfigManager extends ConfigurationManager {
 	} catch (Throwable t) {
 	    log.debug("Could not determine version for this program", t);
 	}
+
+	dbServer = getProperty(DB_SERVER_PROPERTY);
+	String propValue = getOptionalProperty(DB_PORT_PROPERTY);
+	if (propValue != null) {
+	    dbPort = propValue;
+	}
+	propValue = getOptionalProperty(DB_DATABASE_PROPERTY);
+	if (propValue != null) {
+	    dbDatabase = propValue;
+	}
+	propValue = getOptionalProperty(DB_USER_PROPERTY);
+	if (propValue != null) {
+	    dbUser = propValue;
+	}
+
+	ConfigurationPassword configurationPassword = ConfigurationPassword
+		.createFromProperty(getProps(), DB_PASSWORD_PROPERTY_PREFIX); // Read
+									      // the
+									      // value
+									      // of
+									      // db.password
+	if (configurationPassword.getPlainText() != null) {
+	    dbPassword = configurationPassword.getPlainText(); // get the plain
+							       // text value of
+							       // the password
+							       // (even if it
+							       // was encrypted
+							       // in the
+							       // property file)
+	}
+
+	log.debug("TEMP: dbServer: " + dbServer);
+	log.debug("TEMP: dbPort: " + dbPort);
+	log.debug("TEMP: dbDatabase: " + dbDatabase);
+	log.debug("TEMP: dbUser: " + dbUser);
+	log.debug("TEMP: dbPassword: " + dbPassword);
 
 	appVersion = getOptionalProperty(APP_VERSION_PROPERTY);
 	if (appVersion == null) {
@@ -142,6 +198,26 @@ public class AppEditConfigManager extends ConfigurationManager {
 	    attrRegexMap.put(label, regex);
 	    attrLabelsByIndex.put(i, label); // remember the sequence
 	}
+    }
+
+    public String getDbServer() {
+	return dbServer;
+    }
+
+    public String getDbDatabase() {
+	return dbDatabase;
+    }
+
+    public String getDbPort() {
+	return dbPort;
+    }
+
+    public String getDbUser() {
+	return dbUser;
+    }
+
+    public String getDbPassword() {
+	return dbPassword;
     }
 
     public String getAppVersion() {

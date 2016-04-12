@@ -6,7 +6,9 @@
        ">
  
     
-
+	<bean id="config" class="com.blackducksoftware.tools.appedit.core.AppEditConfigManager" >
+    	<constructor-arg value="#{systemEnvironment['HOME']}/appedit.properties" />
+    </bean>
 	
 	<import resource="AppEditDatasource.xml" />
 
@@ -15,9 +17,7 @@
         <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>
 
-    <bean id="config" class="com.blackducksoftware.tools.appedit.core.AppEditConfigManager" >
-    	<constructor-arg value="#{systemEnvironment['HOME']}/appedit.properties" />
-    </bean>
+    
     <bean id="ccsw" class="com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper" >
     	<constructor-arg ref="config" />
     </bean>
