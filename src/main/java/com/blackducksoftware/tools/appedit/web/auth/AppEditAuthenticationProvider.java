@@ -104,8 +104,11 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
 	    List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 	    authorities.add(new SimpleGrantedAuthority(authResult.getRole()
 		    .name()));
-	    return new UsernamePasswordAuthenticationToken(username, password,
-		    authorities);
+	    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+		    username, password, authorities);
+	    auth.setDetails(authResult);
+
+	    return auth;
 	} catch (Exception e) {
 	    throw new AuthenticationServiceException(e.getMessage(), e);
 	}

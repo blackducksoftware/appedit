@@ -6,6 +6,8 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -81,6 +83,14 @@ public class EditNaiAuditDetailsController {
 	    logger.warn(msg);
 	} else {
 	    // User selected one or more rows; update each one
+
+	    Authentication auth = SecurityContextHolder.getContext()
+		    .getAuthentication();
+	    // AuthenticationResult authResult = (AuthenticationResult)
+	    // (auth.getDetails());
+	    String currentUser = auth.getName();
+	    logger.info("User: " + currentUser);
+
 	    for (String selectedRowKey : selectedRows) {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
 		String[] selectedKeyParts = selectedRowKey.split("\\|");
@@ -112,6 +122,7 @@ public class EditNaiAuditDetailsController {
 			formData.getVulnerabilityNaiAuditStatus());
 		selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(
 			formData.getComment());
+		selectedVuln.getAuditPart().setUsername(currentUser);
 		logger.info("Updating vulnerability with: " + selectedVuln);
 		try {
 		    vulnNaiAuditDetailsService

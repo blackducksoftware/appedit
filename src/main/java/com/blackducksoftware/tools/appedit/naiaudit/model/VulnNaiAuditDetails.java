@@ -1,11 +1,12 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 public class VulnNaiAuditDetails {
-    private AppCompVulnKey appCompVulnKey;
+    private final AppCompVulnKey appCompVulnKey;
 
     private String vulnerabilityNaiAuditStatus;
 
     private String vulnerabilityNaiAuditComment;
+    private String username;
 
     public VulnNaiAuditDetails(AppCompVulnKey appCompVulnKey,
 	    String vulerabilityNaiAuditStatus,
@@ -19,8 +20,12 @@ public class VulnNaiAuditDetails {
 	return appCompVulnKey;
     }
 
-    public void setAppCompVulnKey(AppCompVulnKey appCompVulnKey) {
-	this.appCompVulnKey = appCompVulnKey;
+    public String getUsername() {
+	return username;
+    }
+
+    public void setUsername(String username) {
+	this.username = username;
     }
 
     public String getVulnerabilityNaiAuditStatus() {
@@ -47,7 +52,7 @@ public class VulnNaiAuditDetails {
 		+ ", vulnerabilityNaiAuditStatus="
 		+ vulnerabilityNaiAuditStatus
 		+ ", vulnerabilityNaiAuditComment="
-		+ vulnerabilityNaiAuditComment + "]";
+		+ vulnerabilityNaiAuditComment + ", username=" + username + "]";
     }
 
     @Override

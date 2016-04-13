@@ -26,17 +26,31 @@ package com.blackducksoftware.tools.appedit.core;
  *
  */
 public class AuthenticationResult {
+    private final String userId;
+    private final String username;
+
     private final boolean authenticated;
 
     private final String message;
 
     private final Role role;
 
-    public AuthenticationResult(boolean authenticated, String message, Role role) {
+    public AuthenticationResult(String userId, String username,
+	    boolean authenticated, String message, Role role) {
 	super();
+	this.userId = userId;
+	this.username = username;
 	this.authenticated = authenticated;
 	this.message = message;
 	this.role = role;
+    }
+
+    public String getUserId() {
+	return userId;
+    }
+
+    public String getUsername() {
+	return username;
     }
 
     /**

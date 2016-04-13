@@ -82,7 +82,8 @@ public class CcUserAuthenticator implements UserAuthenticator {
 	} catch (Exception e1) {
 	    String message = "Authentication failed: " + e1.getMessage();
 	    logger.info(message);
-	    return new AuthenticationResult(false, message, Role.ROLE_NONE);
+	    return new AuthenticationResult(null, null, false, message,
+		    Role.ROLE_NONE);
 	}
 
 	CodeCenterServerWrapper userSpecificCcsw = null;
@@ -93,7 +94,8 @@ public class CcUserAuthenticator implements UserAuthenticator {
 	} catch (Exception e) {
 	    String message = "Authentication failed: " + e.getMessage();
 	    logger.info(message);
-	    return new AuthenticationResult(false, message, Role.ROLE_NONE);
+	    return new AuthenticationResult(null, null, false, message,
+		    Role.ROLE_NONE);
 	}
 
 	// Authorize by performing an operation this user should be able to do
@@ -103,11 +105,13 @@ public class CcUserAuthenticator implements UserAuthenticator {
 	} catch (CommonFrameworkException e) {
 	    String message = "Authorization failed: " + e.getMessage();
 	    logger.info(message);
-	    return new AuthenticationResult(false, message, Role.ROLE_NONE);
+	    return new AuthenticationResult(null, null, false, message,
+		    Role.ROLE_NONE);
 	} catch (SOAPFaultException e) {
 	    String message = "Authorization failed: " + e.getMessage();
 	    logger.info(message);
-	    return new AuthenticationResult(false, message, Role.ROLE_NONE);
+	    return new AuthenticationResult(null, null, false, message,
+		    Role.ROLE_NONE);
 	}
 
 	// Now see if this user is an auditor
@@ -118,19 +122,19 @@ public class CcUserAuthenticator implements UserAuthenticator {
 	    String message = "Error attempting to authorize this user an an auditor: "
 		    + e.getMessage() + "; Authorizing this user as an end user";
 	    logger.warn(message);
-	    return new AuthenticationResult(true,
+	    return new AuthenticationResult(user.getId(), username, true,
 		    "Login as User was successful.", Role.ROLE_USER);
 	}
 	if (isAuditor) {
 	    logger.info("User " + username
 		    + " has been authorized as an Auditor");
-	    return new AuthenticationResult(true,
+	    return new AuthenticationResult(user.getId(), username, true,
 		    "Login as Auditor was successful.", Role.ROLE_AUDITOR);
 	}
 
 	logger.info("User " + username + " has been authorized as a User");
-	return new AuthenticationResult(true, "Login as User was successful.",
-		Role.ROLE_USER);
+	return new AuthenticationResult(user.getId(), username, true,
+		"Login as User was successful.", Role.ROLE_USER);
     }
 
     private boolean userIsAuditor(String username,
