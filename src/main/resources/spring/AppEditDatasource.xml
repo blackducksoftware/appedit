@@ -5,11 +5,6 @@
  
  	<bean id="vulnNaiAuditDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<!--  
-		<property name="url" value="jdbc:postgresql://int-cc-dev.blackducksoftware.com:55433/bds_catalog" />
-		<property name="username" value="blackduck" />
-    	<property name="password" value="mallard" /> 
-    	-->
     	<property name="url" value="jdbc:postgresql://#{config.dbServer}:#{config.dbPort}/#{config.dbDatabase}" />
 		<property name="username" value="#{config.dbUser}" />
     	<property name="password" value="#{config.dbPassword}" /> 
