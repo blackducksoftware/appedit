@@ -36,6 +36,8 @@ public class AppEditConfigManagerTest {
 	props.setProperty("cc.password", "test password");
 	props.setProperty("app.version", "Unspecified");
 
+	props.setProperty("db.server", "test db server");
+
 	props.setProperty("attr.0.label", "CustomAttr name 1");
 	props.setProperty("attr.0.ccname", "CC attr 1");
 	props.setProperty("attr.0.regex", ".+");
@@ -71,6 +73,8 @@ public class AppEditConfigManagerTest {
 	props.setProperty("cc.user.name", "test user");
 	props.setProperty("cc.password", "test password");
 	props.setProperty("app.version", "Unspecified");
+
+	props.setProperty("db.server", "test db server");
 
 	props.setProperty("attr.0.label", "CustomAttr name 1");
 	props.setProperty("attr.0.ccname", "CC attr 1");

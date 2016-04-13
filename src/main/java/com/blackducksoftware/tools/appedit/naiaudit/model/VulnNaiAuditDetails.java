@@ -2,6 +2,8 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 public class VulnNaiAuditDetails {
     private final AppCompVulnKey appCompVulnKey;
+    private final String origNaiAuditStatus;
+    private final String origNaiAuditComment;
 
     private String vulnerabilityNaiAuditStatus;
 
@@ -9,11 +11,13 @@ public class VulnNaiAuditDetails {
     private String username;
 
     public VulnNaiAuditDetails(AppCompVulnKey appCompVulnKey,
-	    String vulerabilityNaiAuditStatus,
+	    String vulnerabilityNaiAuditStatus,
 	    String vulnerabilityNaiAuditComment) {
 	this.appCompVulnKey = appCompVulnKey;
-	vulnerabilityNaiAuditStatus = vulerabilityNaiAuditStatus;
+	this.vulnerabilityNaiAuditStatus = vulnerabilityNaiAuditStatus;
 	this.vulnerabilityNaiAuditComment = vulnerabilityNaiAuditComment;
+	this.origNaiAuditStatus = vulnerabilityNaiAuditStatus;
+	this.origNaiAuditComment = vulnerabilityNaiAuditComment;
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -46,9 +50,19 @@ public class VulnNaiAuditDetails {
 	this.vulnerabilityNaiAuditComment = vulnerabilityNaiAuditComment;
     }
 
+    public String getOrigNaiAuditStatus() {
+	return origNaiAuditStatus;
+    }
+
+    public String getOrigNaiAuditComment() {
+	return origNaiAuditComment;
+    }
+
     @Override
     public String toString() {
 	return "VulnNaiAuditDetails [appCompVulnKey=" + appCompVulnKey
+		+ ", origNaiAuditStatus=" + origNaiAuditStatus
+		+ ", origNaiAuditComment=" + origNaiAuditComment
 		+ ", vulnerabilityNaiAuditStatus="
 		+ vulnerabilityNaiAuditStatus
 		+ ", vulnerabilityNaiAuditComment="

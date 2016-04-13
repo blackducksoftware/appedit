@@ -41,74 +41,80 @@ public class ViewAppDetailsConverterTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        Properties props = createProperties();
-        config = new AppEditConfigManager(props);
-        converter = new AppDetailsBeanConverter(config);
+	Properties props = createProperties();
+	config = new AppEditConfigManager(props);
+	converter = new AppDetailsBeanConverter(config);
     }
 
     @Test
     public void testToView() {
-        AppDetails appDetails = new AppDetails("test app id", "test app name");
-        appDetails.addCustomAttributeValue(ITSM_ATTR_NAME, new AttributeValuePojo("attrId1", "itsm", "test itsm value"));
-        appDetails.addCustomAttributeValue(ITRC_ATTR_NAME, new AttributeValuePojo("attrId2", "other", "test other value"));
+	AppDetails appDetails = new AppDetails("test app id", "test app name");
+	appDetails.addCustomAttributeValue(ITSM_ATTR_NAME,
+		new AttributeValuePojo("attrId1", "itsm", "test itsm value"));
+	appDetails.addCustomAttributeValue(ITRC_ATTR_NAME,
+		new AttributeValuePojo("attrId2", "other", "test other value"));
 
-        ViewAppBean viewAppBean = converter.createViewAppBean(appDetails);
-        assertEquals("test app id", viewAppBean.getAppId());
-        assertEquals("test app name", viewAppBean.getAppName());
+	ViewAppBean viewAppBean = converter.createViewAppBean(appDetails);
+	assertEquals("test app id", viewAppBean.getAppId());
+	assertEquals("test app name", viewAppBean.getAppName());
 
-        assertEquals(
-                "test itsm value",
-                viewAppBean.getAttrValues().get(
-                        viewAppBean.getAttrNames().indexOf("itsm")).getValue());
-        assertEquals(
-                "test other value",
-                viewAppBean.getAttrValues().get(
-                        viewAppBean.getAttrNames().indexOf("itrc")).getValue());
+	assertEquals(
+		"test itsm value",
+		viewAppBean.getAttrValues()
+			.get(viewAppBean.getAttrNames().indexOf("itsm"))
+			.getValue());
+	assertEquals(
+		"test other value",
+		viewAppBean.getAttrValues()
+			.get(viewAppBean.getAttrNames().indexOf("itrc"))
+			.getValue());
     }
 
     @Test
     public void testFromView() {
-        ViewAppBean viewAppBean = new ViewAppBean();
-        viewAppBean.setAppId("test app id");
-        viewAppBean.setAppName("test app name");
+	ViewAppBean viewAppBean = new ViewAppBean();
+	viewAppBean.setAppId("test app id");
+	viewAppBean.setAppName("test app name");
 
-        List<String> attrNames = new ArrayList<String>();
-        attrNames.add("itsm");
-        attrNames.add("itrc");
+	List<String> attrNames = new ArrayList<String>();
+	attrNames.add("itsm");
+	attrNames.add("itrc");
 
-        List<AttributeValuePojo> attrValues = new ArrayList<>();
-        attrValues.add(new AttributeValuePojo("id1", "itsm", "itsm value"));
-        attrValues.add(new AttributeValuePojo("id2", "other", "other value"));
+	List<AttributeValuePojo> attrValues = new ArrayList<>();
+	attrValues.add(new AttributeValuePojo("id1", "itsm", "itsm value"));
+	attrValues.add(new AttributeValuePojo("id2", "other", "other value"));
 
-        viewAppBean.setAttrNames(attrNames);
-        viewAppBean.setAttrValues(attrValues);
+	viewAppBean.setAttrNames(attrNames);
+	viewAppBean.setAttrValues(attrValues);
 
-        AppDetails appDetails = converter.createAppDetails(viewAppBean);
-        assertEquals("test app id", appDetails.getAppId());
-        assertEquals("test app name", appDetails.getAppName());
-        assertEquals(null, appDetails.getCustomAttributeValue("bogus"));
-        assertEquals("itsm value",
-                appDetails.getCustomAttributeValue(ITSM_ATTR_NAME).getValue());
-        assertEquals("other value",
-                appDetails.getCustomAttributeValue(ITRC_ATTR_NAME).getValue());
+	AppDetails appDetails = converter.createAppDetails(viewAppBean);
+	assertEquals("test app id", appDetails.getAppId());
+	assertEquals("test app name", appDetails.getAppName());
+	assertEquals(null, appDetails.getCustomAttributeValue("bogus"));
+	assertEquals("itsm value",
+		appDetails.getCustomAttributeValue(ITSM_ATTR_NAME).getValue());
+	assertEquals("other value",
+		appDetails.getCustomAttributeValue(ITRC_ATTR_NAME).getValue());
     }
 
     private static Properties createProperties() {
-        Properties props = new Properties();
+	Properties props = new Properties();
 
-        props.setProperty("cc.server.name", "http://cc-integration/");
-        props.setProperty("cc.user.name", "unitTester@blackducksoftware.com");
-        props.setProperty("cc.password", "blackduck");
-        props.setProperty("cc.password.isplaintext", "true");
-        props.setProperty("app.version", "Unspecified");
+	props.setProperty("cc.server.name", "http://cc-integration/");
+	props.setProperty("cc.user.name", "unitTester@blackducksoftware.com");
+	props.setProperty("cc.password", "blackduck");
+	props.setProperty("cc.password.isplaintext", "true");
+	props.setProperty("app.version", "Unspecified");
 
-        props.setProperty("attr.0.label", "itsm");
-        props.setProperty("attr.0.ccname", ITSM_ATTR_NAME);
-        props.setProperty("attr.0.regex", ".+");
+	props.setProperty("db.server", "test db server");
 
-        props.setProperty("attr.1.label", "itrc");
-        props.setProperty("attr.1.ccname", ITRC_ATTR_NAME);
-        props.setProperty("attr.1.regex", ".+");
-        return props;
+	props.setProperty("attr.0.label", "itsm");
+	props.setProperty("attr.0.ccname", ITSM_ATTR_NAME);
+	props.setProperty("attr.0.regex", ".+");
+
+	props.setProperty("attr.1.label", "itrc");
+	props.setProperty("attr.1.ccname", ITRC_ATTR_NAME);
+	props.setProperty("attr.1.regex", ".+");
+	return props;
     }
 }
