@@ -101,11 +101,11 @@ public class VulnNaiAuditDetailsServiceImpl implements
 		.updateVulnNaiAuditDetails(appCompVulnComposite.getAuditPart());
 
 	VulnNaiAuditChange vulnNaiAuditChange = new VulnNaiAuditChange(
-		new Date(), appCompVulnComposite.getKey(), "no idea",
-		"no idea", "no idea", "no idea", appCompVulnComposite
-			.getAuditPart().getVulnerabilityNaiAuditStatus(),
+		new Date(), appCompVulnComposite.getKey(),
+		auditPart.getUsername(), "old status", "old comment",
 		appCompVulnComposite.getAuditPart()
-			.getVulnerabilityNaiAuditComment());
+			.getVulnerabilityNaiAuditStatus(), appCompVulnComposite
+			.getAuditPart().getVulnerabilityNaiAuditComment());
 	insertVulnNaiAuditChange(vulnNaiAuditChange);
 
 	return new AppCompVulnComposite(ccPart.getAppCompVulnKey(), ccPart,

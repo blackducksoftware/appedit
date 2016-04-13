@@ -13,7 +13,6 @@ CREATE TABLE vuln_nai_audit_change_history (
 	request_id VARCHAR(32) NOT NULL,
 	component_id VARCHAR(32) NOT NULL,
 	vulnerability_id VARCHAR(32) NOT NULL,
-	cc_user_id VARCHAR(32) NOT NULL,
 	cc_user_name VARCHAR(32) NOT NULL,
 	old_nai_audit_status VARCHAR(32) NOT NULL,
 	old_nai_audit_comment VARCHAR(512) NOT NULL,

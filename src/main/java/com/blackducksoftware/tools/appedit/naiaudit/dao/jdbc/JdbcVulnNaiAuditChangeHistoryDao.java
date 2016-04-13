@@ -25,9 +25,9 @@ public class JdbcVulnNaiAuditChangeHistoryDao implements
     @Override
     public void insertVulnNaiAuditChange(VulnNaiAuditChange vunlNaiAuditChange)
 	    throws AppEditException {
-	String SQL = "INSERT INTO vuln_nai_audit_change_history (change_time, application_id, request_id, component_id, vulnerability_id, cc_user_id,"
+	String SQL = "INSERT INTO vuln_nai_audit_change_history (change_time, application_id, request_id, component_id, vulnerability_id, "
 		+ "cc_user_name, old_nai_audit_status, old_nai_audit_comment, new_nai_audit_status, new_nai_audit_comment) "
-		+ "VALUES (:changeTime, :appId, :requestId, :compId, :vulnId, :ccUserId, :ccUserName, :oldNaiAuditStatus, :oldNaiAuditComment, :newNaiAuditStatus, :newNaiAuditComment)";
+		+ "VALUES (:changeTime, :appId, :requestId, :compId, :vulnId, :ccUserName, :oldNaiAuditStatus, :oldNaiAuditComment, :newNaiAuditStatus, :newNaiAuditComment)";
 	Map<String, Object> namedParameters = new HashMap<>();
 
 	namedParameters.put("changeTime", vunlNaiAuditChange.getChangeTime());
@@ -40,7 +40,6 @@ public class JdbcVulnNaiAuditChangeHistoryDao implements
 	namedParameters.put("vulnId", vunlNaiAuditChange.getAppCompVulnKey()
 		.getVulnerabilityId());
 
-	namedParameters.put("ccUserId", vunlNaiAuditChange.getCcUserId());
 	namedParameters.put("ccUserName", vunlNaiAuditChange.getCcUserName());
 
 	namedParameters.put("oldNaiAuditStatus",

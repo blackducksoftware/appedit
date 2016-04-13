@@ -5,7 +5,6 @@ import java.util.Date;
 public class VulnNaiAuditChange {
     private final Date changeTime;
     private final AppCompVulnKey appCompVulnKey;
-    private final String ccUserId;
     private final String ccUserName;
     private final String oldNaiAuditStatus;
     private final String oldNaiAuditComment;
@@ -13,13 +12,12 @@ public class VulnNaiAuditChange {
     private final String newNaiAuditComment;
 
     public VulnNaiAuditChange(Date changeTime, AppCompVulnKey appCompVulnKey,
-	    String ccUserId, String ccUserName, String oldNaiAuditStatus,
+	    String ccUserName, String oldNaiAuditStatus,
 	    String oldNaiAuditComment, String newNaiAuditStatus,
 	    String newNaiAuditComment) {
 
 	this.changeTime = changeTime;
 	this.appCompVulnKey = appCompVulnKey;
-	this.ccUserId = ccUserId;
 	this.ccUserName = ccUserName;
 	this.oldNaiAuditStatus = oldNaiAuditStatus;
 	this.oldNaiAuditComment = oldNaiAuditComment;
@@ -33,10 +31,6 @@ public class VulnNaiAuditChange {
 
     public AppCompVulnKey getAppCompVulnKey() {
 	return appCompVulnKey;
-    }
-
-    public String getCcUserId() {
-	return ccUserId;
     }
 
     public String getCcUserName() {
@@ -61,8 +55,8 @@ public class VulnNaiAuditChange {
 
     @Override
     public String toString() {
-	return "VulnNaiAuditChange [date=" + changeTime + ", appCompVulnKey="
-		+ appCompVulnKey + ", ccUserId=" + ccUserId + ", ccUserName="
+	return "VulnNaiAuditChange [changeTime=" + changeTime
+		+ ", appCompVulnKey=" + appCompVulnKey + ", ccUserName="
 		+ ccUserName + ", oldNaiAuditStatus=" + oldNaiAuditStatus
 		+ ", oldNaiAuditComment=" + oldNaiAuditComment
 		+ ", newNaiAuditStatus=" + newNaiAuditStatus
