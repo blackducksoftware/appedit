@@ -95,9 +95,18 @@ $(document).ready(function() {
 	</table>
 	<br/>
 	<label for="naiauditstatus_field">NAI Audit Status: </label>
+	<!-- 
 	<form:input path="vulnerabilityNaiAuditStatus" size="20" id="naiauditstatus_field" /><br/>
 	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" /> 
+	-->
 	
+	<form:select path="vulnerabilityNaiAuditStatus">
+		<form:option value="0" label="Select an Option" />
+		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
+	</form:select>
+	<br />
+	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" />
+			
 	<br/>
 	<label for="comment_field">NAI Audit Comment: </label>
 	<form:input path="comment" size="20" id="comment_field" /><br/>

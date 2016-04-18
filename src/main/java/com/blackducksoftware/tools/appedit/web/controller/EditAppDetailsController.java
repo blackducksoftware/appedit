@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.web.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -162,6 +163,7 @@ public class EditAppDetailsController {
 		auditFormData.setApplicationId(app.getId());
 		auditFormData.setApplicationName(app.getName());
 		auditFormData.setApplicationVersion(app.getVersion());
+
 		model.addAttribute("selectedVulnerabilities", auditFormData);
 		model.addAttribute("vulnNaiAuditDetailsList",
 			vulnNaiAuditDetailsList);
@@ -208,6 +210,14 @@ public class EditAppDetailsController {
 	model.addAttribute("dataSource", appDao);
 
 	return "editAppDetailsForm";
+    }
+
+    @ModelAttribute("vulnerabilityNaiAuditStatusOptions")
+    public List<String> populateVulnerabilityNaiAuditStatusOptions() {
+	List<String> vulnerabilityNaiAuditStatusOptions = new ArrayList<>();
+	vulnerabilityNaiAuditStatusOptions.add("a value1");
+	vulnerabilityNaiAuditStatusOptions.add("a value2");
+	return vulnerabilityNaiAuditStatusOptions;
     }
 
     /**

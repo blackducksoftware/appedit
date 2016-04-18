@@ -1,5 +1,6 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -142,11 +143,20 @@ public class EditNaiAuditDetailsController {
 								 // view
 	newValues.setApplicationName(formData.getApplicationName());
 	newValues.setApplicationVersion(formData.getApplicationVersion());
+
 	model.addAttribute("selectedVulnerabilities", newValues);
 
 	model.addAttribute("vulnNaiAuditDetailsList",
 		fullVulnNaiAuditDetailsList);
 	return "editNaiAuditDetailsForm";
+    }
+
+    @ModelAttribute("vulnerabilityNaiAuditStatusOptions")
+    public List<String> populateVulnerabilityNaiAuditStatusOptions() {
+	List<String> vulnerabilityNaiAuditStatusOptions = new ArrayList<>();
+	vulnerabilityNaiAuditStatusOptions.add("a value1");
+	vulnerabilityNaiAuditStatusOptions.add("a value2");
+	return vulnerabilityNaiAuditStatusOptions;
     }
 
     private AppCompVulnComposite findVuln(List<AppCompVulnComposite> vulnList,
