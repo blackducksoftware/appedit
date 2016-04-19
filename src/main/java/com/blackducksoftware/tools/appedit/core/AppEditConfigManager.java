@@ -21,8 +21,10 @@
  */
 package com.blackducksoftware.tools.appedit.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -74,6 +76,7 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String DB_USER_PROPERTY = "db.user";
     private static final String DB_PASSWORD_PROPERTY_PREFIX = "db";
     private static final String DB_DATABASE_PROPERTY = "db.database";
+    private static final String NAI_AUDIT_STATUS_CHOICE_PROPERTY_PREFIX = "nai.audit.status";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
@@ -101,6 +104,7 @@ public class AppEditConfigManager extends ConfigurationManager {
     private String dbPort = DB_PORT_DEFAULT;
     private String dbUser = DB_USER_DEFAULT;
     private String dbPassword = DB_PASSWORD_DEFAULT;
+    private List<String> naiAuditStatusChoices;
 
     public AppEditConfigManager() {
 	super();
@@ -158,12 +162,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 							       // property file)
 	}
 
-	log.debug("TEMP: dbServer: " + dbServer);
-	log.debug("TEMP: dbPort: " + dbPort);
-	log.debug("TEMP: dbDatabase: " + dbDatabase);
-	log.debug("TEMP: dbUser: " + dbUser);
-	log.debug("TEMP: dbPassword: " + dbPassword);
-
 	appVersion = getOptionalProperty(APP_VERSION_PROPERTY);
 	if (appVersion == null) {
 	    appVersion = APP_VERSION_DEFAULT;
@@ -197,6 +195,16 @@ public class AppEditConfigManager extends ConfigurationManager {
 	    attributeMap.put(label, ccName);
 	    attrRegexMap.put(label, regex);
 	    attrLabelsByIndex.put(i, label); // remember the sequence
+	}
+
+	naiAuditStatusChoices = new ArrayList<>();
+	for (int i = 0;; i++) {
+	    String propKey = NAI_AUDIT_STATUS_CHOICE_PROPERTY_PREFIX + "." + i;
+	    String naiAuditStatusChoice = getOptionalProperty(propKey);
+	    if (naiAuditStatusChoice == null) {
+		break;
+	    }
+	    naiAuditStatusChoices.add(naiAuditStatusChoice);
 	}
     }
 
@@ -267,6 +275,10 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     public boolean isEditNaiAuditEnabled() {
 	return editNaiAuditEnabled;
+    }
+
+    public List<String> getNaiAuditStatusChoices() {
+	return naiAuditStatusChoices;
     }
 
 }

@@ -10,19 +10,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.context.request.WebRequest;
 
-import com.blackducksoftware.tools.appedit.AppEditException;
+import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
+import com.blackducksoftware.tools.appedit.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 /**
  * Controller for requests for and form submissions from the Edit NAI Audit
@@ -34,6 +38,13 @@ import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsS
 @Controller
 @SessionAttributes({ "app", "dataSource" })
 public class EditNaiAuditDetailsController {
+    private AppEditConfigManager config;
+
+    @Inject
+    public void setConfig(AppEditConfigManager config) {
+	this.config = config;
+    }
+
     private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
 
     @Inject
@@ -44,6 +55,67 @@ public class EditNaiAuditDetailsController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
+
+    /**
+     * Get requests for the Edit Application Details page by and auditor get
+     * redirected here: auditors are presented with the NAI Audit screen
+     * instead.
+     * 
+     */
+    @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.GET)
+    public String showNaiAuditDetails(WebRequest request, Model model) {
+	logger.debug("/editnaiauditdetails GET (redirected here)");
+	String appId = request.getParameter("appId");
+	String appName = request.getParameter("appName");
+	logger.debug("appId: " + appId + "; appName: " + appName);
+
+	ApplicationPojo app;
+	// Load the app (so we have name, version)
+	if (appId == null) {
+	    try {
+		app = vulnNaiAuditDetailsService.getApplicationByNameVersion(
+			appName, config.getAppVersion());
+	    } catch (AppEditException e) {
+		String msg = "Error loading application " + appName + ": "
+			+ e.getMessage();
+		logger.error(msg);
+		model.addAttribute("message", msg);
+		return "error/programError";
+	    }
+	    appId = app.getId();
+	} else {
+	    try {
+		app = vulnNaiAuditDetailsService.getApplicationById(appId);
+	    } catch (AppEditException e) {
+		String msg = "Error loading application with ID " + appId
+			+ ": " + e.getMessage();
+		logger.error(msg);
+		model.addAttribute("message", msg);
+		return "error/programError";
+	    }
+	    appName = app.getName();
+	}
+	List<AppCompVulnComposite> vulnNaiAuditDetailsList;
+	try {
+	    vulnNaiAuditDetailsList = vulnNaiAuditDetailsService
+		    .getAppCompVulnCompositeList(appId);
+	} catch (AppEditException e) {
+	    String msg = "Error getting vulnerability details for application: "
+		    + e.getMessage();
+	    logger.error(msg);
+	    model.addAttribute("message", msg);
+	    return "error/programError";
+	}
+	logger.info("appDetails.getAppId(): " + appId);
+	NaiAuditViewData auditFormData = new NaiAuditViewData();
+	auditFormData.setApplicationId(app.getId());
+	auditFormData.setApplicationName(app.getName());
+	auditFormData.setApplicationVersion(app.getVersion());
+
+	model.addAttribute("selectedVulnerabilities", auditFormData);
+	model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
+	return "editNaiAuditDetailsForm";
+    }
 
     /**
      * Handles Edit NAI Audit Details form submissions. Updates app in Code

@@ -17,9 +17,7 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.web.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import com.blackducksoftware.tools.appedit.AppEditException;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.Role;
@@ -46,10 +43,7 @@ import com.blackducksoftware.tools.appedit.core.application.AppDao;
 import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
-import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
-import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
-import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details
@@ -119,55 +113,18 @@ public class EditAppDetailsController {
 	    Role role = Role.valueOf(roleString);
 	    logger.info("Role enum value: " + role);
 	    if (role == Role.ROLE_AUDITOR) {
-		ApplicationPojo app;
-		// Load the app (so we have name, version)
-		if (appId == null) {
-		    try {
-			app = vulnNaiAuditDetailsService
-				.getApplicationByNameVersion(appName,
-					config.getAppVersion());
-		    } catch (AppEditException e) {
-			String msg = "Error loading application" + appName
-				+ ": " + e.getMessage();
-			logger.error(msg);
-			model.addAttribute("message", msg);
-			return "error/programError";
-		    }
-		    appId = app.getId();
-		} else {
-		    try {
-			app = vulnNaiAuditDetailsService
-				.getApplicationById(appId);
-		    } catch (AppEditException e) {
-			String msg = "Error loading application with ID "
-				+ appId + ": " + e.getMessage();
-			logger.error(msg);
-			model.addAttribute("message", msg);
-			return "error/programError";
-		    }
-		    appName = app.getName();
-		}
-		List<AppCompVulnComposite> vulnNaiAuditDetailsList;
-		try {
-		    vulnNaiAuditDetailsList = vulnNaiAuditDetailsService
-			    .getAppCompVulnCompositeList(appId);
-		} catch (AppEditException e) {
-		    String msg = "Error getting vulnerability details for application: "
-			    + e.getMessage();
-		    logger.error(msg);
-		    model.addAttribute("message", msg);
-		    return "error/programError";
-		}
-		logger.info("appDetails.getAppId(): " + appId);
-		NaiAuditViewData auditFormData = new NaiAuditViewData();
-		auditFormData.setApplicationId(app.getId());
-		auditFormData.setApplicationName(app.getName());
-		auditFormData.setApplicationVersion(app.getVersion());
 
-		model.addAttribute("selectedVulnerabilities", auditFormData);
-		model.addAttribute("vulnNaiAuditDetailsList",
-			vulnNaiAuditDetailsList);
-		return "editNaiAuditDetailsForm";
+		String redirectString;
+		if (appId == null) {
+		    redirectString = "redirect:editnaiauditdetails?appName="
+			    + appName;
+		} else {
+		    redirectString = "redirect:editnaiauditdetails?appId="
+			    + appId;
+		}
+		logger.debug("User is an auditor. Redirecting to: "
+			+ redirectString);
+		return redirectString;
 	    }
 	}
 
@@ -210,14 +167,6 @@ public class EditAppDetailsController {
 	model.addAttribute("dataSource", appDao);
 
 	return "editAppDetailsForm";
-    }
-
-    @ModelAttribute("vulnerabilityNaiAuditStatusOptions")
-    public List<String> populateVulnerabilityNaiAuditStatusOptions() {
-	List<String> vulnerabilityNaiAuditStatusOptions = new ArrayList<>();
-	vulnerabilityNaiAuditStatusOptions.add("a value1");
-	vulnerabilityNaiAuditStatusOptions.add("a value2");
-	return vulnerabilityNaiAuditStatusOptions;
     }
 
     /**

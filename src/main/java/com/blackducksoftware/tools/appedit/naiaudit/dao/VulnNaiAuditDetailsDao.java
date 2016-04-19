@@ -2,7 +2,7 @@ package com.blackducksoftware.tools.appedit.naiaudit.dao;
 
 import java.util.Map;
 
-import com.blackducksoftware.tools.appedit.AppEditException;
+import com.blackducksoftware.tools.appedit.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
