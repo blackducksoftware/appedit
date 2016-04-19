@@ -18,6 +18,7 @@
 package com.blackducksoftware.tools.appedit.web.controller;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,8 @@ import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 /**
  * Controller for requests for and form submissions from the Edit App Details
@@ -157,6 +160,17 @@ public class EditAppDetailsController {
 	    return "error/programError";
 	}
 
+	// Make sure all the attrValues we need are populated
+	try {
+	    populateMissingAttrValues(config, appDetails);
+	} catch (Exception e) {
+	    String msg = "Error populating missing attribute values: "
+		    + e.getMessage();
+	    logger.error(msg);
+	    model.addAttribute("message", msg);
+	    return "error/programError";
+	}
+
 	// Convert the generic appDetails object to view-friendly appDetails
 	// object
 	AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
@@ -167,6 +181,31 @@ public class EditAppDetailsController {
 	model.addAttribute("dataSource", appDao);
 
 	return "editAppDetailsForm";
+    }
+
+    private void populateMissingAttrValues(AppEditConfigManager config2,
+	    AppDetails appDetails) throws Exception {
+	Map<String, String> attrMap = config.getAttributeMap();
+
+	for (int i = 0; i < attrMap.keySet().size(); i++) {
+	    String attrLabel = config.getAttrLabel(i);
+	    String attrCodeCenterName = attrMap.get(attrLabel);
+	    AttributeValuePojo attrValue = appDetails
+		    .getCustomAttributeValue(attrCodeCenterName);
+	    if (attrValue == null) {
+		logger.info("The Code Center attribute for " + attrLabel + " ("
+			+ attrCodeCenterName + ") has no value object.");
+
+		AttributeDefinitionPojo attrDef = appDao
+			.getAttributeDefinitionByName(attrCodeCenterName);
+		attrValue = new AttributeValuePojo(attrDef.getId(),
+			attrCodeCenterName, "");
+		logger.info("Created attrValue: " + attrValue);
+		appDetails.addCustomAttributeValue(attrCodeCenterName,
+			attrValue);
+	    }
+	}
+
     }
 
     /**

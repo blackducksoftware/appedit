@@ -68,6 +68,9 @@ public class EditNaiAuditDetailsController {
 	String appId = request.getParameter("appId");
 	String appName = request.getParameter("appName");
 	logger.debug("appId: " + appId + "; appName: " + appName);
+	if ((appId == null) && (appName == null)) {
+	    return "redirect:/error/400";
+	}
 
 	ApplicationPojo app;
 	// Load the app (so we have name, version)

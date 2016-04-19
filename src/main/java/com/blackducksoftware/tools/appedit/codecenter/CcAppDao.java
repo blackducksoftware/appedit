@@ -37,6 +37,7 @@ import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationUserPojo;
+import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 /**
@@ -189,6 +190,14 @@ public class CcAppDao implements AppDao {
     public String toString() {
 	return "CcDataSource [customAttributeNames="
 		+ config.getCcAttributeNames() + "]";
+    }
+
+    @Override
+    public AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
+	    throws Exception {
+
+	return ccsw.getAttributeDefinitionManager()
+		.getAttributeDefinitionByName(attrName);
     }
 
 }

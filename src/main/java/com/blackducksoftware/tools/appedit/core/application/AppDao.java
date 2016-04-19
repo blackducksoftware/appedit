@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.application;
 
+import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
+
 /**
  * Application Data Access Object (DAO).
  *
@@ -60,5 +62,8 @@ public interface AppDao {
      * @throws Exception
      */
     void update(AppDetails app) throws Exception;
+
+    AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
+	    throws Exception;
 
 }

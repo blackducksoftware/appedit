@@ -137,7 +137,7 @@ public class AppEditConfigManager extends ConfigurationManager {
 	    log.debug("Could not determine version for this program", t);
 	}
 
-	dbServer = getProperty(DB_SERVER_PROPERTY);
+	dbServer = getOptionalProperty(DB_SERVER_PROPERTY);
 	String propValue = getOptionalProperty(DB_PORT_PROPERTY);
 	if (propValue != null) {
 	    dbPort = propValue;
