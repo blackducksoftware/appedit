@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -92,8 +93,18 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 		applicationId);
 	logger.debug("Getting vulnNaiAuditDetails for appID " + applicationId
 		+ "; SQL: " + SQL);
-	List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = (List<VulnNaiAuditDetails>) jdbcTemplate
-		.query(SQL, namedParameters, new VulnNaiAuditDetailsMapper());
+
+	List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
+	try {
+	    vulnNaiAuditDetailsList = (List<VulnNaiAuditDetails>) jdbcTemplate
+		    .query(SQL, namedParameters,
+			    new VulnNaiAuditDetailsMapper());
+	} catch (BadSqlGrammarException e) {
+	    String msg = "Error getting NAI Audit details. Make sure the NAI Audit database tables have been created. Details: "
+		    + e.getMessage();
+	    logger.error(msg);
+	    throw new IllegalStateException(msg);
+	}
 
 	logger.debug("Read " + vulnNaiAuditDetailsList.size()
 		+ " vulnNaiAuditDetail records.");
