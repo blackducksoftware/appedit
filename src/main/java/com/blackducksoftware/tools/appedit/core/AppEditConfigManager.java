@@ -173,9 +173,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 	}
 
 	auditorRoleName = getOptionalProperty(AUDITOR_ROLE_NAME_PROPERTY);
-	if (!StringUtils.isBlank(auditorRoleName)) {
-	    editNaiAuditEnabled = true;
-	}
 
 	fieldInputValidationRegexUsername = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY);
 	if (fieldInputValidationRegexUsername == null) {
@@ -218,6 +215,16 @@ public class AppEditConfigManager extends ConfigurationManager {
 		    NAI_AUDIT_DATE_FORMAT_DEFAULT);
 	} else {
 	    naiAuditDateFormat = new SimpleDateFormat(naiAuditDateFormatString);
+	}
+
+	if (!StringUtils.isBlank(dbServer)
+		&& !StringUtils.isBlank(auditorRoleName)
+		&& (naiAuditStatusChoices.size() > 0)) {
+	    log.info("All required properties for NAI Audit functionality have been set. Enabling NAI Audit functionality.");
+	    editNaiAuditEnabled = true;
+	} else {
+	    log.info("Not all required properties for NAI Audit functionality have been set. Disabling NAI Audit functionality.");
+	    editNaiAuditEnabled = false;
 	}
     }
 
