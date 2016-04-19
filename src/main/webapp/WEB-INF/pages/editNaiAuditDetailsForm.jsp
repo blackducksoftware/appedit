@@ -101,7 +101,6 @@ $(document).ready(function() {
 	-->
 	
 	<form:select path="vulnerabilityNaiAuditStatus">
-		<form:option value="0" label="Select an Option" />
 		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
 	</form:select>
 	<br />

@@ -11,10 +11,6 @@ public class NaiAuditViewData {
 
     private List<String> itemList;
 
-    private List<String> vulnerabilityNaiAuditStatusOptions; // TODO
-							     // using
-							     // this?
-
     private String vulnerabilityNaiAuditStatus;
 
     private String comment;
@@ -33,15 +29,6 @@ public class NaiAuditViewData {
 
     public void setComment(String comment) {
 	this.comment = comment;
-    }
-
-    public List<String> getVulnerabilityNaiAuditStatusOptions() {
-	return vulnerabilityNaiAuditStatusOptions;
-    }
-
-    public void setVulnerabilityNaiAuditStatusOptions(
-	    List<String> vulnerabilityNaiAuditStatusOptions) {
-	this.vulnerabilityNaiAuditStatusOptions = vulnerabilityNaiAuditStatusOptions;
     }
 
     public String getVulnerabilityNaiAuditStatus() {
@@ -82,10 +69,7 @@ public class NaiAuditViewData {
 	return "NaiAuditViewData [applicationId=" + applicationId
 		+ ", applicationName=" + applicationName
 		+ ", applicationVersion=" + applicationVersion + ", itemList="
-		+ itemList + ", vulnerabilityNaiAuditStatusOptions="
-		+ vulnerabilityNaiAuditStatusOptions
-		+ ", vulnerabilityNaiAuditStatus="
+		+ itemList + ", vulnerabilityNaiAuditStatus="
 		+ vulnerabilityNaiAuditStatus + ", comment=" + comment + "]";
     }
-
 }
