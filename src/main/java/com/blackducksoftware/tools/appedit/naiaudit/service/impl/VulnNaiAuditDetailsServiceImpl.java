@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditChangeHistoryDao;
@@ -24,6 +25,13 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	VulnNaiAuditDetailsService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
+
+    // config (wired)
+    private AppEditConfigManager config;
+
+    public void setConfig(AppEditConfigManager config) {
+	this.config = config;
+    }
 
     // DAO objects (wired)
     private VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao;
@@ -74,18 +82,18 @@ public class VulnNaiAuditDetailsServiceImpl implements
     public AppCompVulnComposite updateVulnNaiAuditDetails(
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
 
-	// Prepend the NAI Audit comment to the Remediation Comment
-	Date now = new Date();
+	String nowString = config.getNaiAuditDateFormat().format(new Date());
+
 	String origRemediationComment = appCompVulnComposite.getCcPart()
 		.getVulnerabilityRemediationComments();
 	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
 		.getVulnerabilityNaiAuditComment();
-	String newRemediationComment = "[" + now.toString()
+	String newRemediationComment = "[" + nowString
 		+ ": NAI Audit Comment: " + incomingNaiAuditComment + "] "
 		+ origRemediationComment;
 
 	// append nai comment to previous nai comment
-	String newNaiAuditComment = "[" + now.toString() + ": "
+	String newNaiAuditComment = "[" + nowString + ": "
 		+ incomingNaiAuditComment + "] ";
 
 	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(

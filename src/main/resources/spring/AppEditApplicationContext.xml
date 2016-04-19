@@ -45,6 +45,7 @@
     </bean> 
     
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton">
+    	<property name="config" ref="config" />
     	<property name="appCompVulnDetailsDao" ref="appCompVulnDetailsDao" />
     	<property name="vulnNaiAuditDetailsDao" ref="vulnNaiAuditDetailsDao" />
     	<property name="vulnNaiAuditChangeHistoryDao" ref="vulnNaiAuditChangeHistoryDao" />

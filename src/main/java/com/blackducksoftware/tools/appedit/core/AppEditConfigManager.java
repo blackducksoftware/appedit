@@ -21,6 +21,8 @@
  */
 package com.blackducksoftware.tools.appedit.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,6 +79,8 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String DB_PASSWORD_PROPERTY_PREFIX = "db";
     private static final String DB_DATABASE_PROPERTY = "db.database";
     private static final String NAI_AUDIT_STATUS_CHOICE_PROPERTY_PREFIX = "nai.audit.status";
+    private static final String NAI_AUDIT_DATE_FORMAT_PROPERTY = "nai.audit.date.format";
+    private static final String NAI_AUDIT_DATE_FORMAT_DEFAULT = "MMM-dd-yyyy hh:mm:ss";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
@@ -105,6 +109,7 @@ public class AppEditConfigManager extends ConfigurationManager {
     private String dbUser = DB_USER_DEFAULT;
     private String dbPassword = DB_PASSWORD_DEFAULT;
     private List<String> naiAuditStatusChoices;
+    private DateFormat naiAuditDateFormat;
 
     public AppEditConfigManager() {
 	super();
@@ -206,6 +211,14 @@ public class AppEditConfigManager extends ConfigurationManager {
 	    }
 	    naiAuditStatusChoices.add(naiAuditStatusChoice);
 	}
+
+	String naiAuditDateFormatString = getOptionalProperty(NAI_AUDIT_DATE_FORMAT_PROPERTY);
+	if (naiAuditDateFormatString == null) {
+	    naiAuditDateFormat = new SimpleDateFormat(
+		    NAI_AUDIT_DATE_FORMAT_DEFAULT);
+	} else {
+	    naiAuditDateFormat = new SimpleDateFormat(naiAuditDateFormatString);
+	}
     }
 
     public String getDbServer() {
@@ -279,6 +292,10 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     public List<String> getNaiAuditStatusChoices() {
 	return naiAuditStatusChoices;
+    }
+
+    public DateFormat getNaiAuditDateFormat() {
+	return naiAuditDateFormat;
     }
 
 }
