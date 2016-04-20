@@ -47,6 +47,12 @@ public class HttpErrorHandler {
 	return "error/404";
     }
 
+    @RequestMapping(value = "/error/403")
+    public String error403() {
+	logger.warn("Handling 403 error");
+	return "error/403";
+    }
+
     @ExceptionHandler(Exception.class)
     public ModelAndView handleAllException(Exception ex) {
 	logger.warn("Handling exception");
