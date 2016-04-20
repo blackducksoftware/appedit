@@ -10,11 +10,19 @@
 	       <directory>${project.basedir}/src/main/resources</directory>
 	       	<outputDirectory>/</outputDirectory>
 	       	<includes>
-				<include>APPEDIT-README.txt</include>
-				<include>LICENSE*</include>
-				<include>notices*</include>
+				<include>*.sql</include>
+				<include>appedit.properties</include>
 			</includes>
 	    </fileSet>
+	    <fileSet> 
+			<directory>${project.basedir}</directory> 
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>LICENSE.*</include>
+				<include>notices.*</include>
+				<include>README.*</include>
+			</includes>
+		</fileSet> 	
 		<fileSet> 
 			<directory>${project.build.directory}</directory> 
 			<outputDirectory>/</outputDirectory>
