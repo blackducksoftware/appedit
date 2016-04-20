@@ -82,6 +82,18 @@ public class VulnNaiAuditDetailsServiceImpl implements
     public AppCompVulnComposite updateVulnNaiAuditDetails(
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
 
+	logger.debug("updateVulnNaiAuditDetails() called with: "
+		+ appCompVulnComposite);
+
+	if (appCompVulnComposite.getAuditPart()
+		.getVulnerabilityNaiAuditStatus()
+		.equals(config.getNaiAuditRejectedStatusName())) {
+	    logger.debug("Auditor rejected, changing rem status to: "
+		    + config.getNaiAuditRejectedStatusChangesRemStatusTo());
+	    appCompVulnComposite.getCcPart().setVulnerabilityRemediationStatus(
+		    config.getNaiAuditRejectedStatusChangesRemStatusTo());
+	}
+
 	String nowString = config.getNaiAuditDateFormat().format(new Date());
 
 	String origRemediationComment = appCompVulnComposite.getCcPart()

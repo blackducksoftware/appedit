@@ -82,6 +82,9 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String NAI_AUDIT_DATE_FORMAT_PROPERTY = "nai.audit.date.format";
     private static final String NAI_AUDIT_DATE_FORMAT_DEFAULT = "MMM-dd-yyyy hh:mm:ss";
 
+    private static final String NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY = "nai.audit.rejected.status.name";
+    private static final String NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY = "nai.audit.rejected.status.changes.rem.status.to";
+
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
@@ -110,6 +113,8 @@ public class AppEditConfigManager extends ConfigurationManager {
     private String dbPassword = DB_PASSWORD_DEFAULT;
     private List<String> naiAuditStatusChoices;
     private DateFormat naiAuditDateFormat;
+    private String naiAuditRejectedStatusName;
+    private String naiAuditRejectedStatusChangesRemStatusTo;
 
     public AppEditConfigManager() {
 	super();
@@ -217,9 +222,15 @@ public class AppEditConfigManager extends ConfigurationManager {
 	    naiAuditDateFormat = new SimpleDateFormat(naiAuditDateFormatString);
 	}
 
+	naiAuditRejectedStatusName = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY);
+	naiAuditRejectedStatusChangesRemStatusTo = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY);
+
 	if (!StringUtils.isBlank(dbServer)
 		&& !StringUtils.isBlank(auditorRoleName)
-		&& (naiAuditStatusChoices.size() > 0)) {
+		&& (naiAuditStatusChoices.size() > 0)
+		&& (!StringUtils.isBlank(naiAuditRejectedStatusName))
+		&& (!StringUtils
+			.isBlank(naiAuditRejectedStatusChangesRemStatusTo))) {
 	    log.info("All required properties for NAI Audit functionality have been set. Enabling NAI Audit functionality.");
 	    editNaiAuditEnabled = true;
 	} else {
@@ -303,6 +314,14 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     public DateFormat getNaiAuditDateFormat() {
 	return naiAuditDateFormat;
+    }
+
+    public String getNaiAuditRejectedStatusName() {
+	return naiAuditRejectedStatusName;
+    }
+
+    public String getNaiAuditRejectedStatusChangesRemStatusTo() {
+	return naiAuditRejectedStatusChangesRemStatusTo;
     }
 
 }

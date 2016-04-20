@@ -30,7 +30,7 @@ public class AppCompVulnDetails {
 
     private final Date vulnerabilityActualRemediationDate;
 
-    private final String vulnerabilityRemediationStatus;
+    private String vulnerabilityRemediationStatus;
 
     private String vulnerabilityRemediationComments;
 
@@ -167,6 +167,11 @@ public class AppCompVulnDetails {
     public void setVulnerabilityRemediationComments(
 	    String vulnerabilityRemediationComments) {
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
+    }
+
+    public void setVulnerabilityRemediationStatus(
+	    String vulnerabilityRemediationStatus) {
+	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
     }
 
     @Override
