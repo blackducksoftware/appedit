@@ -31,6 +31,9 @@ $(document).ready(function() {
 	<div class="page-header">
     <img src="${pageContext.request.contextPath}/styles/icons/Black_Duck_Logo.png" alt="Black Duck Logo"  width="200" height="50" id=""/>       	
         <h1><spring:message code="label.naiauditdetailsedit.title" text="Edit NAI Audit Details" /></h1>
+        <h4><b><spring:message code="label.naiauditdetailsedit.app.name" text="Application name" />:</b> ${selectedVulnerabilities.applicationName}</h4>
+        <h4><b><spring:message code="label.naiauditdetailsedit.app.version" text="Application name" />:</b> ${selectedVulnerabilities.applicationVersion}</h4>
+        <br/>
     </div>
     <div class="regular">
 
