@@ -25,7 +25,10 @@
 	    // Setup - add a text input to each footer cell
 	    $('#table_id thead td').each( function () {
 	        var title = $(this).text();
-	        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+	        
+	        if (title.length > 0) {
+	        	$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+	        }
 	    } );
 	 
 	    // DataTable
