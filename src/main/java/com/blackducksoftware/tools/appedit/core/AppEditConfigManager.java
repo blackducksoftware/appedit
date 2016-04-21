@@ -225,18 +225,39 @@ public class AppEditConfigManager extends ConfigurationManager {
 	naiAuditRejectedStatusName = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY);
 	naiAuditRejectedStatusChangesRemStatusTo = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY);
 
-	if (!StringUtils.isBlank(dbServer)
-		&& !StringUtils.isBlank(auditorRoleName)
-		&& (naiAuditStatusChoices.size() > 0)
-		&& (!StringUtils.isBlank(naiAuditRejectedStatusName))
-		&& (!StringUtils
-			.isBlank(naiAuditRejectedStatusChangesRemStatusTo))) {
-	    log.info("All required properties for NAI Audit functionality have been set. Enabling NAI Audit functionality.");
-	    editNaiAuditEnabled = true;
-	} else {
-	    log.info("Not all required properties for NAI Audit functionality have been set. Disabling NAI Audit functionality.");
-	    editNaiAuditEnabled = false;
+	enableOrDisableNaiAudit();
+    }
+
+    private void enableOrDisableNaiAudit() {
+	editNaiAuditEnabled = false;
+	if (StringUtils.isBlank(dbServer)) {
+	    log.info("Property " + DB_SERVER_PROPERTY
+		    + " is not set; disabling NAI Audit functionality");
+	    return;
 	}
+	if (StringUtils.isBlank(auditorRoleName)) {
+	    log.info("Property " + AUDITOR_ROLE_NAME_PROPERTY
+		    + " is not set; disabling NAI Audit functionality");
+	    return;
+	}
+	if (naiAuditStatusChoices.size() == 0) {
+	    log.info("No NAI Audit Status choices defined; disabling NAI Audit functionality");
+	    return;
+	}
+	if (StringUtils.isBlank(naiAuditRejectedStatusName)) {
+	    log.info("Property " + NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY
+		    + " is not set; disabling NAI Audit functionality");
+	    return;
+	}
+	if (StringUtils.isBlank(naiAuditRejectedStatusChangesRemStatusTo)) {
+	    log.info("Property "
+		    + NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY
+		    + " is not set; disabling NAI Audit functionality");
+	    return;
+	}
+
+	log.info("Enabling NAI Audit functionality (all required properties for NAI Audit functionality have been set).");
+	editNaiAuditEnabled = true;
     }
 
     public String getDbServer() {
