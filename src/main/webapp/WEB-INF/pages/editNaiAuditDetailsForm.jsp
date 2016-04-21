@@ -119,7 +119,7 @@
             	
             	<td><fmt:formatDate type="date" 
             		value="${vulnerability.ccPart.vulnerabilityDatePublished}" /></td>
-            	<td>${vulnerability.ccPart.vulnerabilityDescription}</td>
+            	<td title="${vulnerability.ccPart.vulnerabilityDescription}">${vulnerability.ccPart.vulnerabilityDescriptionShort}</td>
             	
             	<td><fmt:formatDate type="date" 
             		value="${vulnerability.ccPart.vulnerabilityTargetRemediationDate}" /></td>
@@ -127,7 +127,7 @@
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationComments}</span></td>
+            	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}</span></td>
             	
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>

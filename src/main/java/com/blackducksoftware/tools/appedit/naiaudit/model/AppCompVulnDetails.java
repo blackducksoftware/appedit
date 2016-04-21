@@ -5,6 +5,8 @@ import java.util.Date;
 import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeverity;
 
 public class AppCompVulnDetails {
+    private static final int SHORT_DESCRIPTION_LENGTH = 20;
+
     private final AppCompVulnKey appCompVulnKey;
 
     private final String componentName;
@@ -25,6 +27,7 @@ public class AppCompVulnDetails {
     private final Date vulnerabilityDatePublished;
 
     private final String vulnerabilityDescription;
+    private final String vulnerabilityDescriptionShort;
 
     private final Date vulnerabilityTargetRemediationDate;
 
@@ -33,6 +36,7 @@ public class AppCompVulnDetails {
     private String vulnerabilityRemediationStatus;
 
     private String vulnerabilityRemediationComments;
+    private String vulnerabilityRemediationCommentsShort;
 
     // TODO: This should have a builder
     public AppCompVulnDetails(AppCompVulnKey appCompVulnKey,
@@ -66,10 +70,22 @@ public class AppCompVulnDetails {
 
 	this.vulnerabilityDatePublished = vulnerabilityDatePublished;
 	this.vulnerabilityDescription = vulnerabilityDescription;
+	this.vulnerabilityDescriptionShort = vulnerabilityDescription
+		.substring(0, SHORT_DESCRIPTION_LENGTH) + "...";
 	this.vulnerabilityTargetRemediationDate = vulnerabilityTargetRemediationDate;
 	this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
 	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
+	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
+    }
+
+    private String shortenComment(String longComment) {
+	int lastNewlineIndex = longComment.lastIndexOf('\n');
+	if (lastNewlineIndex < 0)
+	    return longComment;
+	String shortComment = "...\n\n"
+		+ longComment.substring(lastNewlineIndex + 1);
+	return shortComment;
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -172,6 +188,14 @@ public class AppCompVulnDetails {
     public void setVulnerabilityRemediationStatus(
 	    String vulnerabilityRemediationStatus) {
 	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
+    }
+
+    public String getVulnerabilityDescriptionShort() {
+	return vulnerabilityDescriptionShort;
+    }
+
+    public String getVulnerabilityRemediationCommentsShort() {
+	return vulnerabilityRemediationCommentsShort;
     }
 
     @Override
