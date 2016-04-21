@@ -73,7 +73,7 @@ $(document).ready(function() {
             	<td>${selectedVulnerabilities.applicationName}</td>
             	<td>${selectedVulnerabilities.applicationVersion}</td>
             	-->
-            	<td>${vulnerability.ccPart.vulnerabilityName}</td>
+            	<td><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a></td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
             	<td>${vulnerability.ccPart.vulnerabilitySeverityString}</td>
