@@ -38,6 +38,12 @@ body {
   background-color: #ffffff;
 }
 
+thead input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+    }
+
 input,
 button,
 select,
@@ -228,3 +234,4 @@ h6,
   font-weight: 500;
   line-height: 1.1;
 }
+

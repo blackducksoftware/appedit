@@ -18,13 +18,34 @@
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" class="init">
-$(document).ready(function() {
-    $('#table_id').DataTable( {
-        "paging":   true,
-        "ordering": true,
-        "info":     true
-    } );
-} );
+	
+	$(document).ready(function() {
+
+
+	    // Setup - add a text input to each footer cell
+	    $('#table_id thead td').each( function () {
+	        var title = $(this).text();
+	        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+	    } );
+	 
+	    // DataTable
+	    var table = $('#table_id').DataTable();
+	 
+	    // Apply the search
+	    table.columns().every( function () {
+	        var that = this;
+	 
+	        $( 'input', this.header() ).on( 'keyup change', function () {
+	            if ( that.search() !== this.value ) {
+	                that
+	                    .search( this.value )
+	                    .draw();
+	            }
+	        } );
+	    } );
+	} );
+
+
 </script>
 </head>
 <body>
@@ -45,10 +66,7 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th></th>
-            <!-- 
-            <th>Application Name</th>
-            <th>Application Version</th>
-            -->
+
             <th>Vulnerability Name</th>
             <th>Component Name</th>
             <th>Component Version</th>
@@ -63,6 +81,24 @@ $(document).ready(function() {
             <th>Remediation Comment</th>
             <th>NAI Audit Status</th>
             <th>NAI Audit Comment</th>
+        </tr>
+        <tr>
+            <td></td>
+
+            <td>Vulnerability Name</td>
+            <td>Component Name</td>
+            <td>Component Version</td>
+            <td>Severity</td>
+            
+            <td>Date Published</td>
+            <td>Description</td>
+            
+            <td>Target Remediation Date</td>
+            <td>Actual Remediation Date</td>
+            <td>Remediation Status</td>
+            <td>Remediation Comment</td>
+            <td>NAI Audit Status</td>
+            <td>NAI Audit Comment</td>
         </tr>
     </thead>
     <tbody>
