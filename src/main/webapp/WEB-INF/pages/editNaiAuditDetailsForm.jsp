@@ -34,7 +34,7 @@
 	$(document).ready(function() {
 
 
-	    // Setup - add a text input to each footer cell
+	    // Setup - add a text input to each header cell
 	    $('#table_id thead td').each( function () {
 	        var title = $(this).text();
 	        
