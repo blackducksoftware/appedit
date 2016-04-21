@@ -44,6 +44,11 @@ thead input {
     box-sizing: border-box;
     }
 
+label {
+    display: inline-block;
+    width: 5em;
+  }
+  
 input,
 button,
 select,

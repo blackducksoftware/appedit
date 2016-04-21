@@ -17,7 +17,19 @@
     </script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+	
+	<!-- jquery ui, for tooltips -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+  		$(function() {
+    		$( document ).tooltip();
+  		});
+  	</script>
+  
 	<script type="text/javascript" class="init">
+	
+	
 	
 	$(document).ready(function() {
 
