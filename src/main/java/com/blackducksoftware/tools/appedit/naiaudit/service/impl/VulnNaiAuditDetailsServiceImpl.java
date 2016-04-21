@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,11 +101,19 @@ public class VulnNaiAuditDetailsServiceImpl implements
 		.getVulnerabilityRemediationComments();
 	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
 		.getVulnerabilityNaiAuditComment();
-	String newRemediationComment = "[" + nowString
-		+ ": NAI Audit Comment: " + incomingNaiAuditComment + "] "
-		+ origRemediationComment;
 
-	// append nai comment to previous nai comment
+	if (origRemediationComment == null) {
+	    origRemediationComment = "";
+	}
+	String separator = "";
+	if (!StringUtils.isBlank(origRemediationComment)) {
+	    separator = "\n\n";
+	}
+	String newRemediationComment = origRemediationComment + separator + "["
+		+ nowString + ": NAI Audit Comment: " + incomingNaiAuditComment
+		+ "]";
+
+	// Set nai comment
 	String newNaiAuditComment = "[" + nowString + ": "
 		+ incomingNaiAuditComment + "] ";
 

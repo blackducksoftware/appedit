@@ -88,7 +88,7 @@ $(document).ready(function() {
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td>${vulnerability.ccPart.vulnerabilityRemediationComments}</td>
+            	<td><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationComments}</span></td>
             	
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>
