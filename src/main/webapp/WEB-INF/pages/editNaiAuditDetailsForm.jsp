@@ -166,8 +166,10 @@
 	<form:errors path="comment" cssClass="error" /> 
 	<br/>
 	
-	<!-- Pass applicationId through to next controller -->
+	<!-- Pass application details through to next controller via model attribute "selectedVulnerabilities" -->
 	<form:hidden path="applicationId" />
+	<form:hidden path="applicationName" />
+	<form:hidden path="applicationVersion" />
 			
 		<button type="submit" class="btn btn-primary" name="action"
 			value="submit">

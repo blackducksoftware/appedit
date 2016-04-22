@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,7 +63,7 @@ public class EditNaiAuditDetailsController {
      * 
      */
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.GET)
-    public String showNaiAuditDetails(WebRequest request, Model model) {
+    public String showNaiAuditDetails(WebRequest request, ModelMap model) {
 	logger.debug("/editnaiauditdetails GET (redirected here)");
 	String appId = request.getParameter("appId");
 	String appName = request.getParameter("appName");
@@ -111,13 +110,8 @@ public class EditNaiAuditDetailsController {
 	    return "error/programError";
 	}
 	logger.info("appDetails.getAppId(): " + appId);
-	NaiAuditViewData auditFormData = new NaiAuditViewData();
-	auditFormData.setApplicationId(app.getId());
-	auditFormData.setApplicationName(app.getName());
-	auditFormData.setApplicationVersion(app.getVersion());
-
-	model.addAttribute("selectedVulnerabilities", auditFormData);
-	model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
+	populateModelWithFormData(model, app.getId(), app.getName(),
+		app.getVersion(), vulnNaiAuditDetailsList);
 	return "editNaiAuditDetailsForm";
     }
 
@@ -132,6 +126,11 @@ public class EditNaiAuditDetailsController {
 
 	logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: "
 		+ formData);
+
+	logger.debug("Application name / version: "
+		+ formData.getApplicationName() + " / "
+		+ formData.getApplicationVersion());
+
 	/*
 	 * TODO: Validate input // Validate input int i = 0; for (String
 	 * attrLabel : app.getAttrNames()) { InputValidatorEditAppDetails
@@ -222,24 +221,24 @@ public class EditNaiAuditDetailsController {
 		}
 	    }
 	}
-	populateModelWithFormData(model, formData, fullVulnNaiAuditDetailsList);
+	populateModelWithFormData(model, formData.getApplicationId(),
+		formData.getApplicationName(),
+		formData.getApplicationVersion(), fullVulnNaiAuditDetailsList);
 	return "editNaiAuditDetailsForm";
     }
 
-    private void populateModelWithFormData(ModelMap model,
-	    NaiAuditViewData formData,
-	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList) {
-	NaiAuditViewData newValues = new NaiAuditViewData();
-	newValues.setApplicationId(formData.getApplicationId()); // pass appId
-								 // through to
-								 // view
-	newValues.setApplicationName(formData.getApplicationName());
-	newValues.setApplicationVersion(formData.getApplicationVersion());
+    private void populateModelWithFormData(ModelMap model, String appId,
+	    String appName, String appVersion,
+	    List<AppCompVulnComposite> vulnNaiAuditDetailsList) {
 
-	model.addAttribute("selectedVulnerabilities", newValues);
+	NaiAuditViewData auditFormData = new NaiAuditViewData();
+	auditFormData.setApplicationId(appId);
+	auditFormData.setApplicationName(appName);
+	auditFormData.setApplicationVersion(appVersion);
 
-	model.addAttribute("vulnNaiAuditDetailsList",
-		fullVulnNaiAuditDetailsList);
+	model.addAttribute("selectedVulnerabilities", auditFormData);
+
+	model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
     }
 
     @ModelAttribute("vulnerabilityNaiAuditStatusOptions")
