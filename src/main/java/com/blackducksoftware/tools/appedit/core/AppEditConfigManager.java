@@ -68,10 +68,10 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String FIELD_INPUT_VALIDATION_REGEX_USERNAME_PROPERTY = "field.input.validation.regex.username";
 
     private static final String FIELD_INPUT_VALIDATION_REGEX_PASSWORD_PROPERTY = "field.input.validation.regex.psw";
-
+    private static final String FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY = "field.input.validation.regex.naiauditcomment";
     private static final String FIELD_INPUT_VALIDATION_REGEX_USERNAME_DEFAULT = "[A-Za-z0-9@_.-]+";
-
     private static final String FIELD_INPUT_VALIDATION_REGEX_PASSWORD_DEFAULT = ".+";
+    private static final String FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_DEFAULT = ".*";
 
     private static final String DB_SERVER_PROPERTY = "db.server";
     private static final String DB_PORT_PROPERTY = "db.port";
@@ -84,8 +84,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 
     private static final String NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY = "nai.audit.rejected.status.name";
     private static final String NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY = "nai.audit.rejected.status.changes.rem.status.to";
-
-    private static final String FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY = "field.input.validation.regex.naiauditcomment";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
@@ -228,7 +226,10 @@ public class AppEditConfigManager extends ConfigurationManager {
 	naiAuditRejectedStatusName = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY);
 	naiAuditRejectedStatusChangesRemStatusTo = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY);
 
-	fieldInputValidationRegexNaiAuditComment = getProperty(FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY);
+	fieldInputValidationRegexNaiAuditComment = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY);
+	if (fieldInputValidationRegexNaiAuditComment == null) {
+	    fieldInputValidationRegexNaiAuditComment = FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_DEFAULT;
+	}
 
 	enableOrDisableNaiAudit();
     }

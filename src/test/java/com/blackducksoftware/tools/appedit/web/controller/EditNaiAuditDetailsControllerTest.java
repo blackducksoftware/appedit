@@ -3,7 +3,6 @@ package com.blackducksoftware.tools.appedit.web.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.junit.AfterClass;
@@ -11,7 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
@@ -77,13 +76,12 @@ public class EditNaiAuditDetailsControllerTest {
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
 	webRequest.setAttribute("appId", "app1Id", WebRequest.SCOPE_REQUEST);
-	Model model = new ExtendedModelMap();
+	ModelMap model = new ExtendedModelMap();
 	controller.showNaiAuditDetails(webRequest, model);
 
 	// Verify
 
-	Map<String, Object> modelMap = model.asMap();
-	NaiAuditViewData naiAuditViewData = (NaiAuditViewData) modelMap
+	NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
 		.get("selectedVulnerabilities");
 	assertEquals("app1Id", naiAuditViewData.getApplicationId());
 	assertEquals("app1Id", naiAuditViewData.getApplicationName());
@@ -91,7 +89,7 @@ public class EditNaiAuditDetailsControllerTest {
 	assertEquals(null, naiAuditViewData.getVulnerabilityNaiAuditStatus());
 	assertEquals(null, naiAuditViewData.getItemList());
 
-	List<AppCompVulnComposite> vulnNaiAuditDetailsList = (List<AppCompVulnComposite>) modelMap
+	List<AppCompVulnComposite> vulnNaiAuditDetailsList = (List<AppCompVulnComposite>) model
 		.get("vulnNaiAuditDetailsList");
 
 	assertEquals("component1Name", vulnNaiAuditDetailsList.get(0)
