@@ -2,11 +2,10 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 import java.util.Date;
 
+import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeverity;
 
 public class AppCompVulnDetails {
-    private static final int SHORT_DESCRIPTION_LENGTH = 20;
-
     private final AppCompVulnKey appCompVulnKey;
 
     private final String componentName;
@@ -83,11 +82,13 @@ public class AppCompVulnDetails {
 	    return "";
 	}
 
-	if (longDescription.length() <= SHORT_DESCRIPTION_LENGTH + 3) {
+	if (longDescription.length() <= AppEditConstants.ABREVIATED_VULNERABILITY_DESCRIPTION_LENGTH + 3) {
 	    return longDescription;
 	}
 
-	return longDescription.substring(0, SHORT_DESCRIPTION_LENGTH) + "...";
+	return longDescription.substring(0,
+		AppEditConstants.ABREVIATED_VULNERABILITY_DESCRIPTION_LENGTH)
+		+ "...";
     }
 
     private String shortenComment(String longComment) {
@@ -99,6 +100,11 @@ public class AppCompVulnDetails {
 	    return longComment;
 	String shortComment = "...\n\n"
 		+ longComment.substring(lastNewlineIndex + 1);
+
+	if (shortComment.length() > AppEditConstants.ABBREVIATED_REMEDIATION_COMMENT_LENGTH + 3) {
+	    return longComment.substring(0,
+		    AppEditConstants.ABBREVIATED_REMEDIATION_COMMENT_LENGTH);
+	}
 	return shortComment;
     }
 

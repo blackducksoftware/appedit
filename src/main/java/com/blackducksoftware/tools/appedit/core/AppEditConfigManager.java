@@ -85,6 +85,8 @@ public class AppEditConfigManager extends ConfigurationManager {
     private static final String NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY = "nai.audit.rejected.status.name";
     private static final String NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY = "nai.audit.rejected.status.changes.rem.status.to";
 
+    private static final String FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY = "field.input.validation.regex.naiauditcomment";
+
     private final Logger log = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
@@ -115,6 +117,7 @@ public class AppEditConfigManager extends ConfigurationManager {
     private DateFormat naiAuditDateFormat;
     private String naiAuditRejectedStatusName;
     private String naiAuditRejectedStatusChangesRemStatusTo;
+    private String fieldInputValidationRegexNaiAuditComment;
 
     public AppEditConfigManager() {
 	super();
@@ -225,6 +228,8 @@ public class AppEditConfigManager extends ConfigurationManager {
 	naiAuditRejectedStatusName = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY);
 	naiAuditRejectedStatusChangesRemStatusTo = getOptionalProperty(NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY);
 
+	fieldInputValidationRegexNaiAuditComment = getProperty(FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY);
+
 	enableOrDisableNaiAudit();
     }
 
@@ -258,6 +263,10 @@ public class AppEditConfigManager extends ConfigurationManager {
 
 	log.info("Enabling NAI Audit functionality (all required properties for NAI Audit functionality have been set).");
 	editNaiAuditEnabled = true;
+    }
+
+    public String getFieldInputValidationRegexNaiAuditComment() {
+	return fieldInputValidationRegexNaiAuditComment;
     }
 
     public String getDbServer() {

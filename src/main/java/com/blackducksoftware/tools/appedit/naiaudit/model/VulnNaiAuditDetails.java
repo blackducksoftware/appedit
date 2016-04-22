@@ -1,5 +1,7 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+import com.blackducksoftware.tools.appedit.core.AppEditConstants;
+
 public class VulnNaiAuditDetails {
     private final AppCompVulnKey appCompVulnKey;
     private final String origNaiAuditStatus;
@@ -8,6 +10,7 @@ public class VulnNaiAuditDetails {
     private String vulnerabilityNaiAuditStatus;
 
     private String vulnerabilityNaiAuditComment;
+    private String vulnerabilityNaiAuditCommentShort;
     private String username;
 
     public VulnNaiAuditDetails(AppCompVulnKey appCompVulnKey,
@@ -16,8 +19,21 @@ public class VulnNaiAuditDetails {
 	this.appCompVulnKey = appCompVulnKey;
 	this.vulnerabilityNaiAuditStatus = vulnerabilityNaiAuditStatus;
 	this.vulnerabilityNaiAuditComment = vulnerabilityNaiAuditComment;
+	this.vulnerabilityNaiAuditCommentShort = shortenAuditComment(vulnerabilityNaiAuditComment);
 	this.origNaiAuditStatus = vulnerabilityNaiAuditStatus;
 	this.origNaiAuditComment = vulnerabilityNaiAuditComment;
+    }
+
+    private String shortenAuditComment(String longComment) {
+	if (longComment == null) {
+	    return "";
+	}
+
+	if (longComment.length() <= AppEditConstants.ABBREVIATED_NAI_AUDIT_COMMENT_LENGTH + 3) {
+	    return longComment;
+	}
+
+	return longComment.substring(0, AppEditConstants.ABBREVIATED_NAI_AUDIT_COMMENT_LENGTH) + "...";
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -56,6 +72,10 @@ public class VulnNaiAuditDetails {
 
     public String getOrigNaiAuditComment() {
 	return origNaiAuditComment;
+    }
+
+    public String getVulnerabilityNaiAuditCommentShort() {
+	return vulnerabilityNaiAuditCommentShort;
     }
 
     @Override

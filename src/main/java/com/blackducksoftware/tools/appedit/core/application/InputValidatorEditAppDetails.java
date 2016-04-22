@@ -49,6 +49,9 @@ public class InputValidatorEditAppDetails {
      * @return
      */
     public boolean validateAttributeValue(String attrLabel, String attrValue) {
+
+	// TODO: enforce length too
+
 	String patternString = config
 		.getFieldInputValidationRegexAttr(attrLabel);
 	Pattern pattern = Pattern.compile(patternString);

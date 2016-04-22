@@ -21,6 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.naiaudit.inputvalidation.InputValidatorEditNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
@@ -140,7 +141,7 @@ public class EditNaiAuditDetailsController {
 	 * + attrLabel + " is invalid."; logger.error(msg);
 	 * model.addAttribute("message", msg); return "error/programError"; } }
 	 */
-	// TODO: Check: None selected / none in list
+
 	List<String> selectedRows = formData.getItemList();
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 	try {
@@ -160,10 +161,19 @@ public class EditNaiAuditDetailsController {
 	} else {
 	    // User selected one or more rows; update each one
 
+	    // Validate input
+	    InputValidatorEditNaiAuditDetails inputValidator = new InputValidatorEditNaiAuditDetails(
+		    config);
+	    if (!inputValidator.validateCommentValue(formData.getComment())) {
+		String msg = "The comment entered is invalid.";
+		logger.error(msg);
+		model.addAttribute("message", msg);
+		return "error/programError";
+	    }
+
 	    Authentication auth = SecurityContextHolder.getContext()
 		    .getAuthentication();
-	    // AuthenticationResult authResult = (AuthenticationResult)
-	    // (auth.getDetails());
+
 	    String currentUser = auth.getName();
 	    logger.info("User: " + currentUser);
 
@@ -212,6 +222,13 @@ public class EditNaiAuditDetailsController {
 		}
 	    }
 	}
+	populateModelWithFormData(model, formData, fullVulnNaiAuditDetailsList);
+	return "editNaiAuditDetailsForm";
+    }
+
+    private void populateModelWithFormData(ModelMap model,
+	    NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList) {
 	NaiAuditViewData newValues = new NaiAuditViewData();
 	newValues.setApplicationId(formData.getApplicationId()); // pass appId
 								 // through to
@@ -223,7 +240,6 @@ public class EditNaiAuditDetailsController {
 
 	model.addAttribute("vulnNaiAuditDetailsList",
 		fullVulnNaiAuditDetailsList);
-	return "editNaiAuditDetailsForm";
     }
 
     @ModelAttribute("vulnerabilityNaiAuditStatusOptions")

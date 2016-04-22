@@ -142,7 +142,7 @@
             	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}</span></td>
             	
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
-            	<td>${vulnerability.auditPart.vulnerabilityNaiAuditComment}</td>
+            	<td title="${vulnerability.auditPart.vulnerabilityNaiAuditComment}">${vulnerability.auditPart.vulnerabilityNaiAuditCommentShort}</td>
         	</tr>
         </c:forEach>
     </tbody>
