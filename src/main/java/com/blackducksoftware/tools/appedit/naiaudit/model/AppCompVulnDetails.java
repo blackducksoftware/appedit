@@ -70,8 +70,7 @@ public class AppCompVulnDetails {
 
 	this.vulnerabilityDatePublished = vulnerabilityDatePublished;
 	this.vulnerabilityDescription = vulnerabilityDescription;
-	this.vulnerabilityDescriptionShort = vulnerabilityDescription
-		.substring(0, SHORT_DESCRIPTION_LENGTH) + "...";
+	this.vulnerabilityDescriptionShort = shortenDescription(vulnerabilityDescription);
 	this.vulnerabilityTargetRemediationDate = vulnerabilityTargetRemediationDate;
 	this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
 	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
@@ -79,7 +78,22 @@ public class AppCompVulnDetails {
 	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
     }
 
+    private String shortenDescription(String longDescription) {
+	if (longDescription == null) {
+	    return "";
+	}
+
+	if (longDescription.length() <= SHORT_DESCRIPTION_LENGTH + 3) {
+	    return longDescription;
+	}
+
+	return longDescription.substring(0, SHORT_DESCRIPTION_LENGTH) + "...";
+    }
+
     private String shortenComment(String longComment) {
+	if (longComment == null) {
+	    return "";
+	}
 	int lastNewlineIndex = longComment.lastIndexOf('\n');
 	if (lastNewlineIndex < 0)
 	    return longComment;
