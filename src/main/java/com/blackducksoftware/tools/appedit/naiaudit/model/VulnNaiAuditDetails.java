@@ -33,7 +33,8 @@ public class VulnNaiAuditDetails {
 	    return longComment;
 	}
 
-	return longComment.substring(0, AppEditConstants.ABBREVIATED_NAI_AUDIT_COMMENT_LENGTH) + "...";
+	return longComment.substring(0,
+		AppEditConstants.ABBREVIATED_NAI_AUDIT_COMMENT_LENGTH) + "...";
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -64,6 +65,7 @@ public class VulnNaiAuditDetails {
     public void setVulnerabilityNaiAuditComment(
 	    String vulnerabilityNaiAuditComment) {
 	this.vulnerabilityNaiAuditComment = vulnerabilityNaiAuditComment;
+	this.vulnerabilityNaiAuditCommentShort = shortenAuditComment(vulnerabilityNaiAuditComment);
     }
 
     public String getOrigNaiAuditStatus() {

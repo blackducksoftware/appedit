@@ -102,8 +102,9 @@ public class AppCompVulnDetails {
 		+ longComment.substring(lastNewlineIndex + 1);
 
 	if (shortComment.length() > AppEditConstants.ABBREVIATED_REMEDIATION_COMMENT_LENGTH + 3) {
-	    return longComment.substring(0,
-		    AppEditConstants.ABBREVIATED_REMEDIATION_COMMENT_LENGTH);
+	    return shortComment.substring(0,
+		    AppEditConstants.ABBREVIATED_REMEDIATION_COMMENT_LENGTH)
+		    + "...";
 	}
 	return shortComment;
     }
@@ -203,6 +204,7 @@ public class AppCompVulnDetails {
     public void setVulnerabilityRemediationComments(
 	    String vulnerabilityRemediationComments) {
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
+	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
     }
 
     public void setVulnerabilityRemediationStatus(
