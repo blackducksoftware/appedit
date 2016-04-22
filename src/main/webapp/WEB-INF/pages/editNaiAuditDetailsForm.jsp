@@ -1,6 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
@@ -58,9 +59,42 @@
 	            }
 	        } );
 	    } );
+	    
+	    $("input").keyup(function(){
+	        formChanged();
+	    });
+	    
+	    document.getElementById('saveButton').disabled=true;
 	} );
 
+	function formChanged() {
+		var userCheckedARow = false;
+		var userEnteredSomething = false;
 
+		for (var i = 0; i < ${fn:length(vulnNaiAuditDetailsList)}; i++) {
+
+			var cbox = document.getElementById("checkbox" + i);
+			if (cbox.checked == true) {
+				userCheckedARow = true;
+				break;
+			}
+		}
+		
+		if (userCheckedARow) {
+			var commentValue = $('#comment_field').val();
+			if (commentValue.length > 0) {
+				userEnteredSomething = true;
+			}
+		}
+		
+		
+		if (userEnteredSomething) {
+			document.getElementById('saveButton').disabled=false;
+		} else {
+			document.getElementById('saveButton').disabled=true;
+		}
+	}
+	
 </script>
 </head>
 <body>
@@ -75,7 +109,7 @@
     <div class="regular">
 
 
-	<form:form method="post" modelAttribute="selectedVulnerabilities"  action="editnaiauditdetails">
+	<form:form id="theForm" method="post" modelAttribute="selectedVulnerabilities"  action="editnaiauditdetails">
 	<!-- CSRF token is inserted automatically by form:form tag -->
 			
 	<table id="table_id" class="display">
@@ -118,13 +152,9 @@
         </tr>
     </thead>
     <tbody>
-    	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}">
+    	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}" varStatus="rowCount">
         	<tr>
-            	<td><form:checkbox path="itemList" value="${vulnerability.key.asString}" /></td>
-            	<!--
-            	<td>${selectedVulnerabilities.applicationName}</td>
-            	<td>${selectedVulnerabilities.applicationVersion}</td>
-            	-->
+            	<td><form:checkbox onchange="javascript:formChanged();" id="checkbox${rowCount.index}" path="itemList" value="${vulnerability.key.asString}" /></td>
             	<td><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a></td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
@@ -150,12 +180,8 @@
 	</table>
 	<br/>
 	<label for="naiauditstatus_field">NAI Audit Status: </label>
-	<!-- 
-	<form:input path="vulnerabilityNaiAuditStatus" size="20" id="naiauditstatus_field" /><br/>
-	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" /> 
-	-->
 	
-	<form:select path="vulnerabilityNaiAuditStatus">
+	<form:select id="status" path="vulnerabilityNaiAuditStatus">
 		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
 	</form:select>
 	<br />
@@ -172,7 +198,7 @@
 	<form:hidden path="applicationName" />
 	<form:hidden path="applicationVersion" />
 			
-		<button type="submit" class="btn btn-primary" name="action"
+		<button id="saveButton" type="submit" class="btn btn-primary" name="action"
 			value="submit">
 			<spring:message code="label.naiauditdetailsedit.submit" />
 		</button>
