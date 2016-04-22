@@ -69,7 +69,8 @@
         <h1><spring:message code="label.naiauditdetailsedit.title" text="Edit NAI Audit Details" /></h1>
         <h4><b><spring:message code="label.naiauditdetailsedit.app.name" text="Application name" />:</b> ${selectedVulnerabilities.applicationName}</h4>
         <h4><b><spring:message code="label.naiauditdetailsedit.app.version" text="Application name" />:</b> ${selectedVulnerabilities.applicationVersion}</h4>
-        <br/>
+        <p class="has-error">${message}</p>
+        <br />
     </div>
     <div class="regular">
 

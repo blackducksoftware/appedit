@@ -157,6 +157,12 @@ public class EditNaiAuditDetailsController {
 	if (selectedRows == null) {
 	    String msg = "No rows selected.";
 	    logger.warn(msg);
+	    model.addAttribute("message", msg);
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+	    return "editNaiAuditDetailsForm";
 	} else {
 	    // User selected one or more rows; update each one
 
@@ -167,7 +173,11 @@ public class EditNaiAuditDetailsController {
 		String msg = "The comment entered is invalid.";
 		logger.error(msg);
 		model.addAttribute("message", msg);
-		return "error/programError";
+		populateModelWithFormData(model, formData.getApplicationId(),
+			formData.getApplicationName(),
+			formData.getApplicationVersion(),
+			fullVulnNaiAuditDetailsList);
+		return "editNaiAuditDetailsForm";
 	    }
 
 	    Authentication auth = SecurityContextHolder.getContext()
