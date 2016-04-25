@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import com.blackducksoftware.tools.appedit.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditChangeHistoryDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditChange;
 

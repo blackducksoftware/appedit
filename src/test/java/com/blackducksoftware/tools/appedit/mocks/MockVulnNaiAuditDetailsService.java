@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.blackducksoftware.tools.appedit.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;

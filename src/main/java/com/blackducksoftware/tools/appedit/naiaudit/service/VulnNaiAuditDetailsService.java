@@ -2,7 +2,7 @@ package com.blackducksoftware.tools.appedit.naiaudit.service;
 
 import java.util.List;
 
-import com.blackducksoftware.tools.appedit.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 

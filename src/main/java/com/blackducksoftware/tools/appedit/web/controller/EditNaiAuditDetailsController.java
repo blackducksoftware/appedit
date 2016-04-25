@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.inputvalidation.InputValidatorEditNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;

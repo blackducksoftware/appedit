@@ -26,8 +26,9 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.blackducksoftware.tools.appedit.core.application.AppDetails;
-import com.blackducksoftware.tools.appedit.core.application.AppDetailsBeanConverter;
+import com.blackducksoftware.tools.appedit.appdetails.dao.cc.AppDetailsBeanConverter;
+import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
+import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class ViewAppDetailsConverterTest {

@@ -1,4 +1,4 @@
-package com.blackducksoftware.tools.appedit.exception;
+package com.blackducksoftware.tools.appedit.core.exception;
 
 public class AppEditException extends Exception {
 

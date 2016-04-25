@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.codecenter;
+package com.blackducksoftware.tools.appedit.core.dao.cc;
 
 import java.util.List;
 import java.util.Properties;
@@ -31,9 +31,9 @@ import com.blackducksoftware.sdk.codecenter.role.data.RoleTypeEnum;
 import com.blackducksoftware.sdk.codecenter.role.data.UserRoleAssignment;
 import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
-import com.blackducksoftware.tools.appedit.core.Role;
-import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
+import com.blackducksoftware.tools.appedit.core.model.Role;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;

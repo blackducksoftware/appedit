@@ -22,15 +22,15 @@
     	<constructor-arg ref="config" />
     </bean>
     
-    <bean id="userAuthenticator" class="com.blackducksoftware.tools.appedit.codecenter.CcUserAuthenticator" >
+    <bean id="userAuthenticator" class="com.blackducksoftware.tools.appedit.core.dao.cc.CcUserAuthenticator" >
     	<property name="config" ref="config" />
     </bean>
     
-    <bean id="inputValidatorLogin" class="com.blackducksoftware.tools.appedit.core.InputValidatorLogin" >
+    <bean id="inputValidatorLogin" class="com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin" >
     	<constructor-arg ref="config" />
     </bean>
     
-    <bean id="appDao" class="com.blackducksoftware.tools.appedit.codecenter.CcAppDao">
+    <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao">
     	<property name="ccsw" ref="ccsw" />
     </bean>
  

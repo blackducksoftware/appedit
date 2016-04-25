@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
-import com.blackducksoftware.tools.appedit.core.InputValidatorLogin;
+import com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin;
 
 public class InputValidatorEditNaiAuditDetails {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()

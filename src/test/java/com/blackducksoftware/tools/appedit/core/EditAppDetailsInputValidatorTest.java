@@ -26,7 +26,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.blackducksoftware.tools.appedit.core.application.InputValidatorEditAppDetails;
+import com.blackducksoftware.tools.appedit.appdetails.inputvalidation.InputValidatorEditAppDetails;
 
 public class EditAppDetailsInputValidatorTest {
 

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.codecenter;
+package com.blackducksoftware.tools.appedit.appdetails.dao.cc;
 
 import java.util.List;
 import java.util.Map;
@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
+import com.blackducksoftware.tools.appedit.appdetails.dao.AppDao;
+import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.application.AppDao;
-import com.blackducksoftware.tools.appedit.core.application.AppDetails;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;

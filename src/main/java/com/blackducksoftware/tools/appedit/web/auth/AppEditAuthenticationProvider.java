@@ -31,9 +31,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.blackducksoftware.tools.appedit.core.AuthenticationResult;
-import com.blackducksoftware.tools.appedit.core.InputValidatorLogin;
-import com.blackducksoftware.tools.appedit.core.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin;
+import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
 
 /**
  * A Spring Security AuthenticationProvider. Decides whether or not a given set

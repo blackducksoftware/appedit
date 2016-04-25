@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.core.application;
+package com.blackducksoftware.tools.appedit.appdetails.dao;
 
+import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 
 /**

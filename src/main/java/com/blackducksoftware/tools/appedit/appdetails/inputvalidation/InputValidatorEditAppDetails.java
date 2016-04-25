@@ -15,12 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.core.application;
+package com.blackducksoftware.tools.appedit.appdetails.inputvalidation;
 
 import java.util.regex.Pattern;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.InputValidatorLogin;
+import com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin;
 
 /**
  * Input validator for the fields (custom attr values) on the editappdetails

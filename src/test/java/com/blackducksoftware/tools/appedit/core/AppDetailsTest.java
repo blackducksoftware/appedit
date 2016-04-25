@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.blackducksoftware.tools.appedit.core.application.AppDetails;
+import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class AppDetailsTest {

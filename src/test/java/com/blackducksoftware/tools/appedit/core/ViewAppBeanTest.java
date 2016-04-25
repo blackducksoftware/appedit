@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class ViewAppBeanTest {
