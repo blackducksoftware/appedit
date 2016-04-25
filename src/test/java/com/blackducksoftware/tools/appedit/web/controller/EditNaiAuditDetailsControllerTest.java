@@ -60,8 +60,6 @@ public class EditNaiAuditDetailsControllerTest {
 		"NAI Rejected By Auditor");
 	props.setProperty("nai.audit.date.format", "MMM-dd-yyyy hh:mm:ss z");
 
-	props.setProperty("auditor.role.name", "not used");
-
 	AppEditConfigManager config = new AppEditConfigManager(props);
 
 	controller.setConfig(config);

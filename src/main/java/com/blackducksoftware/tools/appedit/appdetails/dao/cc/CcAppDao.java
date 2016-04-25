@@ -169,7 +169,7 @@ public class CcAppDao implements AppDao {
      */
     @Override
     public void update(AppDetails app) throws Exception {
-	logger.info("CcDataSource.update called for app: " + app);
+	logger.info("CcAppDao.update called for app: " + app);
 
 	Set<AttributeValuePojo> changedAttrValues = new TreeSet<>();
 	for (String attrName : config.getCcAttributeNames()) {
