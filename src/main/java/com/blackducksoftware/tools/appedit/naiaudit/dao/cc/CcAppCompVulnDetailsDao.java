@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +24,10 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
-    private final ICodeCenterServerWrapper ccsw;
+    private ICodeCenterServerWrapper ccsw;
 
-    public CcAppCompVulnDetailsDao(ICodeCenterServerWrapper ccsw) {
+    @Inject
+    public void setCcsw(ICodeCenterServerWrapper ccsw) {
 	this.ccsw = ccsw;
     }
 

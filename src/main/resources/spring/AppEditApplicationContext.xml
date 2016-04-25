@@ -30,9 +30,7 @@
     <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao" />
     <bean id="appService" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppServiceImpl" />
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao" />
-    <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao">
-    	<constructor-arg ref="ccsw" />
-    </bean>
+    <bean id="appCompVulnDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcAppCompVulnDetailsDao" />
     <bean id="vulnNaiAuditChangeHistoryDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditChangeHistoryDao" />
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton" />
     <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" />
