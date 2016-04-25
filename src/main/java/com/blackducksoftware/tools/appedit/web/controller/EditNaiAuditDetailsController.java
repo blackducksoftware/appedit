@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
+import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.inputvalidation.InputValidatorEditNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
-import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
@@ -131,16 +131,6 @@ public class EditNaiAuditDetailsController {
 		+ formData.getApplicationName() + " / "
 		+ formData.getApplicationVersion());
 
-	/*
-	 * TODO: Validate input // Validate input int i = 0; for (String
-	 * attrLabel : app.getAttrNames()) { InputValidatorEditAppDetails
-	 * inputValidator = new InputValidatorEditAppDetails( config); if
-	 * (!inputValidator.validateAttributeValue(attrLabel, app
-	 * .getAttrValues().get(i++).getValue())) { String msg = "The value of "
-	 * + attrLabel + " is invalid."; logger.error(msg);
-	 * model.addAttribute("message", msg); return "error/programError"; } }
-	 */
-
 	List<String> selectedRows = formData.getItemList();
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 	try {
@@ -153,7 +143,21 @@ public class EditNaiAuditDetailsController {
 	    model.addAttribute("message", msg);
 	    return "error/programError";
 	}
-	List<VulnNaiAuditDetails> selectedVulnNaiAuditDetailsList;
+
+	if (formData.getComment().length() > AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH) {
+	    String msg = "The comment entered is too long. Maximum length is "
+		    + AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH
+		    + " characters";
+	    logger.error(msg);
+
+	    model.addAttribute("message", msg);
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+	    return "editNaiAuditDetailsForm";
+	}
+
 	if (selectedRows == null) {
 	    String msg = "No rows selected.";
 	    logger.warn(msg);
