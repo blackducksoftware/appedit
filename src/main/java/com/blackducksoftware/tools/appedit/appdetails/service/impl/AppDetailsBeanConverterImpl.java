@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
@@ -35,14 +37,20 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
  *
  */
 public class AppDetailsBeanConverterImpl implements AppDetailsBeanConverter {
-    private final AppEditConfigManager config;
+    private AppEditConfigManager config;
 
-    public AppDetailsBeanConverterImpl(AppEditConfigManager config) {
+    @Inject
+    public void setConfig(AppEditConfigManager config) {
 	this.config = config;
     }
 
-    /* (non-Javadoc)
-     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverter#createViewAppBean(com.blackducksoftware.tools.appedit.appdetails.model.AppDetails)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.
+     * AppDetailsBeanConverter
+     * #createViewAppBean(com.blackducksoftware.tools.appedit
+     * .appdetails.model.AppDetails)
      */
     @Override
     public ViewAppBean createViewAppBean(AppDetails appDetails) {
@@ -71,8 +79,13 @@ public class AppDetailsBeanConverterImpl implements AppDetailsBeanConverter {
 	return viewAppBean;
     }
 
-    /* (non-Javadoc)
-     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverter#createAppDetails(com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.
+     * AppDetailsBeanConverter
+     * #createAppDetails(com.blackducksoftware.tools.appedit
+     * .appdetails.model.ViewAppBean)
      */
     @Override
     public AppDetails createAppDetails(ViewAppBean viewAppBean) {

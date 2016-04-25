@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
-import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
@@ -39,13 +38,14 @@ public class ViewAppDetailsConverterTest {
 
     private static AppEditConfigManager config = null;
 
-    private static AppDetailsBeanConverter converter;
+    private static AppDetailsBeanConverterImpl converter;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
 	Properties props = createProperties();
 	config = new AppEditConfigManager(props);
-	converter = new AppDetailsBeanConverterImpl(config);
+	converter = new AppDetailsBeanConverterImpl();
+	converter.setConfig(config);
     }
 
     @Test

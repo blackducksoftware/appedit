@@ -35,9 +35,7 @@
     </bean>
     <bean id="vulnNaiAuditChangeHistoryDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditChangeHistoryDao" />
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton" />
-    <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" >
-    	<constructor-arg ref="config" />
-    </bean>
+    <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" />
       
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
