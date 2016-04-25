@@ -85,6 +85,11 @@
 			if (commentValue.length > 0) {
 				userEnteredSomething = true;
 			}
+			
+			var statusValue = $('#status').val();
+			if (statusValue.length > 0) {
+				userEnteredSomething = true;
+			}
 		}
 		
 		
@@ -181,7 +186,7 @@
 	<br/>
 	<label for="naiauditstatus_field">NAI Audit Status: </label>
 	
-	<form:select id="status" path="vulnerabilityNaiAuditStatus">
+	<form:select onchange="javascript:formChanged();" id="status" path="vulnerabilityNaiAuditStatus">
 		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
 	</form:select>
 	<br />
