@@ -23,11 +23,9 @@
     </bean>
     
     <bean id="userAuthenticationService" class="com.blackducksoftware.tools.appedit.core.service.impl.UserAuthenticationServiceImpl" >
-
     </bean>
     
     <bean id="userAuthenticationDao" class="com.blackducksoftware.tools.appedit.core.dao.cc.CcUserAuthenticationDao" >
-    	<property name="config" ref="config" />
     </bean>
     
     <bean id="inputValidatorLogin" class="com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin" >
@@ -35,11 +33,9 @@
     </bean>
     
     <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao">
-    	<property name="ccsw" ref="ccsw" />
     </bean>
     
     <bean id="appService" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppServiceImpl">
-    	<property name="appDao" ref="appDao" />
     </bean>
  
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao">
