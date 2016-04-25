@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
     // config (wired)
     private AppEditConfigManager config;
 
+    @Inject
     public void setConfig(AppEditConfigManager config) {
 	this.config = config;
     }
@@ -37,6 +40,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
     // DAO objects (wired)
     private VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao;
 
+    @Inject
     public void setVulnNaiAuditDetailsDao(
 	    VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao) {
 	this.vulnNaiAuditDetailsDao = vulnNaiAuditDetailsDao;
@@ -44,6 +48,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
 
     private AppCompVulnDetailsDao appCompVulnDetailsDao;
 
+    @Inject
     public void setAppCompVulnDetailsDao(
 	    AppCompVulnDetailsDao appCompVulnDetailsDao) {
 	this.appCompVulnDetailsDao = appCompVulnDetailsDao;
@@ -51,6 +56,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
 
     private VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao;
 
+    @Inject
     public void setVulnNaiAuditChangeHistoryDao(
 	    VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao) {
 	this.vulnNaiAuditChangeHistoryDao = vulnNaiAuditChangeHistoryDao;

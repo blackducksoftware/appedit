@@ -3,6 +3,8 @@ package com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +20,7 @@ public class JdbcVulnNaiAuditChangeHistoryDao implements
 
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Inject
     public void setJdbcTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
 	this.jdbcTemplate = jdbcTemplate;
     }
