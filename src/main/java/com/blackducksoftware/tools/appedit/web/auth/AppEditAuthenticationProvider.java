@@ -31,9 +31,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticator;
 import com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin;
 import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
+import com.blackducksoftware.tools.appedit.core.service.UserAuthenticationService;
 
 /**
  * A Spring Security AuthenticationProvider. Decides whether or not a given set
@@ -47,11 +47,12 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
-    private UserAuthenticator userAuthenticator;
+    private UserAuthenticationService userAuthenticationService;
 
     @Inject
-    public void setUserAuthenticator(UserAuthenticator userAuthenticator) {
-	this.userAuthenticator = userAuthenticator;
+    public void setUserAuthenticationService(
+	    UserAuthenticationService userAuthenticationService) {
+	this.userAuthenticationService = userAuthenticationService;
     }
 
     private InputValidatorLogin inputValidatorLogin;
@@ -93,8 +94,8 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
 
 	    // Authenticate in Code Center
 
-	    AuthenticationResult authResult = userAuthenticator.authenticate(
-		    username, password);
+	    AuthenticationResult authResult = userAuthenticationService
+		    .authenticate(username, password);
 	    if (!authResult.isAuthenticated()) {
 		throw new AuthenticationServiceException(
 			authResult.getMessage());

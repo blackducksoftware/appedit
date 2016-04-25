@@ -25,7 +25,7 @@ import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
  * @author sbillings
  *
  */
-public interface UserAuthenticator {
+public interface UserAuthenticationDao {
     /**
      * Attempts to authenticate the given user.
      *

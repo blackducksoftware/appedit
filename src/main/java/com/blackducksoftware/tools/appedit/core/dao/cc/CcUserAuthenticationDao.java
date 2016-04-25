@@ -31,7 +31,7 @@ import com.blackducksoftware.sdk.codecenter.role.data.RoleTypeEnum;
 import com.blackducksoftware.sdk.codecenter.role.data.UserRoleAssignment;
 import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticator;
+import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticationDao;
 import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.model.Role;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
@@ -46,7 +46,7 @@ import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
  * @author sbillings
  *
  */
-public class CcUserAuthenticator implements UserAuthenticator {
+public class CcUserAuthenticationDao implements UserAuthenticationDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
 
@@ -57,11 +57,11 @@ public class CcUserAuthenticator implements UserAuthenticator {
 	this.config = config;
     }
 
-    public CcUserAuthenticator() throws Exception {
+    public CcUserAuthenticationDao() throws Exception {
 	logger.debug("Default constructor called");
     }
 
-    public CcUserAuthenticator(AppEditConfigManager config) throws Exception {
+    public CcUserAuthenticationDao(AppEditConfigManager config) throws Exception {
 	logger.debug("Config passed via constructor");
 	this.config = config;
     }

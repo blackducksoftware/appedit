@@ -22,7 +22,11 @@
     	<constructor-arg ref="config" />
     </bean>
     
-    <bean id="userAuthenticator" class="com.blackducksoftware.tools.appedit.core.dao.cc.CcUserAuthenticator" >
+    <bean id="userAuthenticationService" class="com.blackducksoftware.tools.appedit.core.service.impl.UserAuthenticationServiceImpl" >
+
+    </bean>
+    
+    <bean id="userAuthenticationDao" class="com.blackducksoftware.tools.appedit.core.dao.cc.CcUserAuthenticationDao" >
     	<property name="config" ref="config" />
     </bean>
     
