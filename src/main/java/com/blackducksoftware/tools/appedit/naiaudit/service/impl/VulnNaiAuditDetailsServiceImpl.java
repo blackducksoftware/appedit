@@ -120,8 +120,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
 		+ "]";
 
 	// Set nai comment
-	String newNaiAuditComment = "[" + nowString + ": "
-		+ incomingNaiAuditComment + "] ";
+	String newNaiAuditComment = incomingNaiAuditComment;
 
 	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
 		newRemediationComment);
