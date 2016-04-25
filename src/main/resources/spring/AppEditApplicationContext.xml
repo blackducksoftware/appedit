@@ -37,6 +37,10 @@
     <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao">
     	<property name="ccsw" ref="ccsw" />
     </bean>
+    
+    <bean id="appService" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppServiceImpl">
+    	<property name="appDao" ref="appDao" />
+    </bean>
  
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao">
     	<property name="jdbcTemplate" ref="namedParameterJdbcTemplate" />

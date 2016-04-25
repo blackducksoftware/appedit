@@ -36,11 +36,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import com.blackducksoftware.tools.appedit.appdetails.dao.AppDao;
 import com.blackducksoftware.tools.appedit.appdetails.dao.cc.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.inputvalidation.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
+import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.model.Role;
@@ -67,11 +67,11 @@ public class EditAppDetailsController {
 	this.config = config;
     }
 
-    private AppDao appDao;
+    private AppService appService;
 
     @Inject
-    public void setAppDao(AppDao appDao) {
-	this.appDao = appDao;
+    public void setAppService(AppService appService) {
+	this.appService = appService;
     }
 
     @Inject
@@ -138,9 +138,9 @@ public class EditAppDetailsController {
 	    // load app from Code Center using whatever info we were given (try
 	    // ID first)
 	    if (appId != null) {
-		appDetails = appDao.loadFromId(appId);
+		appDetails = appService.loadFromId(appId);
 	    } else {
-		appDetails = appDao.loadFromName(appName);
+		appDetails = appService.loadFromName(appName);
 	    }
 	} catch (Exception e) {
 	    String msg = "Error loading application: " + e.getMessage();
@@ -151,7 +151,7 @@ public class EditAppDetailsController {
 
 	// Make sure they are on this app's team (list of users that can access
 	// it)
-	boolean isAuthorized = appDao.authorizeUser(appDetails.getAppId(),
+	boolean isAuthorized = appService.authorizeUser(appDetails.getAppId(),
 		username);
 	if (!isAuthorized) {
 	    String msg = "You are not authorized to access this application";
@@ -178,7 +178,7 @@ public class EditAppDetailsController {
 
 	// Put the objects the JSP will need into the model
 	model.addAttribute("app", app);
-	model.addAttribute("dataSource", appDao);
+	model.addAttribute("dataSource", appService);
 
 	return "editAppDetailsForm";
     }
@@ -196,7 +196,7 @@ public class EditAppDetailsController {
 		logger.info("The Code Center attribute for " + attrLabel + " ("
 			+ attrCodeCenterName + ") has no value object.");
 
-		AttributeDefinitionPojo attrDef = appDao
+		AttributeDefinitionPojo attrDef = appService
 			.getAttributeDefinitionByName(attrCodeCenterName);
 		attrValue = new AttributeValuePojo(attrDef.getId(),
 			attrCodeCenterName, "");
@@ -213,7 +213,7 @@ public class EditAppDetailsController {
      */
     @RequestMapping(value = "/editappdetails", method = RequestMethod.POST)
     public String updateApp(@ModelAttribute("app") ViewAppBean app,
-	    @ModelAttribute("dataSource") AppDao dataSource,
+	    @ModelAttribute("dataSource") AppService dataSource,
 	    @RequestParam String action, ModelMap model) {
 
 	logger.info("EditAppDetails.updateApp(): app: " + app
