@@ -58,6 +58,10 @@
     	<property name="vulnNaiAuditDetailsDao" ref="vulnNaiAuditDetailsDao" />
     	<property name="vulnNaiAuditChangeHistoryDao" ref="vulnNaiAuditChangeHistoryDao" />
     </bean>
+    
+    <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" >
+    	<constructor-arg ref="config" />
+    </bean>
       
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

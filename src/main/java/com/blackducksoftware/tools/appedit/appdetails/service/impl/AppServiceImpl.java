@@ -4,6 +4,8 @@ import javax.inject.Inject;
 
 import com.blackducksoftware.tools.appedit.appdetails.dao.AppDao;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
+import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
+import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 
@@ -14,6 +16,14 @@ public class AppServiceImpl implements AppService {
     @Inject
     public void setAppDao(AppDao appDao) {
 	this.appDao = appDao;
+    }
+
+    private AppDetailsBeanConverter appDetailsBeanConverter;
+
+    @Inject
+    public void setAppDetailsBeanConverter(
+	    AppDetailsBeanConverter appDetailsBeanConverter) {
+	this.appDetailsBeanConverter = appDetailsBeanConverter;
     }
 
     @Override
@@ -40,6 +50,11 @@ public class AppServiceImpl implements AppService {
     public AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception {
 	return appDao.getAttributeDefinitionByName(attrName);
+    }
+
+    @Override
+    public ViewAppBean createViewAppBean(AppDetails appDetails) {
+	return appDetailsBeanConverter.createViewAppBean(appDetails);
     }
 
 }

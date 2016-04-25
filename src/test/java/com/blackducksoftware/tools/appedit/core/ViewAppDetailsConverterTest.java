@@ -26,9 +26,10 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.blackducksoftware.tools.appedit.appdetails.dao.cc.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
+import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
+import com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class ViewAppDetailsConverterTest {
@@ -44,7 +45,7 @@ public class ViewAppDetailsConverterTest {
     public static void setUpBeforeClass() throws Exception {
 	Properties props = createProperties();
 	config = new AppEditConfigManager(props);
-	converter = new AppDetailsBeanConverter(config);
+	converter = new AppDetailsBeanConverterImpl(config);
     }
 
     @Test

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.appdetails.dao.cc;
+package com.blackducksoftware.tools.appedit.appdetails.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
+import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
@@ -33,20 +34,17 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
  * @author sbillings
  *
  */
-public class AppDetailsBeanConverter {
+public class AppDetailsBeanConverterImpl implements AppDetailsBeanConverter {
     private final AppEditConfigManager config;
 
-    public AppDetailsBeanConverter(AppEditConfigManager config) {
+    public AppDetailsBeanConverterImpl(AppEditConfigManager config) {
 	this.config = config;
     }
 
-    /**
-     * Create a View-friendly application bean from a Code Center-centric
-     * application bean.
-     *
-     * @param appDetails
-     * @return
+    /* (non-Javadoc)
+     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverter#createViewAppBean(com.blackducksoftware.tools.appedit.appdetails.model.AppDetails)
      */
+    @Override
     public ViewAppBean createViewAppBean(AppDetails appDetails) {
 	Map<String, String> attrMap = config.getAttributeMap();
 
@@ -73,13 +71,10 @@ public class AppDetailsBeanConverter {
 	return viewAppBean;
     }
 
-    /**
-     * Create a Code Center-centric application bean from a View-friendly
-     * application bean.
-     *
-     * @param viewAppBean
-     * @return
+    /* (non-Javadoc)
+     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverter#createAppDetails(com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean)
      */
+    @Override
     public AppDetails createAppDetails(ViewAppBean viewAppBean) {
 	AppDetails appDetails = new AppDetails(viewAppBean.getAppId(),
 		viewAppBean.getAppName());

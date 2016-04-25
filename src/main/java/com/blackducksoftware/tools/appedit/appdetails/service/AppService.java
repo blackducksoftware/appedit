@@ -1,6 +1,7 @@
 package com.blackducksoftware.tools.appedit.appdetails.service;
 
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
+import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 
 public interface AppService {
@@ -42,4 +43,12 @@ public interface AppService {
 
     AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception;
+
+    /**
+     * Create a ViewAppBean from an AppDetails bean.
+     * 
+     * @param appDetails
+     * @return
+     */
+    ViewAppBean createViewAppBean(AppDetails appDetails);
 }

@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import com.blackducksoftware.tools.appedit.appdetails.dao.cc.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.inputvalidation.InputValidatorEditAppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
+import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
@@ -78,6 +78,14 @@ public class EditAppDetailsController {
     public void setVulnNaiAuditDetailsService(
 	    VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
 	this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
+    }
+
+    private AppDetailsBeanConverter appDetailsBeanConverter;
+
+    @Inject
+    public void setAppDetailsBeanConverter(
+	    AppDetailsBeanConverter appDetailsBeanConverter) {
+	this.appDetailsBeanConverter = appDetailsBeanConverter;
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
@@ -173,8 +181,8 @@ public class EditAppDetailsController {
 
 	// Convert the generic appDetails object to view-friendly appDetails
 	// object
-	AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
-	ViewAppBean app = converter.createViewAppBean(appDetails);
+
+	ViewAppBean app = appService.createViewAppBean(appDetails);
 
 	// Put the objects the JSP will need into the model
 	model.addAttribute("app", app);
@@ -248,8 +256,7 @@ public class EditAppDetailsController {
 	}
 
 	// Convert the View-friendly appDetails to a generic appDetails object
-	AppDetailsBeanConverter converter = new AppDetailsBeanConverter(config);
-	AppDetails appDetails = converter.createAppDetails(app);
+	AppDetails appDetails = appDetailsBeanConverter.createAppDetails(app);
 
 	// Get the logged-in user's details
 	String username = (String) SecurityContextHolder.getContext()
