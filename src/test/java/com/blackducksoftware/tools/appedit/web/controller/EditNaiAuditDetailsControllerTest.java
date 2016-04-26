@@ -37,7 +37,7 @@ public class EditNaiAuditDetailsControllerTest {
     }
 
     @Test
-    public void testGet() throws Exception {
+    public void testGetValid() throws Exception {
 
 	// Setup
 
@@ -52,17 +52,23 @@ public class EditNaiAuditDetailsControllerTest {
 	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
-	// Test
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editnaiauditdetails");
 
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
-	webRequest.setAttribute("appId", "app1Id", WebRequest.SCOPE_REQUEST);
 	ModelMap model = new ExtendedModelMap();
-	controller.showNaiAuditDetails(webRequest, model);
+
+	// Test
+
+	String returnValue = controller.showNaiAuditDetails(webRequest, model);
 
 	// Verify
+
+	assertEquals("editNaiAuditDetailsForm", returnValue);
+
+	String message = (String) model.get("message");
+	assertEquals(null, message);
 
 	NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
 		.get("selectedVulnerabilities");
@@ -79,6 +85,110 @@ public class EditNaiAuditDetailsControllerTest {
 		.getCcPart().getComponentName());
 	assertEquals("vulnerability1Name", vulnNaiAuditDetailsList.get(0)
 		.getCcPart().getVulnerabilityName());
+    }
+
+    @Test
+    public void testGetMissingAppId() throws Exception {
+
+	// Setup
+
+	EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	controller.setConfig(config);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	ModelMap model = new ExtendedModelMap();
+
+	// Test
+
+	String returnValue = controller.showNaiAuditDetails(webRequest, model);
+
+	// Verify
+
+	assertEquals("redirect:/error/400", returnValue);
+	String message = (String) model.get("message");
+	assertEquals(null, message);
+    }
+
+    @Test
+    public void testGetInvalidAppId() throws Exception {
+
+	// Setup
+
+	EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	controller.setConfig(config);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+	httpServletRequest.setParameter("appId", "bogus");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	ModelMap model = new ExtendedModelMap();
+
+	// Test
+
+	String returnValue = controller.showNaiAuditDetails(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.get("message");
+	assertEquals(
+		"Error loading application with ID bogus: mock: application not found",
+		message);
+    }
+
+    @Test
+    public void testGetErrorGettingVulns() throws Exception {
+
+	// Setup
+
+	EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	controller.setConfig(config);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+	httpServletRequest.setParameter("appId",
+		"bogus_for_getAppCompVulnCompositeList");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	ModelMap model = new ExtendedModelMap();
+
+	// Test
+
+	String returnValue = controller.showNaiAuditDetails(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.get("message");
+	assertEquals(
+		"Error getting vulnerability details for application: mock: failure getting app comp vuln comp list",
+		message);
     }
 
     @Test
@@ -122,6 +232,9 @@ public class EditNaiAuditDetailsControllerTest {
 	// Verify
 
 	assertEquals("editNaiAuditDetailsForm", returnValue);
+
+	String message = (String) model.get("message");
+	assertEquals(null, message);
 
 	NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
 		.get("selectedVulnerabilities");
@@ -405,7 +518,7 @@ public class EditNaiAuditDetailsControllerTest {
 
 	String message = (String) model.get("message");
 	assertEquals(
-		"selected row key (badkey|) is invalid; failed extracting IDs.",
+		"The selected row key (badkey|) is invalid; failed extracting IDs.",
 		message);
 
 	assertEquals("error/programError", returnValue);
@@ -455,7 +568,7 @@ public class EditNaiAuditDetailsControllerTest {
 
 	String message = (String) model.get("message");
 	assertEquals(
-		"selected row key (bogus|request1Id|component1Id|vulnerability1Id) not found in full vulnerabilities list.",
+		"The selected row key (bogus|request1Id|component1Id|vulnerability1Id) not found in full vulnerabilities list.",
 		message);
 
 	assertEquals("error/programError", returnValue);

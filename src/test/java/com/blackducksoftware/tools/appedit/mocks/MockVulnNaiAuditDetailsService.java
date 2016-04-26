@@ -30,6 +30,9 @@ public class MockVulnNaiAuditDetailsService implements
     @Override
     public ApplicationPojo getApplicationById(String appId)
 	    throws AppEditException {
+	if ("bogus".equals(appId)) {
+	    throw new AppEditException("mock: application not found");
+	}
 	return new ApplicationPojo(appId, appId, "Unspecified",
 		new ArrayList<AttributeValuePojo>(), ApprovalStatus.APPROVED,
 		false, "owner");
@@ -38,6 +41,11 @@ public class MockVulnNaiAuditDetailsService implements
     @Override
     public List<AppCompVulnComposite> getAppCompVulnCompositeList(
 	    String applicationId) throws AppEditException {
+
+	if ("bogus_for_getAppCompVulnCompositeList".equals(applicationId)) {
+	    throw new AppEditException(
+		    "mock: failure getting app comp vuln comp list");
+	}
 
 	Date now = new Date();
 

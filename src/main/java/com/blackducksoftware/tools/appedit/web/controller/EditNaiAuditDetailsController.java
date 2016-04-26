@@ -194,7 +194,7 @@ public class EditNaiAuditDetailsController {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
 		String[] selectedKeyParts = selectedRowKey.split("\\|");
 		if (selectedKeyParts.length != 4) {
-		    String msg = "selected row key (" + selectedRowKey
+		    String msg = "The selected row key (" + selectedRowKey
 			    + ") is invalid; failed extracting IDs.";
 		    logger.error(msg);
 		    model.addAttribute("message", msg);
@@ -210,7 +210,7 @@ public class EditNaiAuditDetailsController {
 		AppCompVulnComposite selectedVuln = findVuln(
 			fullVulnNaiAuditDetailsList, key);
 		if (selectedVuln == null) {
-		    String msg = "selected row key (" + selectedRowKey
+		    String msg = "The selected row key (" + selectedRowKey
 			    + ") not found in full vulnerabilities list.";
 		    logger.error(msg);
 		    model.addAttribute("message", msg);
