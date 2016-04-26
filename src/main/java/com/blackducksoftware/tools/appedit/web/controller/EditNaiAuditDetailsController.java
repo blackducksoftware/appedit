@@ -158,7 +158,7 @@ public class EditNaiAuditDetailsController {
 	    return "editNaiAuditDetailsForm";
 	}
 
-	if (selectedRows == null) {
+	if ((selectedRows == null) || (selectedRows.size() == 0)) {
 	    String msg = "No rows selected.";
 	    logger.warn(msg);
 	    model.addAttribute("message", msg);
