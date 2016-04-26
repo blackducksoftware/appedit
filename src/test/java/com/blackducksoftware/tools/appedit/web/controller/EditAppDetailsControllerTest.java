@@ -17,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
@@ -27,6 +28,7 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.mocks.MockAppService;
 import com.blackducksoftware.tools.appedit.mocks.MockVulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class EditAppDetailsControllerTest {
 
@@ -39,7 +41,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserValidRequest() throws Exception {
+    public void testGetEndUserValidRequest() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -60,7 +62,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -92,7 +94,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testAuditor() throws Exception {
+    public void testGetAuditor() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -113,7 +115,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -138,7 +140,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserNotAuthorizedOnApp() throws Exception {
+    public void testGetEndUserNotAuthorizedOnApp() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -159,7 +161,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -184,7 +186,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserAppNotSpecified() throws Exception {
+    public void testGetEndUserAppNotSpecified() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -205,7 +207,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
 	Model model = new ExtendedModelMap();
@@ -228,7 +230,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserMissingApp() throws Exception {
+    public void testGetEndUserMissingApp() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -249,7 +251,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "bogus");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -273,7 +275,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserExceptionLoadingApp() throws Exception {
+    public void testGetEndUserExceptionLoadingApp() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -294,7 +296,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "throwException");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -319,7 +321,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void testEndUserErrorAddingMissingAttributes() throws Exception {
+    public void testGetEndUserErrorAddingMissingAttributes() throws Exception {
 	Properties props;
 	props = getProperties();
 	props.setProperty("attr.1.label", "Attr Two");
@@ -342,7 +344,7 @@ public class EditAppDetailsControllerTest {
 	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
-		"GET", "/editnaiauditdetails");
+		"GET", "/editappdetails");
 
 	httpServletRequest.setParameter("appId", "app1Id");
 	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
@@ -365,6 +367,63 @@ public class EditAppDetailsControllerTest {
 	assertEquals(
 		"Error populating missing attribute values: mock: bad attr name",
 		message);
+    }
+
+    @Test
+    public void testPostValidData() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	ModelMap model = new ExtendedModelMap();
+
+	// TODO is this necessary?
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUserName",
+		null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	List<String> attrNames = new ArrayList<>();
+	attrNames.add("ITSM");
+	List<AttributeValuePojo> attrValues = new ArrayList<>();
+
+	attrValues.add(new AttributeValuePojo("attr1Id", "attr1Name",
+		"attr1Value"));
+	ViewAppBean app = new ViewAppBean("app1Id", "app1Name", attrNames,
+		attrValues);
+
+	model.put("app", app);
+
+	String action = null;
+
+	// Test
+
+	String returnValue = controller.updateApp(app, appService, action,
+		model);
+
+	assertEquals("editAppDetailsResult", returnValue);
+	String message = (String) model.get("message");
+	assertEquals(null, message);
+
+	ViewAppBean resultsApp = (ViewAppBean) model.get("app");
+	assertEquals("app1Id", app.getAppId());
+	assertEquals("attr1Value", app.getAttrValues().get(0).getValue());
     }
 
     private Properties getProperties() {

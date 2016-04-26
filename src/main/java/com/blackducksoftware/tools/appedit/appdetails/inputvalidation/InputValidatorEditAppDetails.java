@@ -54,6 +54,9 @@ public class InputValidatorEditAppDetails {
 
 	String patternString = config
 		.getFieldInputValidationRegexAttr(attrLabel);
+	if (patternString == null) {
+	    return false;
+	}
 	Pattern pattern = Pattern.compile(patternString);
 	return InputValidatorLogin.validate(attrValue, pattern);
     }
