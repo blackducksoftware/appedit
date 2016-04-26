@@ -42,7 +42,6 @@ import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConverter;
 import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.model.Role;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
@@ -233,20 +232,6 @@ public class EditAppDetailsController {
 
 	logger.info("EditAppDetails.updateApp(): app: " + app
 		+ "; dataSource: " + dataSource);
-
-	// Load config
-	String configFilename = System.getProperty("user.home") + "/"
-		+ AppEditConstants.CONFIG_FILENAME;
-	AppEditConfigManager config = null;
-	try {
-	    config = new AppEditConfigManager(configFilename);
-	} catch (Exception e) {
-	    String msg = "Error constructing configuration manager: "
-		    + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
 
 	// Validate input
 	int i = 0;

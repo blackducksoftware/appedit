@@ -426,6 +426,60 @@ public class EditAppDetailsControllerTest {
 	assertEquals("attr1Value", app.getAttrValues().get(0).getValue());
     }
 
+    @Test
+    public void testPostAttrValueViolatesPattern() throws Exception {
+	Properties props;
+	props = getProperties();
+	props.setProperty("attr.0.regex", "[A-Za-z]*");
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	ModelMap model = new ExtendedModelMap();
+
+	// TODO is this necessary?
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUserName",
+		null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	List<String> attrNames = new ArrayList<>();
+	attrNames.add("ITSM");
+	List<AttributeValuePojo> attrValues = new ArrayList<>();
+
+	attrValues.add(new AttributeValuePojo("attr1Id", "attr1Name",
+		"attr1Value"));
+	ViewAppBean app = new ViewAppBean("app1Id", "app1Name", attrNames,
+		attrValues);
+
+	model.put("app", app);
+
+	String action = null;
+
+	// Test
+
+	String returnValue = controller.updateApp(app, appService, action,
+		model);
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.get("message");
+	assertEquals("The value of ITSM is invalid.", message);
+
+    }
+
     private Properties getProperties() {
 	Properties props;
 	props = new Properties();
