@@ -96,58 +96,15 @@ public class EditNaiAuditDetailsController {
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 	try {
 	    fullVulnNaiAuditDetailsList = getFullVulnNaiAuditDetailsList(formData);
-	    checkRowSelected(model, formData, fullVulnNaiAuditDetailsList);
+	    verifyRowIsSelected(model, formData, fullVulnNaiAuditDetailsList);
 	    checkCommentLength(model, formData, fullVulnNaiAuditDetailsList);
-	    validateComment(config, model, formData,
+	    validateCommentValue(config, model, formData,
 		    fullVulnNaiAuditDetailsList);
 
-	    // User selected one or more rows; update each one
-
 	    String currentUser = getUser();
-
 	    for (String selectedRowKey : formData.getItemList()) {
-		logger.info("Selected vulnerability key: " + selectedRowKey);
-		String[] selectedKeyParts = selectedRowKey.split("\\|");
-		if (selectedKeyParts.length != 4) {
-		    String msg = "The selected row key (" + selectedRowKey
-			    + ") is invalid; failed extracting IDs.";
-		    logger.error(msg);
-		    model.addAttribute("message", msg);
-		    return "error/programError";
-		}
-		String applicationId = selectedKeyParts[0];
-		String requestId = selectedKeyParts[1];
-		String componentId = selectedKeyParts[2];
-		String vulnerabilityId = selectedKeyParts[3];
-		AppCompVulnKey key = new AppCompVulnKey(applicationId,
-			requestId, componentId, vulnerabilityId);
-
-		AppCompVulnComposite selectedVuln = findVuln(
-			fullVulnNaiAuditDetailsList, key);
-		if (selectedVuln == null) {
-		    String msg = "The selected row key (" + selectedRowKey
-			    + ") not found in full vulnerabilities list.";
-		    logger.error(msg);
-		    model.addAttribute("message", msg);
-		    return "error/programError";
-		}
-
-		selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(
-			formData.getVulnerabilityNaiAuditStatus());
-		selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(
-			formData.getComment());
-		selectedVuln.getAuditPart().setUsername(currentUser);
-		logger.info("Updating vulnerability with: " + selectedVuln);
-		try {
-		    vulnNaiAuditDetailsService
-			    .updateVulnNaiAuditDetails(selectedVuln);
-		} catch (AppEditException e) {
-		    String msg = "Error updating NAI Audit details: "
-			    + e.getMessage();
-		    logger.error(msg);
-		    model.addAttribute("message", msg);
-		    return "error/programError";
-		}
+		updateVulnFromRow(model, formData, fullVulnNaiAuditDetailsList,
+			currentUser, selectedRowKey);
 	    }
 	} catch (EditNaiAuditDetailsControllerException e1) {
 	    logger.error(e1.getMessage());
@@ -161,6 +118,76 @@ public class EditNaiAuditDetailsController {
 	return "editNaiAuditDetailsForm";
     }
 
+    private void updateVulnFromRow(ModelMap model, NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList,
+	    String currentUser, String selectedRowKey)
+	    throws EditNaiAuditDetailsControllerException {
+	logger.info("Selected vulnerability key: " + selectedRowKey);
+	AppCompVulnKey key = generateKey(selectedRowKey);
+	AppCompVulnComposite selectedVuln = getVuln(model,
+		fullVulnNaiAuditDetailsList, key, selectedRowKey);
+
+	applyUserChangesToVulnObject(selectedVuln, formData, currentUser);
+	logger.info("Updating vulnerability with: " + selectedVuln);
+	updateVulnerability(selectedVuln);
+    }
+
+    private void updateVulnerability(AppCompVulnComposite selectedVuln)
+	    throws EditNaiAuditDetailsControllerException {
+	try {
+	    vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
+	} catch (AppEditException e) {
+	    String msg = "Error updating NAI Audit details: " + e.getMessage();
+	    throw new EditNaiAuditDetailsControllerException(
+		    "error/programError", msg);
+	}
+    }
+
+    private void applyUserChangesToVulnObject(
+	    AppCompVulnComposite selectedVuln, NaiAuditViewData formData,
+	    String currentUser) {
+	selectedVuln.getAuditPart().setVulnerabilityNaiAuditStatus(
+		formData.getVulnerabilityNaiAuditStatus());
+	selectedVuln.getAuditPart().setVulnerabilityNaiAuditComment(
+		formData.getComment());
+	selectedVuln.getAuditPart().setUsername(currentUser);
+    }
+
+    private AppCompVulnComposite getVuln(ModelMap model,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList,
+	    AppCompVulnKey key, String keyString)
+	    throws EditNaiAuditDetailsControllerException {
+	AppCompVulnComposite selectedVuln = findVuln(
+		fullVulnNaiAuditDetailsList, key);
+	if (selectedVuln == null) {
+	    String msg = "The selected row key (" + keyString
+		    + ") not found in full vulnerabilities list.";
+
+	    throw new EditNaiAuditDetailsControllerException(
+		    "error/programError", msg);
+	}
+	return selectedVuln;
+    }
+
+    private AppCompVulnKey generateKey(String selectedRowKey)
+	    throws EditNaiAuditDetailsControllerException {
+	String[] selectedKeyParts = selectedRowKey.split("\\|");
+	if (selectedKeyParts.length != 4) {
+	    String msg = "The selected row key (" + selectedRowKey
+		    + ") is invalid; failed extracting IDs.";
+
+	    throw new EditNaiAuditDetailsControllerException(
+		    "error/programError", msg);
+	}
+	String applicationId = selectedKeyParts[0];
+	String requestId = selectedKeyParts[1];
+	String componentId = selectedKeyParts[2];
+	String vulnerabilityId = selectedKeyParts[3];
+	AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId,
+		componentId, vulnerabilityId);
+	return key;
+    }
+
     private String getUser() {
 	Authentication auth = SecurityContextHolder.getContext()
 		.getAuthentication();
@@ -170,7 +197,7 @@ public class EditNaiAuditDetailsController {
 	return currentUser;
     }
 
-    private void validateComment(AppEditConfigManager config, ModelMap model,
+    private void validateCommentValue(AppEditConfigManager config, ModelMap model,
 	    NaiAuditViewData formData,
 	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
 	    throws EditNaiAuditDetailsControllerException {
@@ -188,7 +215,7 @@ public class EditNaiAuditDetailsController {
 	}
     }
 
-    private void checkRowSelected(ModelMap model, NaiAuditViewData formData,
+    private void verifyRowIsSelected(ModelMap model, NaiAuditViewData formData,
 	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
 	    throws EditNaiAuditDetailsControllerException {
 	List<String> selectedRows = formData.getItemList();
