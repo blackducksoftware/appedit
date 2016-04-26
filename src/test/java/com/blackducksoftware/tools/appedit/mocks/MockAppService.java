@@ -45,7 +45,9 @@ public class MockAppService implements AppService {
 
     @Override
     public void update(AppDetails app) throws Exception {
-	// TODO Auto-generated method stub
+	if ("failOnUpdate".equals(app.getAppId())) {
+	    throw new Exception("Mock: Error updating application");
+	}
 
     }
 

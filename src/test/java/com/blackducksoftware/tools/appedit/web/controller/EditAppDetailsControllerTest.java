@@ -392,7 +392,6 @@ public class EditAppDetailsControllerTest {
 
 	ModelMap model = new ExtendedModelMap();
 
-	// TODO is this necessary?
 	List<GrantedAuthority> authorities = new ArrayList<>();
 	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 	Authentication auth = new TestingAuthenticationToken("testUserName",
@@ -449,7 +448,6 @@ public class EditAppDetailsControllerTest {
 
 	ModelMap model = new ExtendedModelMap();
 
-	// TODO is this necessary?
 	List<GrantedAuthority> authorities = new ArrayList<>();
 	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 	Authentication auth = new TestingAuthenticationToken("testUserName",
@@ -477,6 +475,113 @@ public class EditAppDetailsControllerTest {
 	assertEquals("error/programError", returnValue);
 	String message = (String) model.get("message");
 	assertEquals("The value of ITSM is invalid.", message);
+
+    }
+
+    @Test
+    public void testPostUserNotAuthOnApp() throws Exception {
+	Properties props;
+	props = getProperties();
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	ModelMap model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken(
+		"notAuthorizedUserName", null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	List<String> attrNames = new ArrayList<>();
+	attrNames.add("ITSM");
+	List<AttributeValuePojo> attrValues = new ArrayList<>();
+
+	attrValues.add(new AttributeValuePojo("attr1Id", "attr1Name",
+		"attr1Value"));
+	ViewAppBean app = new ViewAppBean("app1Id", "app1Name", attrNames,
+		attrValues);
+
+	model.put("app", app);
+
+	String action = null;
+
+	// Test
+
+	String returnValue = controller.updateApp(app, appService, action,
+		model);
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.get("message");
+	assertEquals("You are not authorized to access this application",
+		message);
+
+    }
+
+    @Test
+    public void testPostUpdateFailure() throws Exception {
+	Properties props;
+	props = getProperties();
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	ModelMap model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUser", null,
+		authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	List<String> attrNames = new ArrayList<>();
+	attrNames.add("ITSM");
+	List<AttributeValuePojo> attrValues = new ArrayList<>();
+
+	attrValues.add(new AttributeValuePojo("attr1Id", "attr1Name",
+		"attr1Value"));
+	ViewAppBean app = new ViewAppBean("failOnUpdate", "app1Name",
+		attrNames, attrValues);
+
+	model.put("app", app);
+
+	String action = null;
+
+	// Test
+
+	String returnValue = controller.updateApp(app, appService, action,
+		model);
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.get("message");
+	assertEquals(
+		"Error updating application app1Name: Mock: Error updating application",
+		message);
 
     }
 
