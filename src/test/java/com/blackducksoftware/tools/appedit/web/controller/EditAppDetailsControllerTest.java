@@ -39,7 +39,7 @@ public class EditAppDetailsControllerTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void testEndUserValidRequest() throws Exception {
 	Properties props;
 	props = getProperties();
 
@@ -89,6 +89,282 @@ public class EditAppDetailsControllerTest {
 	assertEquals("attr1Name", app.getAttrNames().get(0));
 	assertEquals("attr1Value", app.getAttrValues().get(0).getValue());
 
+    }
+
+    @Test
+    public void testAuditor() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	httpServletRequest.setParameter("appId", "app1Id");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_AUDITOR"));
+	Authentication auth = new TestingAuthenticationToken("testUserName",
+		null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("redirect:editnaiauditdetails?appId=app1Id", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals(null, message);
+
+    }
+
+    @Test
+    public void testEndUserNotAuthorizedOnApp() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	httpServletRequest.setParameter("appId", "app1Id");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken(
+		"notAuthorizedUserName", null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals("You are not authorized to access this application",
+		message);
+    }
+
+    @Test
+    public void testEndUserAppNotSpecified() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUser", null,
+		authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals("The URL must specify either appId or appName.", message);
+    }
+
+    @Test
+    public void testEndUserMissingApp() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	httpServletRequest.setParameter("appId", "bogus");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUser", null,
+		authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals("Application not found", message);
+    }
+
+    @Test
+    public void testEndUserExceptionLoadingApp() throws Exception {
+	Properties props;
+	props = getProperties();
+
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	httpServletRequest.setParameter("appId", "throwException");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUser", null,
+		authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals("Error loading application: Mock: error loading app",
+		message);
+    }
+
+    @Test
+    public void testEndUserErrorAddingMissingAttributes() throws Exception {
+	Properties props;
+	props = getProperties();
+	props.setProperty("attr.1.label", "Attr Two");
+	props.setProperty("attr.1.ccname", "bogus");
+	props.setProperty("attr.1.regex", ".*");
+	AppEditConfigManager config = new AppEditConfigManager(props);
+
+	AppService appService = new MockAppService();
+
+	AppDetailsBeanConverterImpl appDetailsBeanConverter = new AppDetailsBeanConverterImpl();
+	appDetailsBeanConverter.setConfig(config);
+
+	EditAppDetailsController controller = new EditAppDetailsController();
+	controller.setConfig(config);
+	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
+	controller.setAppService(appService);
+
+	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
+
+	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
+
+	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
+		"GET", "/editnaiauditdetails");
+
+	httpServletRequest.setParameter("appId", "app1Id");
+	WebRequest webRequest = new ServletWebRequest(httpServletRequest);
+	Model model = new ExtendedModelMap();
+
+	List<GrantedAuthority> authorities = new ArrayList<>();
+	authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	Authentication auth = new TestingAuthenticationToken("testUserName",
+		null, authorities);
+	SecurityContextHolder.getContext().setAuthentication(auth);
+
+	// Test
+
+	String returnValue = controller.showEditForm(webRequest, model);
+
+	// Verify
+
+	assertEquals("error/programError", returnValue);
+	String message = (String) model.asMap().get("message");
+	assertEquals(
+		"Error populating missing attribute values: mock: bad attr name",
+		message);
     }
 
     private Properties getProperties() {

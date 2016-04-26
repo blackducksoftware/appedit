@@ -13,12 +13,21 @@ public class MockAppService implements AppService {
 
     @Override
     public boolean authorizeUser(String appId, String username) {
-
+	if ("notAuthorizedUserName".equals(username)) {
+	    return false;
+	}
 	return true;
     }
 
     @Override
     public AppDetails loadFromId(String appId) throws Exception {
+	if ("bogus".equals(appId)) {
+	    return null;
+	}
+
+	if ("throwException".equals(appId)) {
+	    throw new Exception("Mock: error loading app");
+	}
 
 	AppDetails app = new AppDetails(appId, appId);
 	AttributeValuePojo value = new AttributeValuePojo("attr1Id",
@@ -43,8 +52,13 @@ public class MockAppService implements AppService {
     @Override
     public AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception {
-	// TODO Auto-generated method stub
-	return null;
+
+	if ("bogus".equals(attrName)) {
+	    throw new Exception("mock: bad attr name");
+	}
+
+	return new AttributeDefinitionPojo(attrName, attrName, "Textfield", "",
+		"Enter something");
     }
 
     @Override

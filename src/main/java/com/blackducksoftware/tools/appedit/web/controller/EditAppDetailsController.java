@@ -157,6 +157,13 @@ public class EditAppDetailsController {
 	    return "error/programError";
 	}
 
+	if (appDetails == null) {
+	    String msg = "Application not found";
+	    logger.error(msg);
+	    model.addAttribute("message", msg);
+	    return "error/programError";
+	}
+
 	// Make sure they are on this app's team (list of users that can access
 	// it)
 	boolean isAuthorized = appService.authorizeUser(appDetails.getAppId(),
