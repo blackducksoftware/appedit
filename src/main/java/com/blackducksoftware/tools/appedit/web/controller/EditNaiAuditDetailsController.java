@@ -65,53 +65,15 @@ public class EditNaiAuditDetailsController {
     @RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.GET)
     public String showNaiAuditDetails(WebRequest request, ModelMap model) {
 	logger.debug("/editnaiauditdetails GET (redirected here)");
-	String appId = request.getParameter("appId");
-	String appName = request.getParameter("appName");
-	logger.debug("appId: " + appId + "; appName: " + appName);
-	if ((appId == null) && (appName == null)) {
-	    return "redirect:/error/400";
-	}
 
-	ApplicationPojo app;
-	// Load the app (so we have name, version)
-	if (appId == null) {
-	    try {
-		app = vulnNaiAuditDetailsService.getApplicationByNameVersion(
-			appName, config.getAppVersion());
-	    } catch (AppEditException e) {
-		String msg = "Error loading application " + appName + ": "
-			+ e.getMessage();
-		logger.error(msg);
-		model.addAttribute("message", msg);
-		return "error/programError";
-	    }
-	    appId = app.getId();
-	} else {
-	    try {
-		app = vulnNaiAuditDetailsService.getApplicationById(appId);
-	    } catch (AppEditException e) {
-		String msg = "Error loading application with ID " + appId
-			+ ": " + e.getMessage();
-		logger.error(msg);
-		model.addAttribute("message", msg);
-		return "error/programError";
-	    }
-	    appName = app.getName();
-	}
-	List<AppCompVulnComposite> vulnNaiAuditDetailsList;
 	try {
-	    vulnNaiAuditDetailsList = vulnNaiAuditDetailsService
-		    .getAppCompVulnCompositeList(appId);
-	} catch (AppEditException e) {
-	    String msg = "Error getting vulnerability details for application: "
-		    + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
+	    ApplicationPojo app = getApplication(request);
+	    processVulnNaiAuditDetailsList(model, app);
+	} catch (EditNaiAuditDetailsControllerException e) {
+	    logger.error(e.getMessage());
+	    model.addAttribute("message", e.getMessage());
+	    return e.getReturnValue();
 	}
-	logger.info("appDetails.getAppId(): " + appId);
-	populateModelWithFormData(model, app.getId(), app.getName(),
-		app.getVersion(), vulnNaiAuditDetailsList);
 	return "editNaiAuditDetailsForm";
     }
 
@@ -131,66 +93,19 @@ public class EditNaiAuditDetailsController {
 		+ formData.getApplicationName() + " / "
 		+ formData.getApplicationVersion());
 
-	List<String> selectedRows = formData.getItemList();
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 	try {
-	    fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService
-		    .getAppCompVulnCompositeList(formData.getApplicationId());
-	} catch (AppEditException e) {
-	    String msg = "Error getting vulnerability details for application with ID "
-		    + formData.getApplicationId() + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
-
-	if (formData.getComment().length() > AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH) {
-	    String msg = "The comment entered is too long. Maximum length is "
-		    + AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH
-		    + " characters";
-	    logger.error(msg);
-
-	    model.addAttribute("message", msg);
-	    populateModelWithFormData(model, formData.getApplicationId(),
-		    formData.getApplicationName(),
-		    formData.getApplicationVersion(),
+	    fullVulnNaiAuditDetailsList = getFullVulnNaiAuditDetailsList(formData);
+	    checkRowSelected(model, formData, fullVulnNaiAuditDetailsList);
+	    checkCommentLength(model, formData, fullVulnNaiAuditDetailsList);
+	    validateComment(config, model, formData,
 		    fullVulnNaiAuditDetailsList);
-	    return "editNaiAuditDetailsForm";
-	}
 
-	if ((selectedRows == null) || (selectedRows.size() == 0)) {
-	    String msg = "No rows selected.";
-	    logger.warn(msg);
-	    model.addAttribute("message", msg);
-	    populateModelWithFormData(model, formData.getApplicationId(),
-		    formData.getApplicationName(),
-		    formData.getApplicationVersion(),
-		    fullVulnNaiAuditDetailsList);
-	    return "editNaiAuditDetailsForm";
-	} else {
 	    // User selected one or more rows; update each one
 
-	    // Validate input
-	    InputValidatorEditNaiAuditDetails inputValidator = new InputValidatorEditNaiAuditDetails(
-		    config);
-	    if (!inputValidator.validateCommentValue(formData.getComment())) {
-		String msg = "The comment entered is invalid.";
-		logger.error(msg);
-		model.addAttribute("message", msg);
-		populateModelWithFormData(model, formData.getApplicationId(),
-			formData.getApplicationName(),
-			formData.getApplicationVersion(),
-			fullVulnNaiAuditDetailsList);
-		return "editNaiAuditDetailsForm";
-	    }
+	    String currentUser = getUser();
 
-	    Authentication auth = SecurityContextHolder.getContext()
-		    .getAuthentication();
-
-	    String currentUser = auth.getName();
-	    logger.info("User: " + currentUser);
-
-	    for (String selectedRowKey : selectedRows) {
+	    for (String selectedRowKey : formData.getItemList()) {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
 		String[] selectedKeyParts = selectedRowKey.split("\\|");
 		if (selectedKeyParts.length != 4) {
@@ -234,11 +149,150 @@ public class EditNaiAuditDetailsController {
 		    return "error/programError";
 		}
 	    }
+	} catch (EditNaiAuditDetailsControllerException e1) {
+	    logger.error(e1.getMessage());
+	    model.addAttribute("message", e1.getMessage());
+	    return e1.getReturnValue();
 	}
+
 	populateModelWithFormData(model, formData.getApplicationId(),
 		formData.getApplicationName(),
 		formData.getApplicationVersion(), fullVulnNaiAuditDetailsList);
 	return "editNaiAuditDetailsForm";
+    }
+
+    private String getUser() {
+	Authentication auth = SecurityContextHolder.getContext()
+		.getAuthentication();
+
+	String currentUser = auth.getName();
+	logger.info("User: " + currentUser);
+	return currentUser;
+    }
+
+    private void validateComment(AppEditConfigManager config, ModelMap model,
+	    NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
+	    throws EditNaiAuditDetailsControllerException {
+	// Validate input
+	InputValidatorEditNaiAuditDetails inputValidator = new InputValidatorEditNaiAuditDetails(
+		config);
+	if (!inputValidator.validateCommentValue(formData.getComment())) {
+	    String msg = "The comment entered is invalid.";
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+	    throw new EditNaiAuditDetailsControllerException(
+		    "editNaiAuditDetailsForm", msg);
+	}
+    }
+
+    private void checkRowSelected(ModelMap model, NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
+	    throws EditNaiAuditDetailsControllerException {
+	List<String> selectedRows = formData.getItemList();
+	if ((selectedRows == null) || (selectedRows.size() == 0)) {
+	    String msg = "No rows selected.";
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+	    throw new EditNaiAuditDetailsControllerException(
+		    "editNaiAuditDetailsForm", msg);
+	}
+    }
+
+    private void checkCommentLength(ModelMap model, NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
+	    throws EditNaiAuditDetailsControllerException {
+	if (formData.getComment().length() > AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH) {
+	    String msg = "The comment entered is too long. Maximum length is "
+		    + AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH
+		    + " characters";
+
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+
+	    throw new EditNaiAuditDetailsControllerException(
+		    "editNaiAuditDetailsForm", msg);
+	}
+    }
+
+    private List<AppCompVulnComposite> getFullVulnNaiAuditDetailsList(
+	    NaiAuditViewData formData)
+	    throws EditNaiAuditDetailsControllerException {
+	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
+	try {
+	    fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService
+		    .getAppCompVulnCompositeList(formData.getApplicationId());
+	} catch (AppEditException e) {
+	    String msg = "Error getting vulnerability details for application with ID "
+		    + formData.getApplicationId() + e.getMessage();
+
+	    throw new EditNaiAuditDetailsControllerException(
+		    "error/programError", msg);
+	}
+	return fullVulnNaiAuditDetailsList;
+    }
+
+    private List<AppCompVulnComposite> processVulnNaiAuditDetailsList(
+	    ModelMap model, ApplicationPojo app)
+	    throws EditNaiAuditDetailsControllerException {
+	List<AppCompVulnComposite> vulnNaiAuditDetailsList;
+	try {
+	    vulnNaiAuditDetailsList = vulnNaiAuditDetailsService
+		    .getAppCompVulnCompositeList(app.getId());
+	} catch (AppEditException e) {
+	    String msg = "Error getting vulnerability details for application: "
+		    + e.getMessage();
+	    throw new EditNaiAuditDetailsControllerException(
+		    "error/programError", msg);
+	}
+	populateModelWithFormData(model, app.getId(), app.getName(),
+		app.getVersion(), vulnNaiAuditDetailsList);
+	return vulnNaiAuditDetailsList;
+    }
+
+    private ApplicationPojo getApplication(WebRequest request)
+	    throws EditNaiAuditDetailsControllerException {
+	ApplicationPojo app;
+	String appId = request.getParameter("appId");
+	String appName = request.getParameter("appName");
+	logger.debug("appId: " + appId + "; appName: " + appName);
+
+	if ((appId == null) && (appName == null)) {
+	    throw new EditNaiAuditDetailsControllerException(
+		    "redirect:/error/400", null);
+	}
+
+	// Load the app (so we have name, version)
+	if (appId == null) {
+	    try {
+		app = vulnNaiAuditDetailsService.getApplicationByNameVersion(
+			appName, config.getAppVersion());
+	    } catch (AppEditException e) {
+		String msg = "Error loading application " + appName + ": "
+			+ e.getMessage();
+		throw new EditNaiAuditDetailsControllerException(
+			"error/programError", msg);
+	    }
+	    appId = app.getId();
+	} else {
+	    try {
+		app = vulnNaiAuditDetailsService.getApplicationById(appId);
+	    } catch (AppEditException e) {
+		String msg = "Error loading application with ID " + appId
+			+ ": " + e.getMessage();
+		throw new EditNaiAuditDetailsControllerException(
+			"error/programError", msg);
+	    }
+
+	}
+	logger.info("Application name: " + app.getName());
+	return app;
     }
 
     private void populateModelWithFormData(ModelMap model, String appId,
