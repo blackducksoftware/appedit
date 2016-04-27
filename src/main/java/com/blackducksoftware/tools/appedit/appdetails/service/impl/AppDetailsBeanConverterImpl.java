@@ -44,13 +44,8 @@ public class AppDetailsBeanConverterImpl implements AppDetailsBeanConverter {
 	this.config = config;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.
-     * AppDetailsBeanConverter
-     * #createViewAppBean(com.blackducksoftware.tools.appedit
-     * .appdetails.model.AppDetails)
+    /**
+     * Convert an AppDetails bean to a ViewAppBean.
      */
     @Override
     public ViewAppBean createViewAppBean(AppDetails appDetails) {
@@ -79,13 +74,8 @@ public class AppDetailsBeanConverterImpl implements AppDetailsBeanConverter {
 	return viewAppBean;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.blackducksoftware.tools.appedit.appdetails.service.impl.
-     * AppDetailsBeanConverter
-     * #createAppDetails(com.blackducksoftware.tools.appedit
-     * .appdetails.model.ViewAppBean)
+    /**
+     * Convert a ViewAppBean to an AppDetails bean.
      */
     @Override
     public AppDetails createAppDetails(ViewAppBean viewAppBean) {
