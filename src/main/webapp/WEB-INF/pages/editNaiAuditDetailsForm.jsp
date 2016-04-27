@@ -122,38 +122,38 @@
         <tr>
             <th></th>
 
-            <th>Vulnerability Name</th>
-            <th>Component Name</th>
-            <th>Component Version</th>
-            <th>Severity</th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.severity" text="Severity" /></th>
             
-            <th>Date Published</th>
-            <th>Description</th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.date.published" text="Date Published" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.description" text="Description" /></th>
             
-            <th>Target Remediation Date</th>
-            <th>Actual Remediation Date</th>
-            <th>Remediation Status</th>
-            <th>Remediation Comment</th>
-            <th>NAI Audit Status</th>
-            <th>NAI Audit Comment</th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.remediation.date.target" text="Target Remediation Date" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.remediation.date.actual" text="Actual Remediation Date" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.remediation.status" text="Remediation Status" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.remediation.comment" text="Remediation Comment" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.status" text="NAI Audit Status" /></th>
+            <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></th>
         </tr>
         <tr>
             <td></td>
 
-            <td>Vulnerability Name</td>
-            <td>Component Name</td>
-            <td>Component Version</td>
-            <td>Severity</td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.severity" text="Severity" /></td>
             
-            <td>Date Published</td>
-            <td>Description</td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.date.published" text="Date Published" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.description" text="Description" /></td>
             
-            <td>Target Remediation Date</td>
-            <td>Actual Remediation Date</td>
-            <td>Remediation Status</td>
-            <td>Remediation Comment</td>
-            <td>NAI Audit Status</td>
-            <td>NAI Audit Comment</td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.remediation.date.target" text="Target Remediation Date" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.remediation.date.actual" text="Actual Remediation Date" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.remediation.status" text="Remediation Status" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.remediation.comment" text="Remediation Comment" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.status" text="NAI Audit Status" /></td>
+            <td><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></td>
         </tr>
     </thead>
     <tbody>
@@ -184,7 +184,7 @@
     </tbody>
 	</table>
 	<br/>
-	<label for="naiauditstatus_field">NAI Audit Status: </label>
+	<label for="naiauditstatus_field"><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.status" text="NAI Audit Status" />: </label>
 	
 	<form:select onchange="javascript:formChanged();" id="status" path="vulnerabilityNaiAuditStatus">
 		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
@@ -193,7 +193,7 @@
 	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" />
 			
 	<br/>
-	<label for="comment_field">NAI Audit Comment: </label>
+	<label for="comment_field"><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" />: </label>
 	<form:input path="comment" size="20" id="comment_field" /><br/>
 	<form:errors path="comment" cssClass="error" /> 
 	<br/>
