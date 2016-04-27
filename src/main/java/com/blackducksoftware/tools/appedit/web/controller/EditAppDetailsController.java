@@ -98,91 +98,23 @@ public class EditAppDetailsController {
     public String showEditForm(WebRequest request, Model model) {
 	logger.info("Received request for Edit Application Details page.");
 
-	// Process URL parameter: app ID/name
-	String appId = request.getParameter("appId");
-	String appName = request.getParameter("appName");
-	if ((appId == null) && (appName == null)) {
-	    String msg = "The URL must specify either appId or appName.";
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
-
-	// Get the logged-in user's details
-	String username = (String) SecurityContextHolder.getContext()
-		.getAuthentication().getPrincipal();
-
-	// Get the user's roles
-	Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-		.getContext().getAuthentication().getAuthorities();
-
-	// If this user is an auditor, display the Edit NAI Audit Details form
-	for (GrantedAuthority auth : grantedAuthorities) {
-	    String roleString = auth.getAuthority();
-	    logger.info("Role: " + roleString);
-	    Role role = Role.valueOf(roleString);
-	    logger.info("Role enum value: " + role);
-	    if (role == Role.ROLE_AUDITOR) {
-
-		String redirectString;
-		if (appId == null) {
-		    redirectString = "redirect:editnaiauditdetails?appName="
-			    + appName;
-		} else {
-		    redirectString = "redirect:editnaiauditdetails?appId="
-			    + appId;
-		}
-		logger.debug("User is an auditor. Redirecting to: "
-			+ redirectString);
-		return redirectString;
-	    }
-	}
-
-	// This user is an end-user
-	// Load application
 	AppDetails appDetails = null;
 	try {
-	    // load app from Code Center using whatever info we were given (try
-	    // ID first)
-	    if (appId != null) {
-		appDetails = appService.loadFromId(appId);
-	    } else {
-		appDetails = appService.loadFromName(appName);
-	    }
-	} catch (Exception e) {
-	    String msg = "Error loading application: " + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
+	    String paramString = getParamString(request);
+	    // Throws exception if user is an auditor, resulting in a redirect
+	    // to edit nai audit details screen
+	    verifyUserIsNotAnAuditor(paramString);
 
-	if (appDetails == null) {
-	    String msg = "Application not found";
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
+	    // If here (no exception): This user is an end-user
+	    appDetails = loadApplication(request);
 
-	// Make sure they are on this app's team (list of users that can access
-	// it)
-	boolean isAuthorized = appService.authorizeUser(appDetails.getAppId(),
-		username);
-	if (!isAuthorized) {
-	    String msg = "You are not authorized to access this application";
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
+	    verifyUserIsOnAppTeam(appDetails);
 
-	// Make sure all the attrValues we need are populated
-	try {
-	    populateMissingAttrValues(config, appDetails);
-	} catch (Exception e) {
-	    String msg = "Error populating missing attribute values: "
-		    + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
+	    verifyAllAttributesExist(appDetails);
+	} catch (AppEditControllerException e) {
+	    logger.error(e.getMessage());
+	    model.addAttribute("message", e.getMessage());
+	    return e.getReturnValue();
 	}
 
 	// Convert the generic appDetails object to view-friendly appDetails
@@ -195,6 +127,103 @@ public class EditAppDetailsController {
 	model.addAttribute("dataSource", appService);
 
 	return "editAppDetailsForm";
+    }
+
+    private void verifyAllAttributesExist(AppDetails appDetails)
+	    throws AppEditControllerException {
+	// Make sure all the attrValues we need are populated
+	try {
+	    populateMissingAttrValues(config, appDetails);
+	} catch (Exception e) {
+	    String msg = "Error populating missing attribute values: "
+		    + e.getMessage();
+
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+    }
+
+    private void verifyUserIsOnAppTeam(AppDetails appDetails)
+	    throws AppEditControllerException {
+	// Make sure they are on this app's team (list of users that can access
+	// it)
+	String username = (String) SecurityContextHolder.getContext()
+		.getAuthentication().getPrincipal();
+	boolean isAuthorized = appService.authorizeUser(appDetails.getAppId(),
+		username);
+	if (!isAuthorized) {
+	    String msg = "You are not authorized to access this application";
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+    }
+
+    private AppDetails loadApplication(WebRequest request)
+	    throws AppEditControllerException {
+	String appId = request.getParameter("appId");
+	String appName = request.getParameter("appName");
+	// Load application
+	AppDetails appDetails = null;
+	try {
+	    // load app from Code Center using whatever info we were given (try
+	    // ID first)
+	    if (appId != null) {
+		appDetails = appService.loadFromId(appId);
+	    } else {
+		appDetails = appService.loadFromName(appName);
+	    }
+	} catch (Exception e) {
+	    String msg = "Error loading application: " + e.getMessage();
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+
+	if (appDetails == null) {
+	    String msg = "Application not found";
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+	return appDetails;
+    }
+
+    private void verifyUserIsNotAnAuditor(String paramString)
+	    throws AppEditControllerException {
+	// Get the user's roles
+	Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
+		.getContext().getAuthentication().getAuthorities();
+	// If this user is an auditor, display the Edit NAI Audit Details
+	// form
+	for (GrantedAuthority auth : grantedAuthorities) {
+	    String roleString = auth.getAuthority();
+	    logger.info("Role: " + roleString);
+	    Role role = Role.valueOf(roleString);
+	    logger.info("Role enum value: " + role);
+	    if (role == Role.ROLE_AUDITOR) {
+
+		String redirectString = "redirect:editnaiauditdetails?"
+			+ paramString;
+
+		logger.info("User is an auditor. Redirecting to: "
+			+ redirectString);
+
+		throw new AppEditControllerException(redirectString, null);
+	    }
+	}
+    }
+
+    private String getParamString(WebRequest request)
+	    throws AppEditControllerException {
+	String paramString;
+	// Process URL parameter: app ID/name
+	String appId = request.getParameter("appId");
+	String appName = request.getParameter("appName");
+	if ((appId == null) && (appName == null)) {
+	    String msg = "The URL must specify either appId or appName.";
+
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+	if (appId != null) {
+	    paramString = "appId=" + appId;
+	} else {
+	    paramString = "appName=" + appName;
+	}
+	return paramString;
     }
 
     private void populateMissingAttrValues(AppEditConfigManager config2,
