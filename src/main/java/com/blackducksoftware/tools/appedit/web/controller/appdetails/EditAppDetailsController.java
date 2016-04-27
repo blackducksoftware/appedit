@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.web.controller;
+package com.blackducksoftware.tools.appedit.web.controller.appdetails;
 
 import java.util.Collection;
 import java.util.Map;
@@ -44,6 +44,7 @@ import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.model.Role;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.appedit.web.controller.AppEditControllerException;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 

@@ -23,6 +23,7 @@ import com.blackducksoftware.tools.appedit.mocks.MockVulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.appedit.web.controller.naiaudit.EditNaiAuditDetailsController;
 
 public class EditNaiAuditDetailsControllerTest {
 

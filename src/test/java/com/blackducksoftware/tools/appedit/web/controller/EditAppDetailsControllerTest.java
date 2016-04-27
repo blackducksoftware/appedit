@@ -28,6 +28,7 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.mocks.MockAppService;
 import com.blackducksoftware.tools.appedit.mocks.MockVulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.appedit.web.controller.appdetails.EditAppDetailsController;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
 public class EditAppDetailsControllerTest {

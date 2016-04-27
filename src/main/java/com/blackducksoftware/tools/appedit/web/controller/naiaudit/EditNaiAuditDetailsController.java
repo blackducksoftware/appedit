@@ -1,4 +1,4 @@
-package com.blackducksoftware.tools.appedit.web.controller;
+package com.blackducksoftware.tools.appedit.web.controller.naiaudit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
+import com.blackducksoftware.tools.appedit.web.controller.AppEditControllerException;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 /**
