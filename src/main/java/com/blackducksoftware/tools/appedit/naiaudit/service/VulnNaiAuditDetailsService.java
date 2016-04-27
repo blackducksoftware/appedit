@@ -7,14 +7,44 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 public interface VulnNaiAuditDetailsService {
+
+    /**
+     * Get Application by name/version.
+     * 
+     * @param appName
+     * @param appVersion
+     * @return
+     * @throws AppEditException
+     */
     ApplicationPojo getApplicationByNameVersion(String appName,
 	    String appVersion) throws AppEditException;
 
+    /**
+     * Get application by ID.
+     * 
+     * @param appId
+     * @return
+     * @throws AppEditException
+     */
     ApplicationPojo getApplicationById(String appId) throws AppEditException;
 
+    /**
+     * Get an applications components+vulnerabilities.
+     * 
+     * @param applicationId
+     * @return
+     * @throws AppEditException
+     */
     List<AppCompVulnComposite> getAppCompVulnCompositeList(String applicationId)
 	    throws AppEditException;
 
+    /**
+     * Update the NAI Audit details for one component's vulnerability.
+     * 
+     * @param appCompVulnComposite
+     * @return
+     * @throws AppEditException
+     */
     AppCompVulnComposite updateVulnNaiAuditDetails(
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException;
 
