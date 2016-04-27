@@ -107,9 +107,7 @@ public class EditAppDetailsController {
 
 	    // If here (no exception): This user is an end-user
 	    appDetails = loadApplication(request);
-
 	    verifyUserIsOnAppTeam(appDetails);
-
 	    verifyAllAttributesExist(appDetails);
 	} catch (AppEditControllerException e) {
 	    logger.error(e.getMessage());
@@ -127,6 +125,63 @@ public class EditAppDetailsController {
 	model.addAttribute("dataSource", appService);
 
 	return "editAppDetailsForm";
+    }
+
+    /**
+     * Handles Edit App Details form submissions. Updates app in Code Center.
+     */
+    @RequestMapping(value = "/editappdetails", method = RequestMethod.POST)
+    public String updateApp(@ModelAttribute("app") ViewAppBean app,
+	    @ModelAttribute("dataSource") AppService dataSource,
+	    @RequestParam String action, ModelMap model) {
+
+	logger.info("EditAppDetails.updateApp(): app: " + app
+		+ "; dataSource: " + dataSource);
+
+	try {
+	    validateInput(app);
+
+	    // Convert the View-friendly appDetails to a generic appDetails
+	    // object
+	    AppDetails appDetails = appDetailsBeanConverter
+		    .createAppDetails(app);
+
+	    verifyUserIsOnAppTeam(appDetails);
+	    updateApp(appDetails);
+	} catch (AppEditControllerException e) {
+	    logger.error(e.getMessage());
+	    model.addAttribute("message", e.getMessage());
+	    return e.getReturnValue();
+	}
+
+	return "editAppDetailsResult";
+    }
+
+    private void updateApp(AppDetails appDetails)
+	    throws AppEditControllerException {
+	try {
+	    appService.update(appDetails); // update app in Code Center
+	} catch (Exception e) {
+	    String msg = "Error updating application "
+		    + appDetails.getAppName() + ": " + e.getMessage();
+
+	    throw new AppEditControllerException("error/programError", msg);
+	}
+    }
+
+    private void validateInput(ViewAppBean app)
+	    throws AppEditControllerException {
+	// Validate input
+	int i = 0;
+	for (String attrLabel : app.getAttrNames()) {
+	    InputValidatorEditAppDetails inputValidator = new InputValidatorEditAppDetails(
+		    config);
+	    if (!inputValidator.validateAttributeValue(attrLabel, app
+		    .getAttrValues().get(i++).getValue())) {
+		String msg = "The value of " + attrLabel + " is invalid.";
+		throw new AppEditControllerException("error/programError", msg);
+	    }
+	}
     }
 
     private void verifyAllAttributesExist(AppDetails appDetails)
@@ -251,59 +306,4 @@ public class EditAppDetailsController {
 
     }
 
-    /**
-     * Handles Edit App Details form submissions. Updates app in Code Center.
-     */
-    @RequestMapping(value = "/editappdetails", method = RequestMethod.POST)
-    public String updateApp(@ModelAttribute("app") ViewAppBean app,
-	    @ModelAttribute("dataSource") AppService dataSource,
-	    @RequestParam String action, ModelMap model) {
-
-	logger.info("EditAppDetails.updateApp(): app: " + app
-		+ "; dataSource: " + dataSource);
-
-	// Validate input
-	int i = 0;
-	for (String attrLabel : app.getAttrNames()) {
-	    InputValidatorEditAppDetails inputValidator = new InputValidatorEditAppDetails(
-		    config);
-	    if (!inputValidator.validateAttributeValue(attrLabel, app
-		    .getAttrValues().get(i++).getValue())) {
-		String msg = "The value of " + attrLabel + " is invalid.";
-		logger.error(msg);
-		model.addAttribute("message", msg);
-		return "error/programError";
-	    }
-	}
-
-	// Convert the View-friendly appDetails to a generic appDetails object
-	AppDetails appDetails = appDetailsBeanConverter.createAppDetails(app);
-
-	// Get the logged-in user's details
-	String username = (String) SecurityContextHolder.getContext()
-		.getAuthentication().getPrincipal();
-
-	// Make sure they are on this app's team (list of users that can access
-	// it)
-	boolean isAuthorized = dataSource.authorizeUser(appDetails.getAppId(),
-		username);
-	if (!isAuthorized) {
-	    String msg = "You are not authorized to access this application";
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
-
-	try {
-	    dataSource.update(appDetails); // update app in Code Center
-	} catch (Exception e) {
-	    String msg = "Error updating application " + app.getAppName()
-		    + ": " + e.getMessage();
-	    logger.error(msg);
-	    model.addAttribute("message", msg);
-	    return "error/programError";
-	}
-
-	return "editAppDetailsResult";
-    }
 }
