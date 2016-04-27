@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Code Center Data Access Objects
  * @author sbillings
  *
  */

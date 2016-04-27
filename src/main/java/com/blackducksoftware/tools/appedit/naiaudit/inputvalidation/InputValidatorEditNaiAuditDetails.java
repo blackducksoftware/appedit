@@ -9,6 +9,12 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin;
 
+/**
+ * Input validation for NAI Audit comment values.
+ * 
+ * @author sbillings
+ *
+ */
 public class InputValidatorEditNaiAuditDetails {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());

@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Core model classes
  * @author sbillings
  *
  */

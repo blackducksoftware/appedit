@@ -1,7 +1,6 @@
 /**
+ * Core services
  * 
- */
-/**
  * @author sbillings
  *
  */

@@ -1,7 +1,6 @@
 /**
+ * NAI Audit services implementation.
  * 
- */
-/**
  * @author sbillings
  *
  */

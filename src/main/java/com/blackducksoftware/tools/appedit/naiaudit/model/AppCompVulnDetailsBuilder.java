@@ -5,6 +5,12 @@ import java.util.Date;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeverity;
 
+/**
+ * A builder used to create AppCompVulnDetails objects.
+ * 
+ * @author sbillings
+ *
+ */
 public class AppCompVulnDetailsBuilder {
     private AppCompVulnKey appCompVulnKey;
     private String componentName;

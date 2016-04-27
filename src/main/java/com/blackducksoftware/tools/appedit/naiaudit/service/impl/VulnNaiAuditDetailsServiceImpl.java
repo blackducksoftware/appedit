@@ -24,6 +24,12 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
+/**
+ * NAI Audit services implementation.
+ * 
+ * @author sbillings
+ *
+ */
 public class VulnNaiAuditDetailsServiceImpl implements
 	VulnNaiAuditDetailsService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()

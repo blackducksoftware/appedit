@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Core Exception classes
  * @author sbillings
  *
  */

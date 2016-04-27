@@ -1,7 +1,6 @@
 /**
+ * JDBC Data Access Objects.
  * 
- */
-/**
  * @author sbillings
  *
  */

@@ -2,6 +2,12 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 import java.util.Date;
 
+/**
+ * Details of one change to NAI Audit details.
+ * 
+ * @author sbillings
+ *
+ */
 public class VulnNaiAuditChange {
     private final Date changeTime;
     private final AppCompVulnKey appCompVulnKey;

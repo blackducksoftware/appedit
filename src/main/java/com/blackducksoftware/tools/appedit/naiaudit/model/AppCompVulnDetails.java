@@ -5,6 +5,12 @@ import java.util.Date;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeverity;
 
+/**
+ * Vulnerability details.
+ * 
+ * @author sbillings
+ *
+ */
 public class AppCompVulnDetails {
     private final AppCompVulnKey appCompVulnKey;
 

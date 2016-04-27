@@ -13,6 +13,13 @@ import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditChangeHistoryDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditChange;
 
+/**
+ * JDBC Data Access Object for the change history (audit trail) that records
+ * changes to NAI Audit data.
+ * 
+ * @author sbillings
+ *
+ */
 public class JdbcVulnNaiAuditChangeHistoryDao implements
 	VulnNaiAuditChangeHistoryDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()

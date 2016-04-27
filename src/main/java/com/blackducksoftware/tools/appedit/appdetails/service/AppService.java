@@ -4,6 +4,12 @@ import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 
+/**
+ * Application Services
+ * 
+ * @author sbillings
+ *
+ */
 public interface AppService {
     /**
      * Attempt to authorize the given user.
@@ -41,6 +47,13 @@ public interface AppService {
      */
     void update(AppDetails app) throws Exception;
 
+    /**
+     * Get attribute definition by name.
+     * 
+     * @param attrName
+     * @return
+     * @throws Exception
+     */
     AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception;
 

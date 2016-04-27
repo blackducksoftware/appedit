@@ -2,6 +2,12 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 import java.util.List;
 
+/**
+ * The NAI Audit details needed by the View.
+ * 
+ * @author sbillings
+ *
+ */
 public class NaiAuditViewData {
     private String applicationId;
 

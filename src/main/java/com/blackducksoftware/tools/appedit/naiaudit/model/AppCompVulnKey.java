@@ -1,5 +1,11 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+/**
+ * A key that uniquely identifies a vulnerability.
+ * 
+ * @author sbillings
+ *
+ */
 public class AppCompVulnKey {
     private final String applicationId;
     private final String requestId;

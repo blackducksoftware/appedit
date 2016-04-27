@@ -8,6 +8,13 @@ import org.springframework.jdbc.core.RowMapper;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
+/**
+ * Builds a VulnNaiAuditDetails object from result sets fetched from the NAI
+ * Audit Details table.
+ * 
+ * @author sbillings
+ *
+ */
 public class VulnNaiAuditDetailsMapper implements
 	RowMapper<VulnNaiAuditDetails> {
 

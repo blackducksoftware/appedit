@@ -1,7 +1,6 @@
 /**
+ * NAI Audit controllers.
  * 
- */
-/**
  * @author sbillings
  *
  */

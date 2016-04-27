@@ -1,5 +1,5 @@
 /**
- * 
+ * Edit App Details input validation
  */
 /**
  * @author sbillings

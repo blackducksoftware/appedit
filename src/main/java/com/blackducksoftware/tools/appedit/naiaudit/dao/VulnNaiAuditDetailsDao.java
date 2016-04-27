@@ -6,6 +6,12 @@ import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
+/**
+ * Interface for DAOs that add/get/update NAI Audit details.
+ * 
+ * @author sbillings
+ *
+ */
 public interface VulnNaiAuditDetailsDao {
 
     VulnNaiAuditDetails insertVulnNaiAuditDetails(

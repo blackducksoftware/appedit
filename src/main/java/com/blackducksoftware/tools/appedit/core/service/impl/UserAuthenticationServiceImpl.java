@@ -6,6 +6,12 @@ import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticationDao;
 import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.service.UserAuthenticationService;
 
+/**
+ * User authentication service implementation
+ * 
+ * @author sbillings
+ *
+ */
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
     private UserAuthenticationDao userAuthenticationDao;

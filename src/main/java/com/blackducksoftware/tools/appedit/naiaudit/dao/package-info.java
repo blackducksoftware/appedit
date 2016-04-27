@@ -1,7 +1,6 @@
 /**
+ * Data Access Object interfaces.
  * 
- */
-/**
  * @author sbillings
  *
  */

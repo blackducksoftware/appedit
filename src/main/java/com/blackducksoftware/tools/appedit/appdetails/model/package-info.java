@@ -1,5 +1,5 @@
 /**
- * 
+ * Edit App Details model
  */
 /**
  * @author sbillings

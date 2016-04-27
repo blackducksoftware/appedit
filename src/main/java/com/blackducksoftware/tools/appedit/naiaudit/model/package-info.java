@@ -1,7 +1,6 @@
 /**
+ * NAI Audit model classes.
  * 
- */
-/**
  * @author sbillings
  *
  */

@@ -1,7 +1,6 @@
 /**
+ * NAI Audit services
  * 
- */
-/**
  * @author sbillings
  *
  */

@@ -6,6 +6,12 @@ import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
+/**
+ * NAI Audit services.
+ * 
+ * @author sbillings
+ *
+ */
 public interface VulnNaiAuditDetailsService {
 
     /**

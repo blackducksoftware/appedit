@@ -17,6 +17,12 @@ import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
+/**
+ * JDBC DAO that adds/gets/updates NAI Audit details.
+ * 
+ * @author sbillings
+ *
+ */
 public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());

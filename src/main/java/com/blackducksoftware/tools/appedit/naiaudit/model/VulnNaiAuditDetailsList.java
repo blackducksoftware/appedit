@@ -5,6 +5,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * A list of vulnerability-specific NAI Audit details.
+ * 
+ * @author sbillings
+ *
+ */
 @XmlRootElement(name = "vulnNaiAuditDetailsList")
 public class VulnNaiAuditDetailsList {
     private List<VulnNaiAuditDetails> vulnNaiAuditDetailsList;

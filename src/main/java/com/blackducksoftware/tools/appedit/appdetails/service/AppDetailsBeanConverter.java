@@ -3,6 +3,12 @@ package com.blackducksoftware.tools.appedit.appdetails.service;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.appdetails.model.ViewAppBean;
 
+/**
+ * Converts AppDetails bean to/from ViewAppBean
+ * 
+ * @author sbillings
+ *
+ */
 public interface AppDetailsBeanConverter {
 
     /**

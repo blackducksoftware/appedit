@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Edit App Details functionality
  * @author sbillings
  *
  */

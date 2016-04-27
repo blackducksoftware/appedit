@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Input validation
  * @author sbillings
  *
  */

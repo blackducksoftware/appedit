@@ -1,5 +1,12 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+/**
+ * This class composes a AppCompVulnDetails object and a VulnNaiAuditDetails
+ * object to store all of the needed details for a vulnerability in one object.
+ * 
+ * @author sbillings
+ *
+ */
 public class AppCompVulnComposite {
     private final AppCompVulnKey key;
 

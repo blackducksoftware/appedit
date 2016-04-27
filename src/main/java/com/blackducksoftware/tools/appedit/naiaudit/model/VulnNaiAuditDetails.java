@@ -2,6 +2,12 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 
+/**
+ * NAI Audit Details for one vulnerability.
+ * 
+ * @author sbillings
+ *
+ */
 public class VulnNaiAuditDetails {
     private final AppCompVulnKey appCompVulnKey;
     private final String origNaiAuditStatus;

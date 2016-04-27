@@ -1,7 +1,6 @@
 /**
+ * Edit App Details controllers.
  * 
- */
-/**
  * @author sbillings
  *
  */

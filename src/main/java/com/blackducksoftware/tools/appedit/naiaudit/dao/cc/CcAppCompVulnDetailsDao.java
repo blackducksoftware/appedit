@@ -21,6 +21,14 @@ import com.blackducksoftware.tools.connector.codecenter.common.CodeCenterCompone
 import com.blackducksoftware.tools.connector.codecenter.common.RequestPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.RequestVulnerabilityPojo;
 
+/**
+ * Code Center Application Component Vulnerability Details DAO. Gets/updates
+ * details (remediation status and comments) specific to a vulnerability on a
+ * specific application as used in a specific application.
+ * 
+ * @author sbillings
+ *
+ */
 public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());

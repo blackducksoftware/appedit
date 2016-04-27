@@ -16,6 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *******************************************************************************/
 /**
- * Core AppEdit logic classes.
+ * Core AppEdit classes (shared by App Details and NAI Audit functionality)
  */
 package com.blackducksoftware.tools.appedit.core;

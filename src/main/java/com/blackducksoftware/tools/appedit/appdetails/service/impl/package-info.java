@@ -1,7 +1,6 @@
 /**
+ * Edit App Details services implementation
  * 
- */
-/**
  * @author sbillings
  *
  */

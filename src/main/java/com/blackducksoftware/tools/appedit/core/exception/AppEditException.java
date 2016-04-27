@@ -2,6 +2,8 @@ package com.blackducksoftware.tools.appedit.core.exception;
 
 public class AppEditException extends Exception {
 
+    private static final long serialVersionUID = -9063771081100082384L;
+
     public AppEditException(String message) {
 	super(message);
     }
