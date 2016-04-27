@@ -73,7 +73,6 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	    String applicationId) throws AppEditException {
 	logger.debug("getAppCompVulnDetailsMap() called with appId: "
 		+ applicationId);
-	Map<AppCompVulnKey, AppCompVulnDetails> result = new HashMap<>();
 
 	List<RequestPojo> requests;
 	try {
@@ -83,6 +82,16 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	    throw new AppEditException("Error getting application with ID "
 		    + applicationId + ": " + e.getMessage(), e);
 	}
+	Map<AppCompVulnKey, AppCompVulnDetails> result = getAllVulnerabilitiesForRequests(
+		applicationId, requests);
+
+	return result;
+    }
+
+    private Map<AppCompVulnKey, AppCompVulnDetails> getAllVulnerabilitiesForRequests(
+	    String applicationId, List<RequestPojo> requests)
+	    throws AppEditException {
+	Map<AppCompVulnKey, AppCompVulnDetails> vulnMap = new HashMap<>();
 	for (RequestPojo request : requests) {
 	    String requestId = request.getRequestId();
 
@@ -104,37 +113,60 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			"Error getting vulnerabilities for request ID "
 				+ requestId + ": " + e.getMessage(), e);
 	    }
-	    for (RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
-
-		logger.debug("Processing: Comp: " + comp.getName() + " / "
-			+ comp.getVersion() + ": Vuln: "
-			+ requestVulnerability.getVulnerabilityName());
-		AppCompVulnKey key = new AppCompVulnKey(applicationId,
-			requestVulnerability.getRequestId(), comp.getId(),
-			requestVulnerability.getVulnerabilityId());
-
-		AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(
-			key, comp.getName(), comp.getVersion(),
-			requestVulnerability.getVulnerabilityName(),
-			requestVulnerability.getSeverity(),
-
-			requestVulnerability.getBaseScore(),
-			requestVulnerability.getExploitabilityScore(),
-			requestVulnerability.getImpactScore(),
-			requestVulnerability.getDateCreated(),
-			requestVulnerability.getDateModified(),
-
-			requestVulnerability.getDatePublished(),
-			requestVulnerability.getDescription(),
-			requestVulnerability.getTargetRemediationDate(),
-			requestVulnerability.getActualRemediationDate(),
-			requestVulnerability.getReviewStatusName(),
-			requestVulnerability.getComments());
-		result.put(key, appCompVulnDetails);
-	    }
+	    collectRequestVulnerabilities(vulnMap, applicationId, comp,
+		    requestVulnerabilities);
 	}
+	return vulnMap;
+    }
 
-	return result;
+    private void collectRequestVulnerabilities(
+	    Map<AppCompVulnKey, AppCompVulnDetails> result,
+	    String applicationId, CodeCenterComponentPojo comp,
+	    List<RequestVulnerabilityPojo> requestVulnerabilities) {
+	for (RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
+
+	    logger.debug("Processing: Comp: " + comp.getName() + " / "
+		    + comp.getVersion() + ": Vuln: "
+		    + requestVulnerability.getVulnerabilityName());
+	    AppCompVulnKey key = deriveKey(applicationId, comp,
+		    requestVulnerability);
+
+	    AppCompVulnDetails appCompVulnDetails = deriveAppCompVulnDetails(
+		    key, comp, requestVulnerability);
+	    result.put(key, appCompVulnDetails);
+	}
+    }
+
+    private AppCompVulnKey deriveKey(String applicationId,
+	    CodeCenterComponentPojo comp,
+	    RequestVulnerabilityPojo requestVulnerability) {
+	AppCompVulnKey key = new AppCompVulnKey(applicationId,
+		requestVulnerability.getRequestId(), comp.getId(),
+		requestVulnerability.getVulnerabilityId());
+	return key;
+    }
+
+    private AppCompVulnDetails deriveAppCompVulnDetails(AppCompVulnKey key,
+	    CodeCenterComponentPojo comp,
+	    RequestVulnerabilityPojo requestVulnerability) {
+	AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(key,
+		comp.getName(), comp.getVersion(),
+		requestVulnerability.getVulnerabilityName(),
+		requestVulnerability.getSeverity(),
+
+		requestVulnerability.getBaseScore(),
+		requestVulnerability.getExploitabilityScore(),
+		requestVulnerability.getImpactScore(),
+		requestVulnerability.getDateCreated(),
+		requestVulnerability.getDateModified(),
+
+		requestVulnerability.getDatePublished(),
+		requestVulnerability.getDescription(),
+		requestVulnerability.getTargetRemediationDate(),
+		requestVulnerability.getActualRemediationDate(),
+		requestVulnerability.getReviewStatusName(),
+		requestVulnerability.getComments());
+	return appCompVulnDetails;
     }
 
     @Override
