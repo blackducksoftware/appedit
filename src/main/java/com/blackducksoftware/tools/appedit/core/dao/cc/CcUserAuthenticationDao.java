@@ -32,8 +32,10 @@ import com.blackducksoftware.sdk.codecenter.role.data.UserRoleAssignment;
 import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticationDao;
+import com.blackducksoftware.tools.appedit.core.exception.AuthenticationException;
 import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.model.Role;
+import com.blackducksoftware.tools.commonframework.core.config.ConfigurationManager;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
@@ -61,7 +63,8 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	logger.debug("Default constructor called");
     }
 
-    public CcUserAuthenticationDao(AppEditConfigManager config) throws Exception {
+    public CcUserAuthenticationDao(AppEditConfigManager config)
+	    throws Exception {
 	logger.debug("Config passed via constructor");
 	this.config = config;
     }
@@ -72,59 +75,19 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
     @Override
     public AuthenticationResult authenticate(String username, String password) {
 
-	Properties userSpecificProps = (Properties) config.getProps().clone();
-	userSpecificProps.setProperty("cc.user.name", username); // change
-								 // username
-	userSpecificProps.setProperty("cc.password", password); // and password
 	AppEditConfigManager userSpecificConfig;
-	try {
-	    userSpecificConfig = new AppEditConfigManager(userSpecificProps);
-	} catch (Exception e1) {
-	    String message = "Authentication failed: " + e1.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(null, null, false, message,
-		    Role.ROLE_NONE);
-	}
-
-	CodeCenterServerWrapper userSpecificCcsw = null;
-	try {
-	    // TODO Creating ALL of the API services is slow; go direct (not via
-	    // CF)
-	    userSpecificCcsw = new CodeCenterServerWrapper(userSpecificConfig);
-	} catch (Exception e) {
-	    String message = "Authentication failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(null, null, false, message,
-		    Role.ROLE_NONE);
-	}
-
-	// Authorize by performing an operation this user should be able to do
 	CodeCenterUserPojo user;
+	boolean isAuditor;
 	try {
-	    user = userSpecificCcsw.getUserManager().getUserByName(username);
-	} catch (CommonFrameworkException e) {
-	    String message = "Authorization failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(null, null, false, message,
-		    Role.ROLE_NONE);
-	} catch (SOAPFaultException e) {
-	    String message = "Authorization failed: " + e.getMessage();
-	    logger.info(message);
-	    return new AuthenticationResult(null, null, false, message,
-		    Role.ROLE_NONE);
+	    userSpecificConfig = createConfig(username, password);
+	    CodeCenterServerWrapper userSpecificCcsw = createCodeCenterServerWrapper(userSpecificConfig);
+	    user = getUser(userSpecificCcsw, username);
+	    isAuditor = isAuditor(userSpecificCcsw, username, user);
+	} catch (AuthenticationException e1) {
+	    logger.warn(e1.getMessage());
+	    return e1.getAuthResult();
 	}
 
-	// Now see if this user is an auditor
-	boolean isAuditor = false;
-	try {
-	    isAuditor = userIsAuditor(username, userSpecificCcsw);
-	} catch (CommonFrameworkException e) {
-	    String message = "Error attempting to authorize this user an an auditor: "
-		    + e.getMessage() + "; Authorizing this user as an end user";
-	    logger.warn(message);
-	    return new AuthenticationResult(user.getId(), username, true,
-		    "Login as User was successful.", Role.ROLE_USER);
-	}
 	if (isAuditor) {
 	    logger.info("User " + username
 		    + " has been authorized as an Auditor");
@@ -135,6 +98,81 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	logger.info("User " + username + " has been authorized as a User");
 	return new AuthenticationResult(user.getId(), username, true,
 		"Login as User was successful.", Role.ROLE_USER);
+    }
+
+    private boolean isAuditor(CodeCenterServerWrapper userSpecificCcsw,
+	    String username, CodeCenterUserPojo user)
+	    throws AuthenticationException {
+	// Now see if this user is an auditor
+	boolean isAuditor = false;
+	try {
+	    isAuditor = userIsAuditor(username, userSpecificCcsw);
+	} catch (CommonFrameworkException e) {
+	    String message = "Error attempting to authorize this user an an auditor: "
+		    + e.getMessage() + "; Authorizing this user as an end user";
+	    AuthenticationResult authResult = new AuthenticationResult(
+		    user.getId(), username, true,
+		    "Login as User was successful.", Role.ROLE_USER);
+	    throw new AuthenticationException(authResult, message);
+	}
+	return isAuditor;
+    }
+
+    private CodeCenterUserPojo getUser(
+	    CodeCenterServerWrapper userSpecificCcsw, String username)
+	    throws AuthenticationException {
+	// Authorize by performing an operation this user should be able to do
+	CodeCenterUserPojo user;
+	try {
+	    user = userSpecificCcsw.getUserManager().getUserByName(username);
+	} catch (CommonFrameworkException e) {
+	    String message = "Authorization failed: " + e.getMessage();
+	    AuthenticationResult authResult = new AuthenticationResult(null,
+		    null, false, message, Role.ROLE_NONE);
+	    throw new AuthenticationException(authResult, message);
+	} catch (SOAPFaultException e) {
+	    String message = "Authorization failed: " + e.getMessage();
+	    AuthenticationResult authResult = new AuthenticationResult(null,
+		    null, false, message, Role.ROLE_NONE);
+	    throw new AuthenticationException(authResult, message);
+	}
+	return user;
+    }
+
+    private CodeCenterServerWrapper createCodeCenterServerWrapper(
+	    ConfigurationManager userSpecificConfig)
+	    throws AuthenticationException {
+	CodeCenterServerWrapper userSpecificCcsw = null;
+	try {
+	    // TODO Creating ALL of the API services is slow; go direct (not via
+	    // CF)
+	    userSpecificCcsw = new CodeCenterServerWrapper(userSpecificConfig);
+	} catch (Exception e) {
+	    String message = "Authentication failed: " + e.getMessage();
+	    AuthenticationResult authResult = new AuthenticationResult(null,
+		    null, false, message, Role.ROLE_NONE);
+	    throw new AuthenticationException(authResult, message);
+	}
+	return userSpecificCcsw;
+    }
+
+    private AppEditConfigManager createConfig(String username, String password)
+	    throws AuthenticationException {
+	Properties userSpecificProps = (Properties) config.getProps().clone();
+	userSpecificProps.setProperty("cc.user.name", username); // change
+								 // username
+	userSpecificProps.setProperty("cc.password", password); // and password
+	AppEditConfigManager userSpecificConfig;
+	try {
+	    userSpecificConfig = new AppEditConfigManager(userSpecificProps);
+	} catch (Exception e1) {
+	    String message = "Authentication failed: " + e1.getMessage();
+	    AuthenticationResult authResult = new AuthenticationResult(null,
+		    null, false, message, Role.ROLE_NONE);
+
+	    throw new AuthenticationException(authResult, message);
+	}
+	return userSpecificConfig;
     }
 
     private boolean userIsAuditor(String username,
@@ -155,6 +193,15 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	    throw new CommonFrameworkException("Error getting user's roles: "
 		    + e.getMessage());
 	}
+	boolean isAuditor = hasAuditorRole(userSpecificCcsw, username,
+		roleAssignments);
+	return isAuditor;
+    }
+
+    private boolean hasAuditorRole(CodeCenterServerWrapper userSpecificCcsw,
+	    String username, List<UserRoleAssignment> roleAssignments)
+	    throws CommonFrameworkException {
+
 	for (UserRoleAssignment roleAssignment : roleAssignments) {
 
 	    com.blackducksoftware.sdk.codecenter.role.data.Role ccRole;
