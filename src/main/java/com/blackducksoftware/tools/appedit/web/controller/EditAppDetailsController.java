@@ -55,7 +55,7 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
  *
  */
 @Controller
-@SessionAttributes({ "app", "dataSource" })
+@SessionAttributes({ "app" })
 public class EditAppDetailsController {
     private AppEditConfigManager config;
 
@@ -122,7 +122,6 @@ public class EditAppDetailsController {
 
 	// Put the objects the JSP will need into the model
 	model.addAttribute("app", app);
-	model.addAttribute("dataSource", appService);
 
 	return "editAppDetailsForm";
     }
@@ -132,11 +131,9 @@ public class EditAppDetailsController {
      */
     @RequestMapping(value = "/editappdetails", method = RequestMethod.POST)
     public String updateApp(@ModelAttribute("app") ViewAppBean app,
-	    @ModelAttribute("dataSource") AppService dataSource,
 	    @RequestParam String action, ModelMap model) {
 
-	logger.info("EditAppDetails.updateApp(): app: " + app
-		+ "; dataSource: " + dataSource);
+	logger.info("EditAppDetails.updateApp(): app: " + app);
 
 	try {
 	    validateInput(app);

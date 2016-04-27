@@ -413,8 +413,7 @@ public class EditAppDetailsControllerTest {
 
 	// Test
 
-	String returnValue = controller.updateApp(app, appService, action,
-		model);
+	String returnValue = controller.updateApp(app, action, model);
 
 	assertEquals("editAppDetailsResult", returnValue);
 	String message = (String) model.get("message");
@@ -469,8 +468,7 @@ public class EditAppDetailsControllerTest {
 
 	// Test
 
-	String returnValue = controller.updateApp(app, appService, action,
-		model);
+	String returnValue = controller.updateApp(app, action, model);
 
 	assertEquals("error/programError", returnValue);
 	String message = (String) model.get("message");
@@ -521,8 +519,7 @@ public class EditAppDetailsControllerTest {
 
 	// Test
 
-	String returnValue = controller.updateApp(app, appService, action,
-		model);
+	String returnValue = controller.updateApp(app, action, model);
 
 	assertEquals("error/programError", returnValue);
 	String message = (String) model.get("message");
@@ -574,8 +571,7 @@ public class EditAppDetailsControllerTest {
 
 	// Test
 
-	String returnValue = controller.updateApp(app, appService, action,
-		model);
+	String returnValue = controller.updateApp(app, action, model);
 
 	assertEquals("error/programError", returnValue);
 	String message = (String) model.get("message");
