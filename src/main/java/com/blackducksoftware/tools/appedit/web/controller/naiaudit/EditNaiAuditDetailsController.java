@@ -156,8 +156,7 @@ public class EditNaiAuditDetailsController {
 	    vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
 	} catch (AppEditException e) {
 	    String msg = "Error updating NAI Audit details: " + e.getMessage();
-	    throw new AppEditControllerException(
-		    "error/programError", msg);
+	    throw new AppEditControllerException("error/programError", msg);
 	}
     }
 
@@ -181,8 +180,7 @@ public class EditNaiAuditDetailsController {
 	    String msg = "The selected row key (" + keyString
 		    + ") not found in full vulnerabilities list.";
 
-	    throw new AppEditControllerException(
-		    "error/programError", msg);
+	    throw new AppEditControllerException("error/programError", msg);
 	}
 	return selectedVuln;
     }
@@ -194,8 +192,7 @@ public class EditNaiAuditDetailsController {
 	    String msg = "The selected row key (" + selectedRowKey
 		    + ") is invalid; failed extracting IDs.";
 
-	    throw new AppEditControllerException(
-		    "error/programError", msg);
+	    throw new AppEditControllerException("error/programError", msg);
 	}
 	String applicationId = selectedKeyParts[0];
 	String requestId = selectedKeyParts[1];
@@ -215,8 +212,8 @@ public class EditNaiAuditDetailsController {
 	return currentUser;
     }
 
-    private void validateCommentValue(AppEditConfigManager config, ModelMap model,
-	    NaiAuditViewData formData,
+    private void validateCommentValue(AppEditConfigManager config,
+	    ModelMap model, NaiAuditViewData formData,
 	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
 	    throws AppEditControllerException {
 	// Validate input
@@ -228,8 +225,7 @@ public class EditNaiAuditDetailsController {
 		    formData.getApplicationName(),
 		    formData.getApplicationVersion(),
 		    fullVulnNaiAuditDetailsList);
-	    throw new AppEditControllerException(
-		    "editNaiAuditDetailsForm", msg);
+	    throw new AppEditControllerException("editNaiAuditDetailsForm", msg);
 	}
     }
 
@@ -243,8 +239,7 @@ public class EditNaiAuditDetailsController {
 		    formData.getApplicationName(),
 		    formData.getApplicationVersion(),
 		    fullVulnNaiAuditDetailsList);
-	    throw new AppEditControllerException(
-		    "editNaiAuditDetailsForm", msg);
+	    throw new AppEditControllerException("editNaiAuditDetailsForm", msg);
 	}
     }
 
@@ -261,14 +256,12 @@ public class EditNaiAuditDetailsController {
 		    formData.getApplicationVersion(),
 		    fullVulnNaiAuditDetailsList);
 
-	    throw new AppEditControllerException(
-		    "editNaiAuditDetailsForm", msg);
+	    throw new AppEditControllerException("editNaiAuditDetailsForm", msg);
 	}
     }
 
     private List<AppCompVulnComposite> getFullVulnNaiAuditDetailsList(
-	    NaiAuditViewData formData)
-	    throws AppEditControllerException {
+	    NaiAuditViewData formData) throws AppEditControllerException {
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 	try {
 	    fullVulnNaiAuditDetailsList = vulnNaiAuditDetailsService
@@ -277,8 +270,7 @@ public class EditNaiAuditDetailsController {
 	    String msg = "Error getting vulnerability details for application with ID "
 		    + formData.getApplicationId() + e.getMessage();
 
-	    throw new AppEditControllerException(
-		    "error/programError", msg);
+	    throw new AppEditControllerException("error/programError", msg);
 	}
 	return fullVulnNaiAuditDetailsList;
     }
@@ -293,8 +285,7 @@ public class EditNaiAuditDetailsController {
 	} catch (AppEditException e) {
 	    String msg = "Error getting vulnerability details for application: "
 		    + e.getMessage();
-	    throw new AppEditControllerException(
-		    "error/programError", msg);
+	    throw new AppEditControllerException("error/programError", msg);
 	}
 	populateModelWithFormData(model, app.getId(), app.getName(),
 		app.getVersion(), vulnNaiAuditDetailsList);
@@ -309,8 +300,7 @@ public class EditNaiAuditDetailsController {
 	logger.debug("appId: " + appId + "; appName: " + appName);
 
 	if ((appId == null) && (appName == null)) {
-	    throw new AppEditControllerException(
-		    "redirect:/error/400", null);
+	    throw new AppEditControllerException("redirect:/error/400", null);
 	}
 
 	// Load the app (so we have name, version)
@@ -321,8 +311,7 @@ public class EditNaiAuditDetailsController {
 	    } catch (AppEditException e) {
 		String msg = "Error loading application " + appName + ": "
 			+ e.getMessage();
-		throw new AppEditControllerException(
-			"error/programError", msg);
+		throw new AppEditControllerException("error/programError", msg);
 	    }
 	    appId = app.getId();
 	} else {
@@ -331,8 +320,7 @@ public class EditNaiAuditDetailsController {
 	    } catch (AppEditException e) {
 		String msg = "Error loading application with ID " + appId
 			+ ": " + e.getMessage();
-		throw new AppEditControllerException(
-			"error/programError", msg);
+		throw new AppEditControllerException("error/programError", msg);
 	    }
 
 	}

@@ -17,7 +17,6 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.model;
 
-
 /**
  * Holds the results of an authentication attempt. Results consist of a boolean
  * (if true, the user is authenticated) and a message describing, and possibly
