@@ -50,8 +50,6 @@ public class InputValidatorEditAppDetails {
      */
     public boolean validateAttributeValue(String attrLabel, String attrValue) {
 
-	// TODO: enforce length too
-
 	String patternString = config
 		.getFieldInputValidationRegexAttr(attrLabel);
 	if (patternString == null) {

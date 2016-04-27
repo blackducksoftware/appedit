@@ -37,10 +37,11 @@ public class AppCompVulnDetails {
     private String vulnerabilityRemediationComments;
     private String vulnerabilityRemediationCommentsShort;
 
-    // TODO: This should have a builder
-    public AppCompVulnDetails(AppCompVulnKey appCompVulnKey,
-	    String componentName, String componentVersion,
-	    String vulnerabilityName,
+    /**
+     * Don't call constructor directly. Use AppCompVulnDetailsBuilder instead.
+     */
+    AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName,
+	    String componentVersion, String vulnerabilityName,
 	    VulnerabilitySeverity vulnerabilitySeverity,
 
 	    String vulnerabilityBaseScore,

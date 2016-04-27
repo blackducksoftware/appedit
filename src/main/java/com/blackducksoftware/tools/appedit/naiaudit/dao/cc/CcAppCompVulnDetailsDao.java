@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetailsBuilder;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
@@ -122,7 +123,8 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     private void collectRequestVulnerabilities(
 	    Map<AppCompVulnKey, AppCompVulnDetails> result,
 	    String applicationId, CodeCenterComponentPojo comp,
-	    List<RequestVulnerabilityPojo> requestVulnerabilities) {
+	    List<RequestVulnerabilityPojo> requestVulnerabilities)
+	    throws AppEditException {
 	for (RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
 
 	    logger.debug("Processing: Comp: " + comp.getName() + " / "
@@ -148,24 +150,38 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
     private AppCompVulnDetails deriveAppCompVulnDetails(AppCompVulnKey key,
 	    CodeCenterComponentPojo comp,
-	    RequestVulnerabilityPojo requestVulnerability) {
-	AppCompVulnDetails appCompVulnDetails = new AppCompVulnDetails(key,
-		comp.getName(), comp.getVersion(),
-		requestVulnerability.getVulnerabilityName(),
-		requestVulnerability.getSeverity(),
+	    RequestVulnerabilityPojo requestVulnerability)
+	    throws AppEditException {
+	AppCompVulnDetails appCompVulnDetails = (new AppCompVulnDetailsBuilder())
+		.setAppCompVulnKey(key)
+		.setComponentName(comp.getName())
+		.setComponentVersion(comp.getVersion())
+		.setVulnerabilityName(
+			requestVulnerability.getVulnerabilityName())
+		.setVulnerabilitySeverity(requestVulnerability.getSeverity())
+		.setVulnerabilityBaseScore(requestVulnerability.getBaseScore())
+		.setVulnerabilityExploitableScore(
+			requestVulnerability.getExploitabilityScore())
+		.setVulnerabilityImpactScore(
+			requestVulnerability.getImpactScore())
+		.setVulnerabilityDateCreated(
+			requestVulnerability.getDateCreated())
+		.setVulnerabilityDateModified(
+			requestVulnerability.getDateModified())
+		.setVulnerabilityDatePublished(
+			requestVulnerability.getDatePublished())
+		.setVulnerabilityDescription(
+			requestVulnerability.getDescription())
+		.setVulnerabilityTargetRemediationDate(
+			requestVulnerability.getTargetRemediationDate())
+		.setVulnerabilityActualRemediationDate(
+			requestVulnerability.getActualRemediationDate())
+		.setVulnerabilityRemediationStatus(
+			requestVulnerability.getReviewStatusName())
+		.setVulnerabilityRemediationComments(
+			requestVulnerability.getComments())
+		.createAppCompVulnDetails();
 
-		requestVulnerability.getBaseScore(),
-		requestVulnerability.getExploitabilityScore(),
-		requestVulnerability.getImpactScore(),
-		requestVulnerability.getDateCreated(),
-		requestVulnerability.getDateModified(),
-
-		requestVulnerability.getDatePublished(),
-		requestVulnerability.getDescription(),
-		requestVulnerability.getTargetRemediationDate(),
-		requestVulnerability.getActualRemediationDate(),
-		requestVulnerability.getReviewStatusName(),
-		requestVulnerability.getComments());
 	return appCompVulnDetails;
     }
 

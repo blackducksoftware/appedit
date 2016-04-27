@@ -7,6 +7,7 @@ import java.util.List;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetailsBuilder;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
@@ -51,13 +52,29 @@ public class MockVulnNaiAuditDetailsService implements
 
 	AppCompVulnKey key = new AppCompVulnKey("app1Id", "request1Id",
 		"component1Id", "vulnerability1Id");
-	AppCompVulnDetails ccPart = new AppCompVulnDetails(key,
-		"component1Name", "component1Version", "vulnerability1Name",
-		VulnerabilitySeverity.HIGH, "vulnerability1BaseScore",
-		"vulnerability1ExploitableScore", "vulnerability1ImpactScore",
-		now, now, now, "vulnerability1Description", now, now,
-		"vulnerability1RemediationStatus",
-		"vulnerability1RemediationComments");
+
+	AppCompVulnDetails ccPart = (new AppCompVulnDetailsBuilder())
+		.setAppCompVulnKey(key)
+		.setComponentName("component1Name")
+		.setComponentVersion("component1Version")
+		.setVulnerabilityName("vulnerability1Name")
+		.setVulnerabilitySeverity(VulnerabilitySeverity.HIGH)
+		.setVulnerabilityBaseScore("vulnerability1BaseScore")
+		.setVulnerabilityExploitableScore(
+			"vulnerability1ExploitableScore")
+		.setVulnerabilityImpactScore("vulnerability1ImpactScore")
+		.setVulnerabilityDateCreated(now)
+		.setVulnerabilityDateModified(now)
+		.setVulnerabilityDatePublished(now)
+		.setVulnerabilityDescription("vulnerability1Description")
+		.setVulnerabilityTargetRemediationDate(now)
+		.setVulnerabilityActualRemediationDate(now)
+		.setVulnerabilityRemediationStatus(
+			"vulnerability1RemediationStatus")
+		.setVulnerabilityRemediationComments(
+			"vulnerability1RemediationComments")
+		.createAppCompVulnDetails();
+
 	VulnNaiAuditDetails auditPart = new VulnNaiAuditDetails(key,
 		"vulnerability1NaiAuditStatus", "vulnerability1NaiAuditComment");
 

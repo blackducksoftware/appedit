@@ -144,8 +144,6 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	    throws AuthenticationException {
 	CodeCenterServerWrapper userSpecificCcsw = null;
 	try {
-	    // TODO Creating ALL of the API services is slow; go direct (not via
-	    // CF)
 	    userSpecificCcsw = new CodeCenterServerWrapper(userSpecificConfig);
 	} catch (Exception e) {
 	    String message = "Authentication failed: " + e.getMessage();
@@ -182,7 +180,7 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	    logger.info("The Edit NAI Audit feature has not been enabled");
 	    return false;
 	}
-	// TODO port to CF Managers
+
 	List<UserRoleAssignment> roleAssignments;
 	UserNameToken userNameToken = new UserNameToken();
 	userNameToken.setName(username);
