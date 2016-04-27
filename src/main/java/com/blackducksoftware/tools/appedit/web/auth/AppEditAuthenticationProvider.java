@@ -84,34 +84,49 @@ public class AppEditAuthenticationProvider implements AuthenticationProvider {
 	    String username = (String) authentication.getPrincipal();
 	    String password = (String) authentication.getCredentials();
 
-	    // Validate input
-	    if ((!inputValidatorLogin.validateUsername(username))
-		    || (!inputValidatorLogin.validatePassword(password))) {
-		String msg = "Authorization failed: The user name or password provided was not valid. ";
-		logger.error(msg);
-		throw new AuthenticationServiceException(msg);
-	    }
+	    validateInput(username, password);
 
-	    // Authenticate in Code Center
-
-	    AuthenticationResult authResult = userAuthenticationService
-		    .authenticate(username, password);
-	    if (!authResult.isAuthenticated()) {
-		throw new AuthenticationServiceException(
-			authResult.getMessage());
-	    }
-
-	    // Grant access
-	    List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-	    authorities.add(new SimpleGrantedAuthority(authResult.getRole()
-		    .name()));
-	    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-		    username, password, authorities);
-	    auth.setDetails(authResult);
+	    UsernamePasswordAuthenticationToken auth = generateAuthenticationToken(
+		    username, password);
 
 	    return auth;
 	} catch (Exception e) {
 	    throw new AuthenticationServiceException(e.getMessage(), e);
+	}
+    }
+
+    private UsernamePasswordAuthenticationToken generateAuthenticationToken(
+	    String username, String password) {
+	AuthenticationResult authResult = authenticateUser(username, password);
+	// Grant access
+	List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	authorities
+		.add(new SimpleGrantedAuthority(authResult.getRole().name()));
+	UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+		username, password, authorities);
+	auth.setDetails(authResult);
+	return auth;
+    }
+
+    private AuthenticationResult authenticateUser(String username,
+	    String password) {
+	// Authenticate in Code Center
+
+	AuthenticationResult authResult = userAuthenticationService
+		.authenticate(username, password);
+	if (!authResult.isAuthenticated()) {
+	    throw new AuthenticationServiceException(authResult.getMessage());
+	}
+	return authResult;
+    }
+
+    private void validateInput(String username, String password) {
+	// Validate input
+	if ((!inputValidatorLogin.validateUsername(username))
+		|| (!inputValidatorLogin.validatePassword(password))) {
+	    String msg = "Authorization failed: The user name or password provided was not valid. ";
+	    logger.error(msg);
+	    throw new AuthenticationServiceException(msg);
 	}
     }
 }
