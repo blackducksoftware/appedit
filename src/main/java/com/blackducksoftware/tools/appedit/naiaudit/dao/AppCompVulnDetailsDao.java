@@ -33,14 +33,44 @@ import com.blackducksoftware.tools.connector.codecenter.application.ApplicationP
  *
  */
 public interface AppCompVulnDetailsDao {
+    /**
+     * Update vulnerability details.
+     * 
+     * @param appCompVulnDetails
+     * @return
+     * @throws AppEditException
+     */
     AppCompVulnDetails updateAppCompVulnDetails(
 	    AppCompVulnDetails appCompVulnDetails) throws AppEditException;
 
+    /**
+     * Get application by name/version.
+     * 
+     * @param appName
+     * @param appVersion
+     * @return
+     * @throws AppEditException
+     */
     ApplicationPojo getApplicationByNameVersion(String appName,
 	    String appVersion) throws AppEditException;
 
+    /**
+     * Get application by ID.
+     * 
+     * @param appId
+     * @return
+     * @throws AppEditException
+     */
     ApplicationPojo getApplicationById(String appId) throws AppEditException;
 
+    /**
+     * Get a map containing all of the vulnerability details for the given
+     * application.
+     * 
+     * @param applicationId
+     * @return
+     * @throws AppEditException
+     */
     Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(
 	    String applicationId) throws AppEditException;
 }

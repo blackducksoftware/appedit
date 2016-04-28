@@ -30,6 +30,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
@@ -55,6 +56,13 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 
     }
 
+    /**
+     * Update a set of NAI Audit details.
+     * 
+     * @param vunlNaiAuditDetails
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public VulnNaiAuditDetails insertVulnNaiAuditDetails(
 	    VulnNaiAuditDetails vulnNaiAuditDetails) {
@@ -82,6 +90,13 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	return vulnNaiAuditDetails;
     }
 
+    /**
+     * Update a set of NAI Audit details.
+     * 
+     * @param vunlNaiAuditDetails
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public VulnNaiAuditDetails updateVulnNaiAuditDetails(
 	    VulnNaiAuditDetails vulnNaiAuditDetails) {
@@ -109,6 +124,13 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	return vulnNaiAuditDetails;
     }
 
+    /**
+     * Get a map containing all NAI Audit Details for the given application.
+     * 
+     * @param applicationId
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
 	    String applicationId) {

@@ -41,6 +41,12 @@ public class InputValidatorEditNaiAuditDetails {
 	this.config = config;
     }
 
+    /**
+     * Validate a comment value.
+     * 
+     * @param comment
+     * @return
+     */
     public boolean validateCommentValue(String comment) {
 	if (comment.length() > AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH) {
 	    logger.error("The NAI Audit Comment entered is too long");

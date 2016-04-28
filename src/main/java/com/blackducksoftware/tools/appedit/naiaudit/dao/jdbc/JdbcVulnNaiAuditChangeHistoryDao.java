@@ -49,6 +49,12 @@ public class JdbcVulnNaiAuditChangeHistoryDao implements
 	this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Add a new NAI Audit Change history record.
+     * 
+     * @param vunlNaiAuditChange
+     * @throws AppEditException
+     */
     @Override
     public void insertVulnNaiAuditChange(VulnNaiAuditChange vunlNaiAuditChange)
 	    throws AppEditException {

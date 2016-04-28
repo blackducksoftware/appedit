@@ -39,6 +39,13 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 	this.userAuthenticationDao = userAuthenticationDao;
     }
 
+    /**
+     * Attempts to authenticate the given user.
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     @Override
     public AuthenticationResult authenticate(String username, String password) {
 	return userAuthenticationDao.authenticate(username, password);

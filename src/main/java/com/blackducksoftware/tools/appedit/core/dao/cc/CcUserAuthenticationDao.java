@@ -59,10 +59,21 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	this.config = config;
     }
 
+    /**
+     * Default constructor
+     * 
+     * @throws Exception
+     */
     public CcUserAuthenticationDao() throws Exception {
 	logger.debug("Default constructor called");
     }
 
+    /**
+     * Construct with given config (used by integration test).
+     * 
+     * @param config
+     * @throws Exception
+     */
     public CcUserAuthenticationDao(AppEditConfigManager config)
 	    throws Exception {
 	logger.debug("Config passed via constructor");

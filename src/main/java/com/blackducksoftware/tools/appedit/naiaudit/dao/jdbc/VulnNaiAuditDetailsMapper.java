@@ -35,6 +35,9 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 public class VulnNaiAuditDetailsMapper implements
 	RowMapper<VulnNaiAuditDetails> {
 
+    /**
+     * Create a VulnNaiAuditDetails object from a result set.
+     */
     @Override
     public VulnNaiAuditDetails mapRow(ResultSet rs, int rowNum)
 	    throws SQLException {

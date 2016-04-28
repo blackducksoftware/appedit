@@ -342,6 +342,12 @@ public class EditNaiAuditDetailsController {
 	model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
     }
 
+    /**
+     * Called by Spring to populate the vulnerabilityNaiAuditStatusOptions model
+     * attribute.
+     * 
+     * @return
+     */
     @ModelAttribute("vulnerabilityNaiAuditStatusOptions")
     public List<String> populateVulnerabilityNaiAuditStatusOptions() {
 	List<String> vulnerabilityNaiAuditStatusOptions = new ArrayList<>();

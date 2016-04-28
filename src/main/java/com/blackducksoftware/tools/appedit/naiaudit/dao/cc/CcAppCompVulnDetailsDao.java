@@ -57,6 +57,13 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	this.ccsw = ccsw;
     }
 
+    /**
+     * Update vulnerability details.
+     * 
+     * @param appCompVulnDetails
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public AppCompVulnDetails updateAppCompVulnDetails(
 	    AppCompVulnDetails appCompVulnDetails) throws AppEditException {
@@ -94,6 +101,14 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	return appCompVulnDetails;
     }
 
+    /**
+     * Get a map containing all of the vulnerability details for the given
+     * application.
+     * 
+     * @param applicationId
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public Map<AppCompVulnKey, AppCompVulnDetails> getAppCompVulnDetailsMap(
 	    String applicationId) throws AppEditException {
@@ -210,6 +225,14 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	return appCompVulnDetails;
     }
 
+    /**
+     * Get application by name/version.
+     * 
+     * @param appName
+     * @param appVersion
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
 	    String appVersion) throws AppEditException {
@@ -224,6 +247,13 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	return app;
     }
 
+    /**
+     * Get application by ID.
+     * 
+     * @param appId
+     * @return
+     * @throws AppEditException
+     */
     @Override
     public ApplicationPojo getApplicationById(String appId)
 	    throws AppEditException {

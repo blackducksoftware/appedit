@@ -192,6 +192,9 @@ public class CcAppDao implements AppDao {
 		+ config.getCcAttributeNames() + "]";
     }
 
+    /**
+     * Get attribute definition by name.
+     */
     @Override
     public AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception {

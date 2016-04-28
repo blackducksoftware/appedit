@@ -28,6 +28,12 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditChange;
  *
  */
 public interface VulnNaiAuditChangeHistoryDao {
+    /**
+     * Add a new NAI Audit Change history record.
+     * 
+     * @param vunlNaiAuditChange
+     * @throws AppEditException
+     */
     void insertVulnNaiAuditChange(VulnNaiAuditChange vunlNaiAuditChange)
 	    throws AppEditException;
 

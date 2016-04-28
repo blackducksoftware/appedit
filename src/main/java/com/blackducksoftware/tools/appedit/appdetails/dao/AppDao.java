@@ -64,6 +64,13 @@ public interface AppDao {
      */
     void update(AppDetails app) throws Exception;
 
+    /**
+     * Get attribute definition by name.
+     * 
+     * @param attrName
+     * @return
+     * @throws Exception
+     */
     AttributeDefinitionPojo getAttributeDefinitionByName(String attrName)
 	    throws Exception;
 

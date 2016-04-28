@@ -40,8 +40,6 @@ import com.blackducksoftware.tools.commonframework.core.config.ConfigurationPass
 
 /**
  * Configuration Manager for the AppEdit application.
- *
- * Not thread-safe, so keep references local.
  */
 public class AppEditConfigManager extends ConfigurationManager {
     private static final String DB_PASSWORD_DEFAULT = "mallard";
