@@ -175,7 +175,13 @@
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}</span></td>
+            	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}">
+            		<span style="white-space: pre-wrap">
+            			${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}
+            			<a target="_blank" 
+            				href="${pageContext.request.contextPath}/showfulltext?itemName=Remediation%20Comment&fullText=${vulnerability.ccPart.vulnerabilityRemediationComments}" >Full Text</a>
+            		</span>
+            	</td>
             	
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td title="${vulnerability.auditPart.vulnerabilityNaiAuditComment}">${vulnerability.auditPart.vulnerabilityNaiAuditCommentShort}</td>

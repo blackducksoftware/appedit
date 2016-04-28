@@ -20,7 +20,8 @@
     </div>
 
     <div class="regular">
-    <p><b><spring:message code="label.fulltext.remediationcomment" text="Remediation Comment" />:</b> ${fullTextViewData.fullText}</p>
+    <p><b><spring:message code="label.fulltext.remediationcomment" text="Remediation Comment" />:</b>
+		<span style="white-space: pre-wrap">${fullTextViewData.fullText}</span></p>
 	</div> 
 	
 <p />
