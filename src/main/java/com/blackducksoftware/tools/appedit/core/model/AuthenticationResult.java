@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.model;
 
+import java.io.Serializable;
+
 /**
  * Holds the results of an authentication attempt. Results consist of a boolean
  * (if true, the user is authenticated) and a message describing, and possibly
@@ -25,7 +27,8 @@ package com.blackducksoftware.tools.appedit.core.model;
  * @author sbillings
  *
  */
-public class AuthenticationResult {
+public class AuthenticationResult implements Serializable {
+    private static final long serialVersionUID = 1207534474718985530L;
     private final String userId;
     private final String username;
 

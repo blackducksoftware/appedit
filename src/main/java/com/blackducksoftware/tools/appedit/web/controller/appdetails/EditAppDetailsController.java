@@ -43,7 +43,6 @@ import com.blackducksoftware.tools.appedit.appdetails.service.AppDetailsBeanConv
 import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.model.Role;
-import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.web.controller.AppEditControllerException;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
@@ -60,8 +59,6 @@ import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePoj
 public class EditAppDetailsController {
     private AppEditConfigManager config;
 
-    private VulnNaiAuditDetailsService vulnNaiAuditDetailsService;
-
     @Inject
     public void setConfig(AppEditConfigManager config) {
 	this.config = config;
@@ -72,12 +69,6 @@ public class EditAppDetailsController {
     @Inject
     public void setAppService(AppService appService) {
 	this.appService = appService;
-    }
-
-    @Inject
-    public void setVulnNaiAuditDetailsService(
-	    VulnNaiAuditDetailsService vulnNaiAuditDetailsService) {
-	this.vulnNaiAuditDetailsService = vulnNaiAuditDetailsService;
     }
 
     private AppDetailsBeanConverter appDetailsBeanConverter;
@@ -237,12 +228,12 @@ public class EditAppDetailsController {
 
     private void verifyUserIsNotAnAuditor(String paramString)
 	    throws AppEditControllerException {
-	// Get the user's roles
-	Collection<GrantedAuthority> grantedAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-		.getContext().getAuthentication().getAuthorities();
+
+	Collection<GrantedAuthority> authorities = getUserRoles();
+
 	// If this user is an auditor, display the Edit NAI Audit Details
 	// form
-	for (GrantedAuthority auth : grantedAuthorities) {
+	for (GrantedAuthority auth : authorities) {
 	    String roleString = auth.getAuthority();
 	    logger.info("Role: " + roleString);
 	    Role role = Role.valueOf(roleString);
@@ -258,6 +249,21 @@ public class EditAppDetailsController {
 		throw new AppEditControllerException(redirectString, null);
 	    }
 	}
+    }
+
+    private Collection<GrantedAuthority> getUserRoles()
+	    throws AppEditControllerException {
+	// Get the user's roles
+	Object unTypedAuthoritiesObject = SecurityContextHolder.getContext()
+		.getAuthentication().getAuthorities();
+	if (!(unTypedAuthoritiesObject instanceof Collection<?>)) {
+	    throw new AppEditControllerException(
+		    "error/programError",
+		    "SecurityContextHolder.getContext().getAuthentication().getAuthorities() returns an object that is not of type Collection");
+	}
+	@SuppressWarnings("unchecked")
+	Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) unTypedAuthoritiesObject;
+	return authorities;
     }
 
     private String getParamString(WebRequest request)

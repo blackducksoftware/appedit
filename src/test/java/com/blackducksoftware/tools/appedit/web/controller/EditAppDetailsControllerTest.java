@@ -26,8 +26,6 @@ import com.blackducksoftware.tools.appedit.appdetails.service.AppService;
 import com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.mocks.MockAppService;
-import com.blackducksoftware.tools.appedit.mocks.MockVulnNaiAuditDetailsService;
-import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.web.controller.appdetails.EditAppDetailsController;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
 
@@ -57,10 +55,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
@@ -111,10 +105,6 @@ public class EditAppDetailsControllerTest {
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
 
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
 
@@ -156,10 +146,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
@@ -203,10 +189,6 @@ public class EditAppDetailsControllerTest {
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
 
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
 
@@ -246,10 +228,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
@@ -291,10 +269,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
@@ -340,10 +314,6 @@ public class EditAppDetailsControllerTest {
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
 
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
 	MockHttpServletRequest httpServletRequest = new MockHttpServletRequest(
 		"GET", "/editappdetails");
 
@@ -386,10 +356,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	ModelMap model = new ExtendedModelMap();
 
@@ -442,10 +408,6 @@ public class EditAppDetailsControllerTest {
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
 
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
 	ModelMap model = new ExtendedModelMap();
 
 	List<GrantedAuthority> authorities = new ArrayList<>();
@@ -492,10 +454,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	ModelMap model = new ExtendedModelMap();
 
@@ -544,10 +502,6 @@ public class EditAppDetailsControllerTest {
 	controller.setConfig(config);
 	controller.setAppDetailsBeanConverter(appDetailsBeanConverter);
 	controller.setAppService(appService);
-
-	VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-
-	controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
 
 	ModelMap model = new ExtendedModelMap();
 
