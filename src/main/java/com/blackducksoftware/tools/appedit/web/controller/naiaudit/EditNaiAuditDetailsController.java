@@ -330,6 +330,7 @@ public class EditNaiAuditDetailsController {
 	    String appName, String appVersion,
 	    List<AppCompVulnComposite> vulnNaiAuditDetailsList) {
 
+	logger.debug("Sending to view: " + vulnNaiAuditDetailsList);
 	NaiAuditViewData auditFormData = new NaiAuditViewData();
 	auditFormData.setApplicationId(appId);
 	auditFormData.setApplicationName(appName);
