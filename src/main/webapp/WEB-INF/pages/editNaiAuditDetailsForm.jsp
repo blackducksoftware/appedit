@@ -175,11 +175,15 @@
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}">
+            	<td>
             		<span style="white-space: pre-wrap">
             			${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}
-            			<a target="_blank" 
-            				href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >Full Text</a>
+            			<c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}">
+            				<c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/>
+            			</c:if>
+
+ 
+            			
             		</span>
             	</td>
             	
