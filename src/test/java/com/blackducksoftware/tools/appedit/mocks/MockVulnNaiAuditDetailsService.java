@@ -55,6 +55,8 @@ public class MockVulnNaiAuditDetailsService implements
 
 	AppCompVulnDetails ccPart = (new AppCompVulnDetailsBuilder())
 		.setAppCompVulnKey(key)
+		.setApplicationName("application1Name")
+		.setApplicationVersion("application1Version")
 		.setComponentName("component1Name")
 		.setComponentVersion("component1Version")
 		.setVulnerabilityName("vulnerability1Name")
@@ -90,6 +92,13 @@ public class MockVulnNaiAuditDetailsService implements
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
 
 	return appCompVulnComposite;
+    }
+
+    @Override
+    public AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
+	    throws AppEditException {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

@@ -30,6 +30,8 @@ import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeve
  */
 public class AppCompVulnDetailsBuilder {
     private AppCompVulnKey appCompVulnKey;
+    private String applicationName;
+    private String applicationVersion;
     private String componentName;
     private String componentVersion;
     private String vulnerabilityName;
@@ -47,6 +49,8 @@ public class AppCompVulnDetailsBuilder {
     private String vulnerabilityRemediationComments;
 
     private boolean appCompVulnKeySet = false;
+    private boolean applicationNameSet = false;
+    private boolean applicationVersionSet = false;
     private boolean componentNameSet = false;
     private boolean componentVersionSet = false;
     private boolean vulnerabilityNameSet = false;
@@ -67,6 +71,19 @@ public class AppCompVulnDetailsBuilder {
 	    AppCompVulnKey appCompVulnKey) {
 	this.appCompVulnKey = appCompVulnKey;
 	appCompVulnKeySet = true;
+	return this;
+    }
+
+    public AppCompVulnDetailsBuilder setApplicationName(String applicationName) {
+	this.applicationName = applicationName;
+	applicationNameSet = true;
+	return this;
+    }
+
+    public AppCompVulnDetailsBuilder setApplicationVersion(
+	    String applicationVersion) {
+	this.applicationVersion = applicationVersion;
+	applicationVersionSet = true;
 	return this;
     }
 
@@ -175,7 +192,8 @@ public class AppCompVulnDetailsBuilder {
 
     public AppCompVulnDetails createAppCompVulnDetails()
 	    throws AppEditException {
-	if (!appCompVulnKeySet || !componentNameSet || !componentVersionSet
+	if (!appCompVulnKeySet || !applicationNameSet || !applicationVersionSet
+		|| !componentNameSet || !componentVersionSet
 		|| !vulnerabilityNameSet || !vulnerabilitySeveritySet
 		|| !vulnerabilityBaseScoreSet
 		|| !vulnerabilityExploitableScoreSet
@@ -190,8 +208,9 @@ public class AppCompVulnDetailsBuilder {
 	    throw new AppEditException(
 		    "Error creating AppCompVulnDetails object: A manditory field has not been set.");
 	}
-	return new AppCompVulnDetails(appCompVulnKey, componentName,
-		componentVersion, vulnerabilityName, vulnerabilitySeverity,
+	return new AppCompVulnDetails(appCompVulnKey, applicationName,
+		applicationVersion, componentName, componentVersion,
+		vulnerabilityName, vulnerabilitySeverity,
 		vulnerabilityBaseScore, vulnerabilityExploitableScore,
 		vulnerabilityImpactScore, vulnerabilityDateCreated,
 		vulnerabilityDateModified, vulnerabilityDatePublished,

@@ -179,7 +179,7 @@
             		<span style="white-space: pre-wrap">
             			${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}
             			<a target="_blank" 
-            				href="${pageContext.request.contextPath}/showfulltext?itemName=Remediation%20Comment&fullText=${vulnerability.ccPart.vulnerabilityRemediationComments}" >Full Text</a>
+            				href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >Full Text</a>
             		</span>
             	</td>
             	

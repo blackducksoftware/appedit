@@ -29,6 +29,8 @@ import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeve
  *
  */
 public class AppCompVulnDetails {
+    private final String applicationName;
+    private final String applicationVersion;
     private final AppCompVulnKey appCompVulnKey;
 
     private final String componentName;
@@ -63,7 +65,8 @@ public class AppCompVulnDetails {
     /**
      * Don't call constructor directly. Use AppCompVulnDetailsBuilder instead.
      */
-    AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName,
+    AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String applicationName,
+	    String applicationVersion, String componentName,
 	    String componentVersion, String vulnerabilityName,
 	    VulnerabilitySeverity vulnerabilitySeverity,
 
@@ -79,6 +82,8 @@ public class AppCompVulnDetails {
 	    String vulnerabilityRemediationStatus,
 	    String vulnerabilityRemediationComments) {
 	this.appCompVulnKey = appCompVulnKey;
+	this.applicationName = applicationName;
+	this.applicationVersion = applicationVersion;
 	this.componentName = componentName;
 	this.componentVersion = componentVersion;
 	this.vulnerabilityName = vulnerabilityName;
@@ -153,20 +158,32 @@ public class AppCompVulnDetails {
 	return vulnerabilityRemediationStatus;
     }
 
+    public String getApplicationName() {
+	return applicationName;
+    }
+
+    public String getApplicationVersion() {
+	return applicationVersion;
+    }
+
     @Override
     public String toString() {
-	return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey
-		+ ", componentName=" + componentName + ", componentVersion="
-		+ componentVersion + ", vulnerabilityName=" + vulnerabilityName
-		+ ", vulnerabilitySeverity=" + vulnerabilitySeverityString
-		+ ", vulnerabilityBaseScore=" + vulnerabilityBaseScore
-		+ ", vulnerabilityExploitableScore="
+	return "AppCompVulnDetails [applicationName=" + applicationName
+		+ ", applicationVersion=" + applicationVersion
+		+ ", appCompVulnKey=" + appCompVulnKey + ", componentName="
+		+ componentName + ", componentVersion=" + componentVersion
+		+ ", vulnerabilityName=" + vulnerabilityName
+		+ ", vulnerabilitySeverity=" + vulnerabilitySeverity
+		+ ", vulnerabilitySeverityString="
+		+ vulnerabilitySeverityString + ", vulnerabilityBaseScore="
+		+ vulnerabilityBaseScore + ", vulnerabilityExploitableScore="
 		+ vulnerabilityExploitableScore + ", vulnerabilityImpactScore="
 		+ vulnerabilityImpactScore + ", vulnerabilityDateCreated="
 		+ vulnerabilityDateCreated + ", vulnerabilityDateModified="
 		+ vulnerabilityDateModified + ", vulnerabilityDatePublished="
 		+ vulnerabilityDatePublished + ", vulnerabilityDescription="
-		+ vulnerabilityDescription
+		+ vulnerabilityDescription + ", vulnerabilityDescriptionShort="
+		+ vulnerabilityDescriptionShort
 		+ ", vulnerabilityTargetRemediationDate="
 		+ vulnerabilityTargetRemediationDate
 		+ ", vulnerabilityActualRemediationDate="
@@ -174,7 +191,9 @@ public class AppCompVulnDetails {
 		+ ", vulnerabilityRemediationStatus="
 		+ vulnerabilityRemediationStatus
 		+ ", vulnerabilityRemediationComments="
-		+ vulnerabilityRemediationComments + "]";
+		+ vulnerabilityRemediationComments
+		+ ", vulnerabilityRemediationCommentsShort="
+		+ vulnerabilityRemediationCommentsShort + "]";
     }
 
     public String getVulnerabilitySeverityString() {

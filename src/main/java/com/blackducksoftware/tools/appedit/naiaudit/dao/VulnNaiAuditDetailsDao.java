@@ -52,6 +52,15 @@ public interface VulnNaiAuditDetailsDao {
 	    VulnNaiAuditDetails vunlNaiAuditDetails) throws AppEditException;
 
     /**
+     * Get the NAI Audit details for one vulnerability.
+     * 
+     * @param key
+     * @return
+     */
+    VulnNaiAuditDetails getVulnNaiAuditDetails(AppCompVulnKey key)
+	    throws AppEditException;
+
+    /**
      * Get a map containing all NAI Audit Details for the given application.
      * 
      * @param applicationId

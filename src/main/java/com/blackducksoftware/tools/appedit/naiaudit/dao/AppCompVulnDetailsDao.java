@@ -64,6 +64,15 @@ public interface AppCompVulnDetailsDao {
     ApplicationPojo getApplicationById(String appId) throws AppEditException;
 
     /**
+     * Get the details on one vulnerability.
+     * 
+     * @param key
+     * @return
+     */
+    AppCompVulnDetails getAppCompVulnDetails(AppCompVulnKey key)
+	    throws AppEditException;
+
+    /**
      * Get a map containing all of the vulnerability details for the given
      * application.
      * 

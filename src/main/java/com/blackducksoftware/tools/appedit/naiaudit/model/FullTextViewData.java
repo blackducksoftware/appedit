@@ -6,7 +6,8 @@ public class FullTextViewData {
     private String componentName;
     private String componentVersion;
     private String vulnerabilityName;
-    private String itemName;
+    private FullTextItemType itemType;
+    private AppCompVulnKey itemKey;
     private String fullText;
 
     public FullTextViewData() {
@@ -14,14 +15,16 @@ public class FullTextViewData {
 
     public FullTextViewData(String applicationName, String applicationVersion,
 	    String componentName, String componentVersion,
-	    String vulnerabilityName, String itemName, String fullText) {
-
+	    String vulnerabilityName, FullTextItemType itemType,
+	    AppCompVulnKey itemKey, String fullText) {
+	super();
 	this.applicationName = applicationName;
 	this.applicationVersion = applicationVersion;
 	this.componentName = componentName;
 	this.componentVersion = componentVersion;
 	this.vulnerabilityName = vulnerabilityName;
-	this.itemName = itemName;
+	this.itemType = itemType;
+	this.itemKey = itemKey;
 	this.fullText = fullText;
     }
 
@@ -65,12 +68,20 @@ public class FullTextViewData {
 	this.vulnerabilityName = vulnerabilityName;
     }
 
-    public String getItemName() {
-	return itemName;
+    public FullTextItemType getItemType() {
+	return itemType;
     }
 
-    public void setItemName(String itemName) {
-	this.itemName = itemName;
+    public void setItemType(FullTextItemType itemType) {
+	this.itemType = itemType;
+    }
+
+    public AppCompVulnKey getItemKey() {
+	return itemKey;
+    }
+
+    public void setItemKey(AppCompVulnKey itemKey) {
+	this.itemKey = itemKey;
     }
 
     public String getFullText() {
@@ -87,7 +98,8 @@ public class FullTextViewData {
 		+ ", applicationVersion=" + applicationVersion
 		+ ", componentName=" + componentName + ", componentVersion="
 		+ componentVersion + ", vulnerabilityName=" + vulnerabilityName
-		+ ", itemName=" + itemName + ", fullText=" + fullText + "]";
+		+ ", itemType=" + itemType + ", itemKey=" + itemKey
+		+ ", fullText=" + fullText + "]";
     }
 
 }

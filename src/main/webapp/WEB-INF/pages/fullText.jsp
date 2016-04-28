@@ -3,13 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-    <title>${fullTextViewData.itemName} <spring:message code="label.fulltext.fulltext" text="Full Text" /></title>
+    <title>${fullTextViewData.itemType.description} <spring:message code="label.fulltext.fulltext" text="Full Text" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
 </head>
 <body>
 	<div class="page-header">
     <img src="${pageContext.request.contextPath}/styles/icons/Black_Duck_Logo.png" alt="Black Duck Logo"  width="200" height="50" id=""/>       	
-        <h1>${fullTextViewData.itemName} <spring:message code="label.fulltext.fulltext" text="Full Text" /></h1>
+        <h1>${fullTextViewData.itemType.description} <spring:message code="label.fulltext.fulltext" text="Full Text" /></h1>
         <h4><b><spring:message code="label.fulltext.app.name" text="Application name" />:</b> ${fullTextViewData.applicationName}</h4>
         <h4><b><spring:message code="label.fulltext.app.version" text="Application name" />:</b> ${fullTextViewData.applicationVersion}</h4>
         <h4><b><spring:message code="label.fulltext.comp.name" text="Component name" />:</b> ${fullTextViewData.componentName}</h4>

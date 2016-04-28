@@ -187,19 +187,17 @@ public class EditNaiAuditDetailsController {
 
     private AppCompVulnKey generateKey(String selectedRowKey)
 	    throws AppEditControllerException {
-	String[] selectedKeyParts = selectedRowKey.split("\\|");
-	if (selectedKeyParts.length != 4) {
+
+	AppCompVulnKey key;
+	try {
+	    key = AppCompVulnKey.createFromString(selectedRowKey);
+	} catch (AppEditException e) {
 	    String msg = "The selected row key (" + selectedRowKey
 		    + ") is invalid; failed extracting IDs.";
 
 	    throw new AppEditControllerException("error/programError", msg);
 	}
-	String applicationId = selectedKeyParts[0];
-	String requestId = selectedKeyParts[1];
-	String componentId = selectedKeyParts[2];
-	String vulnerabilityId = selectedKeyParts[3];
-	AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId,
-		componentId, vulnerabilityId);
+
 	return key;
     }
 

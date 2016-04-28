@@ -237,4 +237,17 @@ public class VulnNaiAuditDetailsServiceImpl implements
 		.insertVulnNaiAuditChange(vulnNaiAuditChange);
     }
 
+    @Override
+    public AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
+	    throws AppEditException {
+	AppCompVulnDetails ccPart = appCompVulnDetailsDao
+		.getAppCompVulnDetails(key);
+	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
+		.getVulnNaiAuditDetails(key);
+
+	AppCompVulnComposite composite = new AppCompVulnComposite(key, ccPart,
+		auditPart);
+	return composite;
+    }
+
 }

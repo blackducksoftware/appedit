@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
+
 /**
  * A key that uniquely identifies a vulnerability.
  * 
@@ -58,6 +60,22 @@ public class AppCompVulnKey {
 
     public String getVulnerabilityId() {
 	return vulnerabilityId;
+    }
+
+    public static AppCompVulnKey createFromString(String keyString)
+	    throws AppEditException {
+	String[] selectedKeyParts = keyString.split("\\|");
+	if (selectedKeyParts.length != 4) {
+	    throw new AppEditException(keyString
+		    + " is not a valid representation of an AppCompVulnKey");
+	}
+	String applicationId = selectedKeyParts[0];
+	String requestId = selectedKeyParts[1];
+	String componentId = selectedKeyParts[2];
+	String vulnerabilityId = selectedKeyParts[3];
+	AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId,
+		componentId, vulnerabilityId);
+	return key;
     }
 
     @Override

@@ -102,6 +102,53 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     }
 
     /**
+     * Get details for a specific vulnerability
+     */
+    @Override
+    public AppCompVulnDetails getAppCompVulnDetails(AppCompVulnKey key)
+	    throws AppEditException {
+	logger.debug("getAppCompVulnDetails() called with key: " + key);
+
+	ApplicationPojo app;
+	try {
+	    app = ccsw.getApplicationManager().getApplicationById(
+		    key.getApplicationId());
+	} catch (CommonFrameworkException e1) {
+	    throw new AppEditException("Error getting application with ID "
+		    + key.getApplicationId() + ": " + e1.getMessage(), e1);
+	}
+
+	CodeCenterComponentPojo comp;
+	try {
+	    comp = ccsw.getComponentManager().getComponentById(
+		    CodeCenterComponentPojo.class, key.getComponentId());
+	} catch (CommonFrameworkException e1) {
+	    throw new AppEditException("Error getting component with ID "
+		    + key.getComponentId() + ": " + e1.getMessage(), e1);
+	}
+
+	List<RequestVulnerabilityPojo> vulns;
+	try {
+	    vulns = ccsw.getRequestManager().getVulnerabilitiesByRequestId(
+		    key.getRequestId());
+	} catch (CommonFrameworkException e) {
+	    throw new AppEditException(
+		    "Error getting vulnerabilities for request ID "
+			    + key.getRequestId() + ": " + e.getMessage(), e);
+	}
+	for (RequestVulnerabilityPojo vuln : vulns) {
+	    if (vuln.getVulnerabilityId().equals(key.getVulnerabilityId())) {
+		AppCompVulnDetails appCompVulnDetails = deriveAppCompVulnDetails(
+			key, app, comp, vuln);
+		return appCompVulnDetails;
+	    }
+	}
+
+	throw new AppEditException("Vulnerability with key " + key.toString()
+		+ " not found");
+    }
+
+    /**
      * Get a map containing all of the vulnerability details for the given
      * application.
      * 
@@ -115,22 +162,32 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	logger.debug("getAppCompVulnDetailsMap() called with appId: "
 		+ applicationId);
 
+	ApplicationPojo app;
+	try {
+	    app = ccsw.getApplicationManager()
+		    .getApplicationById(applicationId);
+	} catch (CommonFrameworkException e1) {
+	    throw new AppEditException("Error getting application with ID "
+		    + applicationId + ": " + e1.getMessage(), e1);
+	}
+
 	List<RequestPojo> requests;
 	try {
 	    requests = ccsw.getApplicationManager().getRequestsByAppId(
 		    applicationId);
 	} catch (CommonFrameworkException e) {
-	    throw new AppEditException("Error getting application with ID "
-		    + applicationId + ": " + e.getMessage(), e);
+	    throw new AppEditException(
+		    "Error getting requests for application with ID "
+			    + applicationId + ": " + e.getMessage(), e);
 	}
 	Map<AppCompVulnKey, AppCompVulnDetails> result = getAllVulnerabilitiesForRequests(
-		applicationId, requests);
+		app, requests);
 
 	return result;
     }
 
     private Map<AppCompVulnKey, AppCompVulnDetails> getAllVulnerabilitiesForRequests(
-	    String applicationId, List<RequestPojo> requests)
+	    ApplicationPojo app, List<RequestPojo> requests)
 	    throws AppEditException {
 	Map<AppCompVulnKey, AppCompVulnDetails> vulnMap = new HashMap<>();
 	for (RequestPojo request : requests) {
@@ -154,7 +211,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			"Error getting vulnerabilities for request ID "
 				+ requestId + ": " + e.getMessage(), e);
 	    }
-	    collectRequestVulnerabilities(vulnMap, applicationId, comp,
+	    collectRequestVulnerabilities(vulnMap, app, comp,
 		    requestVulnerabilities);
 	}
 	return vulnMap;
@@ -162,7 +219,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
     private void collectRequestVulnerabilities(
 	    Map<AppCompVulnKey, AppCompVulnDetails> result,
-	    String applicationId, CodeCenterComponentPojo comp,
+	    ApplicationPojo app, CodeCenterComponentPojo comp,
 	    List<RequestVulnerabilityPojo> requestVulnerabilities)
 	    throws AppEditException {
 	for (RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
@@ -170,11 +227,11 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	    logger.debug("Processing: Comp: " + comp.getName() + " / "
 		    + comp.getVersion() + ": Vuln: "
 		    + requestVulnerability.getVulnerabilityName());
-	    AppCompVulnKey key = deriveKey(applicationId, comp,
+	    AppCompVulnKey key = deriveKey(app.getId(), comp,
 		    requestVulnerability);
 
 	    AppCompVulnDetails appCompVulnDetails = deriveAppCompVulnDetails(
-		    key, comp, requestVulnerability);
+		    key, app, comp, requestVulnerability);
 	    result.put(key, appCompVulnDetails);
 	}
     }
@@ -189,11 +246,13 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
     }
 
     private AppCompVulnDetails deriveAppCompVulnDetails(AppCompVulnKey key,
-	    CodeCenterComponentPojo comp,
+	    ApplicationPojo app, CodeCenterComponentPojo comp,
 	    RequestVulnerabilityPojo requestVulnerability)
 	    throws AppEditException {
 	AppCompVulnDetails appCompVulnDetails = (new AppCompVulnDetailsBuilder())
 		.setAppCompVulnKey(key)
+		.setApplicationName(app.getName())
+		.setApplicationVersion(app.getVersion())
 		.setComponentName(comp.getName())
 		.setComponentVersion(comp.getVersion())
 		.setVulnerabilityName(
