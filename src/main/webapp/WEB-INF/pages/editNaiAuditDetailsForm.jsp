@@ -175,7 +175,7 @@
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}<c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if></span></td>
+            	<td title="${vulnerability.ccPart.vulnerabilityRemediationComments}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}<c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if></span></td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td title="${vulnerability.auditPart.vulnerabilityNaiAuditComment}">${vulnerability.auditPart.vulnerabilityNaiAuditCommentShort}</td>
         	</tr>
