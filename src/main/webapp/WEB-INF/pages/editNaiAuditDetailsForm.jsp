@@ -64,7 +64,7 @@
 	        formChanged();
 	    });
 	    
-	    document.getElementById('saveButton').disabled=true;
+	    //document.getElementById('saveButton').disabled=true;
 	} );
 
 	function formChanged() {
@@ -96,7 +96,7 @@
 		if (userEnteredSomething) {
 			document.getElementById('saveButton').disabled=false;
 		} else {
-			document.getElementById('saveButton').disabled=true;
+			//document.getElementById('saveButton').disabled=true;
 		}
 	}
 	
