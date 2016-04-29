@@ -27,7 +27,10 @@ public class AppEditConstants {
 
     public static final String CONFIG_FILENAME = "appedit.properties";
     public static final int NAI_AUDIT_COMMENT_MAX_LENGTH = 512;
+
+    // TODO make these configurable:
     public static final int ABREVIATED_VULNERABILITY_DESCRIPTION_LENGTH = 100;
     public static final int ABBREVIATED_NAI_AUDIT_COMMENT_LENGTH = 100;
     public static final int ABBREVIATED_REMEDIATION_COMMENT_LENGTH = 100;
+    public static final int POPUP_REMEDIATION_COMMENT_LENGTH = 300;
 }

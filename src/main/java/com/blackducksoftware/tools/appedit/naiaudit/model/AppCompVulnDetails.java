@@ -61,6 +61,7 @@ public class AppCompVulnDetails {
 
     private String vulnerabilityRemediationComments;
     private String vulnerabilityRemediationCommentsShort;
+    private String vulnerabilityRemediationCommentsPopUpText;
 
     /**
      * Don't call constructor directly. Use AppCompVulnDetailsBuilder instead.
@@ -103,7 +104,8 @@ public class AppCompVulnDetails {
 	this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
 	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
-	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsShort = generateCommentTableRowText(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsPopUpText = generateCommentPopUpText(vulnerabilityRemediationComments);
     }
 
     private String shortenDescription(String longDescription) {
@@ -120,7 +122,7 @@ public class AppCompVulnDetails {
 		+ "...";
     }
 
-    private String shortenComment(String longComment) {
+    private String generateCommentTableRowText(String longComment) {
 	if (longComment == null) {
 	    return "";
 	}
@@ -136,6 +138,21 @@ public class AppCompVulnDetails {
 		    + "...";
 	}
 	return shortComment;
+    }
+
+    private String generateCommentPopUpText(String longComment) {
+	if (longComment == null) {
+	    return "";
+	}
+
+	int origLen = longComment.length();
+
+	if (origLen > AppEditConstants.POPUP_REMEDIATION_COMMENT_LENGTH + 3) {
+	    int startPos = origLen
+		    - (AppEditConstants.POPUP_REMEDIATION_COMMENT_LENGTH + 3);
+	    return "..." + longComment.substring(startPos);
+	}
+	return longComment;
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -247,7 +264,8 @@ public class AppCompVulnDetails {
     public void setVulnerabilityRemediationComments(
 	    String vulnerabilityRemediationComments) {
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
-	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsShort = generateCommentTableRowText(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsPopUpText = generateCommentPopUpText(vulnerabilityRemediationComments);
     }
 
     public void setVulnerabilityRemediationStatus(
@@ -261,6 +279,10 @@ public class AppCompVulnDetails {
 
     public String getVulnerabilityRemediationCommentsShort() {
 	return vulnerabilityRemediationCommentsShort;
+    }
+
+    public String getVulnerabilityRemediationCommentsPopUpText() {
+	return vulnerabilityRemediationCommentsPopUpText;
     }
 
     @Override
