@@ -136,12 +136,13 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
 		.getVulnerabilityNaiAuditComment();
 	String newRemediationComment = deriveNewRemediationComment(
-		origRemediationComment, incomingNaiAuditComment);
+		origRemediationComment, incomingNaiAuditComment,
+		appCompVulnComposite.getAuditPart()
+			.getVulnerabilityNaiAuditStatus());
 
 	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
 		newRemediationComment);
 
-	// append nai comment to previous nai comment
 	appCompVulnComposite.getAuditPart().setVulnerabilityNaiAuditComment(
 		incomingNaiAuditComment);
 
@@ -169,7 +170,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
     }
 
     private String deriveNewRemediationComment(String origRemediationComment,
-	    String incomingNaiAuditComment) {
+	    String incomingNaiAuditComment, String incomingNaiAuditStatus) {
 	origRemediationComment = ensureNotNull(origRemediationComment);
 	String separator = "";
 	if (!StringUtils.isBlank(origRemediationComment)) {
@@ -177,8 +178,8 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	}
 	String nowString = config.getNaiAuditDateFormat().format(new Date());
 	String newRemediationComment = origRemediationComment + separator + "["
-		+ nowString + ": NAI Audit Comment: " + incomingNaiAuditComment
-		+ "]";
+		+ nowString + ": NAI Audit Status: " + incomingNaiAuditStatus
+		+ "; " + incomingNaiAuditComment + "]";
 	return newRemediationComment;
     }
 
