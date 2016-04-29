@@ -115,6 +115,7 @@ public class EditNaiAuditDetailsController {
 	try {
 	    fullVulnNaiAuditDetailsList = getFullVulnNaiAuditDetailsList(formData);
 	    verifyRowIsSelected(model, formData, fullVulnNaiAuditDetailsList);
+	    validateStatusValue(model, formData, fullVulnNaiAuditDetailsList);
 	    checkCommentLength(model, formData, fullVulnNaiAuditDetailsList);
 	    validateCommentValue(config, model, formData,
 		    fullVulnNaiAuditDetailsList);
@@ -248,6 +249,21 @@ public class EditNaiAuditDetailsController {
 	    String msg = "The comment entered is too long. Maximum length is "
 		    + AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH
 		    + " characters";
+
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+
+	    throw new AppEditControllerException("editNaiAuditDetailsForm", msg);
+	}
+    }
+
+    private void validateStatusValue(ModelMap model, NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
+	    throws AppEditControllerException {
+	if (formData.getVulnerabilityNaiAuditStatus().length() <= 0) {
+	    String msg = "NAI Audit Status is required";
 
 	    populateModelWithFormData(model, formData.getApplicationId(),
 		    formData.getApplicationName(),
