@@ -321,7 +321,7 @@ public class EditNaiAuditDetailsController {
 	if (appId == null) {
 	    try {
 		app = vulnNaiAuditDetailsService.getApplicationByNameVersion(
-			appName, config.getAppVersion());
+			appName, config.getAppVersion(), true);
 	    } catch (AppEditException e) {
 		String msg = "Error loading application " + appName + ": "
 			+ e.getMessage();
@@ -330,7 +330,8 @@ public class EditNaiAuditDetailsController {
 	    appId = app.getId();
 	} else {
 	    try {
-		app = vulnNaiAuditDetailsService.getApplicationById(appId);
+		app = vulnNaiAuditDetailsService
+			.getApplicationById(appId, true);
 	    } catch (AppEditException e) {
 		String msg = "Error loading application with ID " + appId
 			+ ": " + e.getMessage();

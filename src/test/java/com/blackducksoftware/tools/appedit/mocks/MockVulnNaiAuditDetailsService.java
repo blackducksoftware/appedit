@@ -21,7 +21,7 @@ public class MockVulnNaiAuditDetailsService implements
 
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException {
+	    String appVersion, boolean refreshCache) throws AppEditException {
 
 	return new ApplicationPojo(appName, appName, appVersion,
 		new ArrayList<AttributeValuePojo>(), ApprovalStatus.APPROVED,
@@ -29,7 +29,7 @@ public class MockVulnNaiAuditDetailsService implements
     }
 
     @Override
-    public ApplicationPojo getApplicationById(String appId)
+    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
 	    throws AppEditException {
 	if ("bogus".equals(appId)) {
 	    throw new AppEditException("mock: application not found");

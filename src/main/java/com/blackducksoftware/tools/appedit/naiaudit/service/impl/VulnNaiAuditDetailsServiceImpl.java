@@ -212,9 +212,9 @@ public class VulnNaiAuditDetailsServiceImpl implements
      */
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException {
+	    String appVersion, boolean refreshCache) throws AppEditException {
 	ApplicationPojo app = appCompVulnDetailsDao
-		.getApplicationByNameVersion(appName, appVersion);
+		.getApplicationByNameVersion(appName, appVersion, refreshCache);
 	return app;
     }
 
@@ -226,9 +226,10 @@ public class VulnNaiAuditDetailsServiceImpl implements
      * @throws AppEditException
      */
     @Override
-    public ApplicationPojo getApplicationById(String appId)
+    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
 	    throws AppEditException {
-	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId);
+	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId,
+		refreshCache);
 	return app;
     }
 

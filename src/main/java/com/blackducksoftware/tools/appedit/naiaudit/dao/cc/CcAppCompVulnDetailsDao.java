@@ -294,7 +294,18 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
      */
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException {
+	    String appVersion, boolean refreshCache) throws AppEditException {
+	if (refreshCache) {
+	    try {
+		ccsw.getApplicationManager()
+			.removeApplicationFromCacheByNameVersion(appName,
+				appVersion);
+	    } catch (CommonFrameworkException e) {
+		throw new AppEditException("Error removing application "
+			+ appName + " / " + appVersion + " from cache: "
+			+ e.getMessage(), e);
+	    }
+	}
 	ApplicationPojo app;
 	try {
 	    app = ccsw.getApplicationManager().getApplicationByNameVersion(
@@ -314,8 +325,18 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
      * @throws AppEditException
      */
     @Override
-    public ApplicationPojo getApplicationById(String appId)
+    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
 	    throws AppEditException {
+	if (refreshCache) {
+	    try {
+		ccsw.getApplicationManager().removeApplicationFromCacheById(
+			appId);
+	    } catch (CommonFrameworkException e) {
+		throw new AppEditException(
+			"Error removing application with ID " + appId
+				+ " from cache: " + e.getMessage(), e);
+	    }
+	}
 	ApplicationPojo app;
 	try {
 	    app = ccsw.getApplicationManager().getApplicationById(appId);
