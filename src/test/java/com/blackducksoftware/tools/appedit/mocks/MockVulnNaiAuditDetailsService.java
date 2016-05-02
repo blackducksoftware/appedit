@@ -50,8 +50,8 @@ public class MockVulnNaiAuditDetailsService implements
 
 	Date now = new Date();
 
-	AppCompVulnKey key = new AppCompVulnKey("app1Id", "request1Id",
-		"component1Id", "vulnerability1Id");
+	AppCompVulnKey key = new AppCompVulnKey("app1Id", "component1Id",
+		"vulnerability1Id");
 
 	AppCompVulnDetails ccPart = (new AppCompVulnDetailsBuilder())
 		.setAppCompVulnKey(key)
@@ -59,6 +59,7 @@ public class MockVulnNaiAuditDetailsService implements
 		.setApplicationVersion("application1Version")
 		.setComponentName("component1Name")
 		.setComponentVersion("component1Version")
+		.setRequestId("request1Id")
 		.setVulnerabilityName("vulnerability1Name")
 		.setVulnerabilitySeverity(VulnerabilitySeverity.HIGH)
 		.setVulnerabilityBaseScore("vulnerability1BaseScore")

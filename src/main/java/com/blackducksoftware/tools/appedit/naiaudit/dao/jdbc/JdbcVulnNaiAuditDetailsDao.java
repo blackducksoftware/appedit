@@ -42,13 +42,13 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
  *
  */
 public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
-    private static final String SQL_INSERT_VULNERABILITY = "INSERT INTO vuln_nai_audit (application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) VALUES (:appId, :requestId, :compId, :vulnId, :naiAuditStatus, :naiAuditComment)";
+    private static final String SQL_INSERT_VULNERABILITY = "INSERT INTO vuln_nai_audit (application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) VALUES (:appId, :compId, :vulnId, :naiAuditStatus, :naiAuditComment)";
 
-    private static final String SQL_UPDATE_VULNERABILITIES = "UPDATE vuln_nai_audit SET nai_audit_status=:naiAuditStatus, nai_audit_comment=:naiAuditComment WHERE application_id = :appId AND request_id = :requestId AND component_id = :compId AND vulnerability_id = :vulnId";
+    private static final String SQL_UPDATE_VULNERABILITIES = "UPDATE vuln_nai_audit SET nai_audit_status=:naiAuditStatus, nai_audit_comment=:naiAuditComment WHERE application_id = :appId AND component_id = :compId AND vulnerability_id = :vulnId";
 
-    private static final String SQL_SELECT_ALL_VULNERABILITIES_FOR_APP = "SELECT application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId";
+    private static final String SQL_SELECT_ALL_VULNERABILITIES_FOR_APP = "SELECT application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId";
 
-    private static final String SQL_FETCH_ONE_VULNERABILITY_BY_KEY = "SELECT application_id, request_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId AND request_id = :requestId AND component_id = :compId AND vulnerability_id = :vulnId";
+    private static final String SQL_FETCH_ONE_VULNERABILITY_BY_KEY = "SELECT application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId AND component_id = :compId AND vulnerability_id = :vulnId";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass()
 	    .getName());
@@ -79,8 +79,6 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	Map<String, String> namedParameters = new HashMap<>();
 	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
 		.getApplicationId());
-	namedParameters.put("requestId", vulnNaiAuditDetails
-		.getAppCompVulnKey().getRequestId());
 	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
 		.getComponentId());
 	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
@@ -112,8 +110,6 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	Map<String, String> namedParameters = new HashMap<>();
 	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
 		.getApplicationId());
-	namedParameters.put("requestId", vulnNaiAuditDetails
-		.getAppCompVulnKey().getRequestId());
 	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
 		.getComponentId());
 	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
@@ -177,7 +173,6 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	String SQL = SQL_FETCH_ONE_VULNERABILITY_BY_KEY;
 	Map<String, String> paramMap = new HashMap<>();
 	paramMap.put("appId", key.getApplicationId());
-	paramMap.put("requestId", key.getRequestId());
 	paramMap.put("compId", key.getComponentId());
 	paramMap.put("vulnId", key.getVulnerabilityId());
 	SqlParameterSource namedParameters = new MapSqlParameterSource(paramMap);

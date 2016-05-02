@@ -36,6 +36,7 @@ public class AppCompVulnDetails {
     private final String componentName;
 
     private final String componentVersion;
+    private final String requestId;
 
     private final String vulnerabilityName;
 
@@ -68,7 +69,8 @@ public class AppCompVulnDetails {
      */
     AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String applicationName,
 	    String applicationVersion, String componentName,
-	    String componentVersion, String vulnerabilityName,
+	    String componentVersion, String requestId,
+	    String vulnerabilityName,
 	    VulnerabilitySeverity vulnerabilitySeverity,
 
 	    String vulnerabilityBaseScore,
@@ -87,6 +89,7 @@ public class AppCompVulnDetails {
 	this.applicationVersion = applicationVersion;
 	this.componentName = componentName;
 	this.componentVersion = componentVersion;
+	this.requestId = requestId;
 	this.vulnerabilityName = vulnerabilityName;
 	this.vulnerabilitySeverity = vulnerabilitySeverity;
 	this.vulnerabilitySeverityString = vulnerabilitySeverity.name();
@@ -183,15 +186,19 @@ public class AppCompVulnDetails {
 	return applicationVersion;
     }
 
+    public String getRequestId() {
+	return requestId;
+    }
+
     @Override
     public String toString() {
 	return "AppCompVulnDetails [applicationName=" + applicationName
 		+ ", applicationVersion=" + applicationVersion
 		+ ", appCompVulnKey=" + appCompVulnKey + ", componentName="
 		+ componentName + ", componentVersion=" + componentVersion
-		+ ", vulnerabilityName=" + vulnerabilityName
-		+ ", vulnerabilitySeverity=" + vulnerabilitySeverity
-		+ ", vulnerabilitySeverityString="
+		+ ", requestId=" + requestId + ", vulnerabilityName="
+		+ vulnerabilityName + ", vulnerabilitySeverity="
+		+ vulnerabilitySeverity + ", vulnerabilitySeverityString="
 		+ vulnerabilitySeverityString + ", vulnerabilityBaseScore="
 		+ vulnerabilityBaseScore + ", vulnerabilityExploitableScore="
 		+ vulnerabilityExploitableScore + ", vulnerabilityImpactScore="
@@ -210,7 +217,9 @@ public class AppCompVulnDetails {
 		+ ", vulnerabilityRemediationComments="
 		+ vulnerabilityRemediationComments
 		+ ", vulnerabilityRemediationCommentsShort="
-		+ vulnerabilityRemediationCommentsShort + "]";
+		+ vulnerabilityRemediationCommentsShort
+		+ ", vulnerabilityRemediationCommentsPopUpText="
+		+ vulnerabilityRemediationCommentsPopUpText + "]";
     }
 
     public String getVulnerabilitySeverityString() {

@@ -220,7 +220,7 @@ public class EditNaiAuditDetailsControllerTest {
 	formData.setVulnerabilityNaiAuditStatus("testStatus");
 
 	List<String> itemList = new ArrayList<>();
-	itemList.add("app1Id|request1Id|component1Id|vulnerability1Id");
+	itemList.add("app1Id|component1Id|vulnerability1Id");
 	formData.setItemList(itemList);
 
 	ModelMap model = new ExtendedModelMap();
@@ -359,7 +359,7 @@ public class EditNaiAuditDetailsControllerTest {
 	formData.setVulnerabilityNaiAuditStatus("testStatus");
 
 	List<String> itemList = new ArrayList<>();
-	itemList.add("app1Id|request1Id|component1Id|vulnerability1Id");
+	itemList.add("app1Id|component1Id|vulnerability1Id");
 	formData.setItemList(itemList);
 
 	ModelMap model = new ExtendedModelMap();
@@ -434,7 +434,7 @@ public class EditNaiAuditDetailsControllerTest {
 	formData.setVulnerabilityNaiAuditStatus("testStatus");
 
 	List<String> itemList = new ArrayList<>();
-	itemList.add("app1Id|request1Id|component1Id|vulnerability1Id");
+	itemList.add("app1Id|component1Id|vulnerability1Id");
 	formData.setItemList(itemList);
 
 	ModelMap model = new ExtendedModelMap();
@@ -555,7 +555,7 @@ public class EditNaiAuditDetailsControllerTest {
 	formData.setVulnerabilityNaiAuditStatus("testStatus");
 
 	List<String> itemList = new ArrayList<>();
-	itemList.add("bogus|request1Id|component1Id|vulnerability1Id");
+	itemList.add("bogus|component1Id|vulnerability1Id");
 	formData.setItemList(itemList);
 
 	ModelMap model = new ExtendedModelMap();
@@ -569,7 +569,7 @@ public class EditNaiAuditDetailsControllerTest {
 
 	String message = (String) model.get("message");
 	assertEquals(
-		"The selected row key (bogus|request1Id|component1Id|vulnerability1Id) not found in full vulnerabilities list.",
+		"The selected row key (bogus|component1Id|vulnerability1Id) not found in full vulnerabilities list.",
 		message);
 
 	assertEquals("error/programError", returnValue);

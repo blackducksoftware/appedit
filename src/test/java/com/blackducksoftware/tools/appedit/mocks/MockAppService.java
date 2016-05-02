@@ -20,7 +20,8 @@ public class MockAppService implements AppService {
     }
 
     @Override
-    public AppDetails loadFromId(String appId) throws Exception {
+    public AppDetails loadFromId(String appId, boolean refreshCache)
+	    throws Exception {
 	if ("bogus".equals(appId)) {
 	    return null;
 	}
@@ -38,7 +39,8 @@ public class MockAppService implements AppService {
     }
 
     @Override
-    public AppDetails loadFromName(String appName) throws Exception {
+    public AppDetails loadFromName(String appName, boolean refreshCache)
+	    throws Exception {
 	// TODO Auto-generated method stub
 	return null;
     }

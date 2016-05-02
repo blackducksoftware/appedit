@@ -34,6 +34,7 @@ public class AppCompVulnDetailsBuilder {
     private String applicationVersion;
     private String componentName;
     private String componentVersion;
+    private String requestId;
     private String vulnerabilityName;
     private VulnerabilitySeverity vulnerabilitySeverity;
     private String vulnerabilityBaseScore;
@@ -53,6 +54,7 @@ public class AppCompVulnDetailsBuilder {
     private boolean applicationVersionSet = false;
     private boolean componentNameSet = false;
     private boolean componentVersionSet = false;
+    private boolean requestIdSet = false;
     private boolean vulnerabilityNameSet = false;
     private boolean vulnerabilitySeveritySet = false;
     private boolean vulnerabilityBaseScoreSet = false;
@@ -96,6 +98,12 @@ public class AppCompVulnDetailsBuilder {
     public AppCompVulnDetailsBuilder setComponentVersion(String componentVersion) {
 	this.componentVersion = componentVersion;
 	componentVersionSet = true;
+	return this;
+    }
+
+    public AppCompVulnDetailsBuilder setRequestId(String requestId) {
+	this.requestId = requestId;
+	requestIdSet = true;
 	return this;
     }
 
@@ -193,7 +201,7 @@ public class AppCompVulnDetailsBuilder {
     public AppCompVulnDetails createAppCompVulnDetails()
 	    throws AppEditException {
 	if (!appCompVulnKeySet || !applicationNameSet || !applicationVersionSet
-		|| !componentNameSet || !componentVersionSet
+		|| !componentNameSet || !componentVersionSet || !requestIdSet
 		|| !vulnerabilityNameSet || !vulnerabilitySeveritySet
 		|| !vulnerabilityBaseScoreSet
 		|| !vulnerabilityExploitableScoreSet
@@ -209,7 +217,7 @@ public class AppCompVulnDetailsBuilder {
 		    "Error creating AppCompVulnDetails object: A manditory field has not been set.");
 	}
 	return new AppCompVulnDetails(appCompVulnKey, applicationName,
-		applicationVersion, componentName, componentVersion,
+		applicationVersion, componentName, componentVersion, requestId,
 		vulnerabilityName, vulnerabilitySeverity,
 		vulnerabilityBaseScore, vulnerabilityExploitableScore,
 		vulnerabilityImpactScore, vulnerabilityDateCreated,
