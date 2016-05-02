@@ -69,8 +69,9 @@ public class AppServiceImpl implements AppService {
      * @throws Exception
      */
     @Override
-    public AppDetails loadFromId(String appId) throws Exception {
-	return appDao.loadFromId(appId);
+    public AppDetails loadFromId(String appId, boolean refreshCache)
+	    throws Exception {
+	return appDao.loadFromId(appId, refreshCache);
     }
 
     /**
@@ -81,8 +82,9 @@ public class AppServiceImpl implements AppService {
      * @throws Exception
      */
     @Override
-    public AppDetails loadFromName(String appName) throws Exception {
-	return appDao.loadFromName(appName);
+    public AppDetails loadFromName(String appName, boolean refreshCache)
+	    throws Exception {
+	return appDao.loadFromName(appName, refreshCache);
     }
 
     /**

@@ -44,7 +44,7 @@ public interface AppDao {
      * @return
      * @throws Exception
      */
-    AppDetails loadFromId(String appId) throws Exception;
+    AppDetails loadFromId(String appId, boolean refreshCache) throws Exception;
 
     /**
      * Load an application's details by name.
@@ -53,7 +53,8 @@ public interface AppDao {
      * @return
      * @throws Exception
      */
-    AppDetails loadFromName(String appName) throws Exception;
+    AppDetails loadFromName(String appName, boolean refreshCache)
+	    throws Exception;
 
     /**
      * Update an application. Both the application to update and the changes to
