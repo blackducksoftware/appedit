@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
+import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
 
 /**
@@ -40,7 +41,7 @@ public interface VulnNaiAuditDetailsService {
      * @throws AppEditException
      */
     ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException;
+	    String appVersion, boolean refreshCache) throws AppEditException;
 
     /**
      * Get application by ID.
@@ -49,7 +50,17 @@ public interface VulnNaiAuditDetailsService {
      * @return
      * @throws AppEditException
      */
-    ApplicationPojo getApplicationById(String appId) throws AppEditException;
+    ApplicationPojo getApplicationById(String appId, boolean refreshCache)
+	    throws AppEditException;
+
+    /**
+     * Get the details on one vulnerability.
+     * 
+     * @param key
+     * @return
+     */
+    AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
+	    throws AppEditException;
 
     /**
      * Get an applications components+vulnerabilities.

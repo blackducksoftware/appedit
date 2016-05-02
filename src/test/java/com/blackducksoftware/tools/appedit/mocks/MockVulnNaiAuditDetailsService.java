@@ -21,7 +21,7 @@ public class MockVulnNaiAuditDetailsService implements
 
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException {
+	    String appVersion, boolean refreshCache) throws AppEditException {
 
 	return new ApplicationPojo(appName, appName, appVersion,
 		new ArrayList<AttributeValuePojo>(), ApprovalStatus.APPROVED,
@@ -29,7 +29,7 @@ public class MockVulnNaiAuditDetailsService implements
     }
 
     @Override
-    public ApplicationPojo getApplicationById(String appId)
+    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
 	    throws AppEditException {
 	if ("bogus".equals(appId)) {
 	    throw new AppEditException("mock: application not found");
@@ -50,13 +50,16 @@ public class MockVulnNaiAuditDetailsService implements
 
 	Date now = new Date();
 
-	AppCompVulnKey key = new AppCompVulnKey("app1Id", "request1Id",
-		"component1Id", "vulnerability1Id");
+	AppCompVulnKey key = new AppCompVulnKey("app1Id", "component1Id",
+		"vulnerability1Id");
 
 	AppCompVulnDetails ccPart = (new AppCompVulnDetailsBuilder())
 		.setAppCompVulnKey(key)
+		.setApplicationName("application1Name")
+		.setApplicationVersion("application1Version")
 		.setComponentName("component1Name")
 		.setComponentVersion("component1Version")
+		.setRequestId("request1Id")
 		.setVulnerabilityName("vulnerability1Name")
 		.setVulnerabilitySeverity(VulnerabilitySeverity.HIGH)
 		.setVulnerabilityBaseScore("vulnerability1BaseScore")
@@ -90,6 +93,13 @@ public class MockVulnNaiAuditDetailsService implements
 	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
 
 	return appCompVulnComposite;
+    }
+
+    @Override
+    public AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
+	    throws AppEditException {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

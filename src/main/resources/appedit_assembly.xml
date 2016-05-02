@@ -12,6 +12,7 @@
 	       	<includes>
 				<include>*.sql</include>
 				<include>appedit.properties</include>
+				<include>*.html</include>
 			</includes>
 	    </fileSet>
 	    <fileSet> 

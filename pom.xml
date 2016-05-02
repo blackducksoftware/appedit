@@ -134,7 +134,7 @@
 	<dependency>
 		<groupId>com.blackducksoftware.tools</groupId>
   		<artifactId>cf-7x-connector</artifactId>
-  		<version>1.4.11</version>
+  		<version>1.4.12</version>
 		<exclusions>
 			<!-- Swap out commons-collections 3.2 for 3.2.2 to avoid CVE-2015-6420 -->
 			<!--  Don't know why this is necessary here, but without it, maven used collections 3.2.1 -->

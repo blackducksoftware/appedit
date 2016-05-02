@@ -136,12 +136,13 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
 		.getVulnerabilityNaiAuditComment();
 	String newRemediationComment = deriveNewRemediationComment(
-		origRemediationComment, incomingNaiAuditComment);
+		origRemediationComment, incomingNaiAuditComment,
+		appCompVulnComposite.getAuditPart()
+			.getVulnerabilityNaiAuditStatus());
 
 	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
 		newRemediationComment);
 
-	// append nai comment to previous nai comment
 	appCompVulnComposite.getAuditPart().setVulnerabilityNaiAuditComment(
 		incomingNaiAuditComment);
 
@@ -169,7 +170,7 @@ public class VulnNaiAuditDetailsServiceImpl implements
     }
 
     private String deriveNewRemediationComment(String origRemediationComment,
-	    String incomingNaiAuditComment) {
+	    String incomingNaiAuditComment, String incomingNaiAuditStatus) {
 	origRemediationComment = ensureNotNull(origRemediationComment);
 	String separator = "";
 	if (!StringUtils.isBlank(origRemediationComment)) {
@@ -177,8 +178,8 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	}
 	String nowString = config.getNaiAuditDateFormat().format(new Date());
 	String newRemediationComment = origRemediationComment + separator + "["
-		+ nowString + ": NAI Audit Comment: " + incomingNaiAuditComment
-		+ "]";
+		+ nowString + ": NAI Audit Status: " + incomingNaiAuditStatus
+		+ "; " + incomingNaiAuditComment + "]";
 	return newRemediationComment;
     }
 
@@ -211,9 +212,9 @@ public class VulnNaiAuditDetailsServiceImpl implements
      */
     @Override
     public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException {
+	    String appVersion, boolean refreshCache) throws AppEditException {
 	ApplicationPojo app = appCompVulnDetailsDao
-		.getApplicationByNameVersion(appName, appVersion);
+		.getApplicationByNameVersion(appName, appVersion, refreshCache);
 	return app;
     }
 
@@ -225,9 +226,10 @@ public class VulnNaiAuditDetailsServiceImpl implements
      * @throws AppEditException
      */
     @Override
-    public ApplicationPojo getApplicationById(String appId)
+    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
 	    throws AppEditException {
-	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId);
+	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId,
+		refreshCache);
 	return app;
     }
 
@@ -235,6 +237,19 @@ public class VulnNaiAuditDetailsServiceImpl implements
 	    throws AppEditException {
 	vulnNaiAuditChangeHistoryDao
 		.insertVulnNaiAuditChange(vulnNaiAuditChange);
+    }
+
+    @Override
+    public AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
+	    throws AppEditException {
+	AppCompVulnDetails ccPart = appCompVulnDetailsDao
+		.getAppCompVulnDetails(key);
+	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
+		.getVulnNaiAuditDetails(key);
+
+	AppCompVulnComposite composite = new AppCompVulnComposite(key, ccPart,
+		auditPart);
+	return composite;
     }
 
 }

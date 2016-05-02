@@ -52,7 +52,7 @@ public interface AppCompVulnDetailsDao {
      * @throws AppEditException
      */
     ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion) throws AppEditException;
+	    String appVersion, boolean refreshCache) throws AppEditException;
 
     /**
      * Get application by ID.
@@ -61,7 +61,17 @@ public interface AppCompVulnDetailsDao {
      * @return
      * @throws AppEditException
      */
-    ApplicationPojo getApplicationById(String appId) throws AppEditException;
+    ApplicationPojo getApplicationById(String appId, boolean refreshCache)
+	    throws AppEditException;
+
+    /**
+     * Get the details on one vulnerability.
+     * 
+     * @param key
+     * @return
+     */
+    AppCompVulnDetails getAppCompVulnDetails(AppCompVulnKey key)
+	    throws AppEditException;
 
     /**
      * Get a map containing all of the vulnerability details for the given

@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
+
 /**
  * A key that uniquely identifies a vulnerability.
  * 
@@ -25,19 +27,16 @@ package com.blackducksoftware.tools.appedit.naiaudit.model;
  */
 public class AppCompVulnKey {
     private final String applicationId;
-    private final String requestId;
     private final String componentId;
     private final String vulnerabilityId;
     private final String asString;
 
-    public AppCompVulnKey(String applicationId, String requestId,
-	    String componentId, String vulnerabilityId) {
+    public AppCompVulnKey(String applicationId, String componentId,
+	    String vulnerabilityId) {
 	this.applicationId = applicationId;
-	this.requestId = requestId;
 	this.componentId = componentId;
 	this.vulnerabilityId = vulnerabilityId;
-	asString = applicationId + "|" + requestId + "|" + componentId + "|"
-		+ vulnerabilityId;
+	asString = applicationId + "|" + componentId + "|" + vulnerabilityId;
     }
 
     public String getAsString() {
@@ -48,16 +47,27 @@ public class AppCompVulnKey {
 	return applicationId;
     }
 
-    public String getRequestId() {
-	return requestId;
-    }
-
     public String getComponentId() {
 	return componentId;
     }
 
     public String getVulnerabilityId() {
 	return vulnerabilityId;
+    }
+
+    public static AppCompVulnKey createFromString(String keyString)
+	    throws AppEditException {
+	String[] selectedKeyParts = keyString.split("\\|");
+	if (selectedKeyParts.length != 3) {
+	    throw new AppEditException(keyString
+		    + " is not a valid representation of an AppCompVulnKey");
+	}
+	String applicationId = selectedKeyParts[0];
+	String componentId = selectedKeyParts[1];
+	String vulnerabilityId = selectedKeyParts[2];
+	AppCompVulnKey key = new AppCompVulnKey(applicationId, componentId,
+		vulnerabilityId);
+	return key;
     }
 
     @Override
@@ -70,8 +80,6 @@ public class AppCompVulnKey {
 		+ ((asString == null) ? 0 : asString.hashCode());
 	result = prime * result
 		+ ((componentId == null) ? 0 : componentId.hashCode());
-	result = prime * result
-		+ ((requestId == null) ? 0 : requestId.hashCode());
 	result = prime * result
 		+ ((vulnerabilityId == null) ? 0 : vulnerabilityId.hashCode());
 	return result;
@@ -101,11 +109,6 @@ public class AppCompVulnKey {
 		return false;
 	} else if (!componentId.equals(other.componentId))
 	    return false;
-	if (requestId == null) {
-	    if (other.requestId != null)
-		return false;
-	} else if (!requestId.equals(other.requestId))
-	    return false;
 	if (vulnerabilityId == null) {
 	    if (other.vulnerabilityId != null)
 		return false;
@@ -117,9 +120,8 @@ public class AppCompVulnKey {
     @Override
     public String toString() {
 	return "AppCompVulnKey [applicationId=" + applicationId
-		+ ", requestId=" + requestId + ", componentId=" + componentId
-		+ ", vulnerabilityId=" + vulnerabilityId + ", asString="
-		+ asString + "]";
+		+ ", componentId=" + componentId + ", vulnerabilityId="
+		+ vulnerabilityId + ", asString=" + asString + "]";
     }
 
 }

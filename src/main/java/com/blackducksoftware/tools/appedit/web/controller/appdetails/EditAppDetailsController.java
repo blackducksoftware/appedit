@@ -210,9 +210,9 @@ public class EditAppDetailsController {
 	    // load app from Code Center using whatever info we were given (try
 	    // ID first)
 	    if (appId != null) {
-		appDetails = appService.loadFromId(appId);
+		appDetails = appService.loadFromId(appId, true);
 	    } else {
-		appDetails = appService.loadFromName(appName);
+		appDetails = appService.loadFromName(appName, true);
 	    }
 	} catch (Exception e) {
 	    String msg = "Error loading application: " + e.getMessage();

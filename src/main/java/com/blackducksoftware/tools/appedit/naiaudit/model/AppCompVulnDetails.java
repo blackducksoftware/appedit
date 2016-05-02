@@ -29,11 +29,14 @@ import com.blackducksoftware.tools.connector.codecenter.common.VulnerabilitySeve
  *
  */
 public class AppCompVulnDetails {
+    private final String applicationName;
+    private final String applicationVersion;
     private final AppCompVulnKey appCompVulnKey;
 
     private final String componentName;
 
     private final String componentVersion;
+    private final String requestId;
 
     private final String vulnerabilityName;
 
@@ -59,12 +62,15 @@ public class AppCompVulnDetails {
 
     private String vulnerabilityRemediationComments;
     private String vulnerabilityRemediationCommentsShort;
+    private String vulnerabilityRemediationCommentsPopUpText;
 
     /**
      * Don't call constructor directly. Use AppCompVulnDetailsBuilder instead.
      */
-    AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String componentName,
-	    String componentVersion, String vulnerabilityName,
+    AppCompVulnDetails(AppCompVulnKey appCompVulnKey, String applicationName,
+	    String applicationVersion, String componentName,
+	    String componentVersion, String requestId,
+	    String vulnerabilityName,
 	    VulnerabilitySeverity vulnerabilitySeverity,
 
 	    String vulnerabilityBaseScore,
@@ -79,8 +85,11 @@ public class AppCompVulnDetails {
 	    String vulnerabilityRemediationStatus,
 	    String vulnerabilityRemediationComments) {
 	this.appCompVulnKey = appCompVulnKey;
+	this.applicationName = applicationName;
+	this.applicationVersion = applicationVersion;
 	this.componentName = componentName;
 	this.componentVersion = componentVersion;
+	this.requestId = requestId;
 	this.vulnerabilityName = vulnerabilityName;
 	this.vulnerabilitySeverity = vulnerabilitySeverity;
 	this.vulnerabilitySeverityString = vulnerabilitySeverity.name();
@@ -98,7 +107,8 @@ public class AppCompVulnDetails {
 	this.vulnerabilityActualRemediationDate = vulnerabilityActualRemediationDate;
 	this.vulnerabilityRemediationStatus = vulnerabilityRemediationStatus;
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
-	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsShort = generateCommentTableRowText(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsPopUpText = generateCommentPopUpText(vulnerabilityRemediationComments);
     }
 
     private String shortenDescription(String longDescription) {
@@ -115,7 +125,7 @@ public class AppCompVulnDetails {
 		+ "...";
     }
 
-    private String shortenComment(String longComment) {
+    private String generateCommentTableRowText(String longComment) {
 	if (longComment == null) {
 	    return "";
 	}
@@ -131,6 +141,21 @@ public class AppCompVulnDetails {
 		    + "...";
 	}
 	return shortComment;
+    }
+
+    private String generateCommentPopUpText(String longComment) {
+	if (longComment == null) {
+	    return "";
+	}
+
+	int origLen = longComment.length();
+
+	if (origLen > AppEditConstants.POPUP_REMEDIATION_COMMENT_LENGTH + 3) {
+	    int startPos = origLen
+		    - (AppEditConstants.POPUP_REMEDIATION_COMMENT_LENGTH + 3);
+	    return "..." + longComment.substring(startPos);
+	}
+	return longComment;
     }
 
     public AppCompVulnKey getAppCompVulnKey() {
@@ -153,20 +178,36 @@ public class AppCompVulnDetails {
 	return vulnerabilityRemediationStatus;
     }
 
+    public String getApplicationName() {
+	return applicationName;
+    }
+
+    public String getApplicationVersion() {
+	return applicationVersion;
+    }
+
+    public String getRequestId() {
+	return requestId;
+    }
+
     @Override
     public String toString() {
-	return "AppCompVulnDetails [appCompVulnKey=" + appCompVulnKey
-		+ ", componentName=" + componentName + ", componentVersion="
-		+ componentVersion + ", vulnerabilityName=" + vulnerabilityName
-		+ ", vulnerabilitySeverity=" + vulnerabilitySeverityString
-		+ ", vulnerabilityBaseScore=" + vulnerabilityBaseScore
-		+ ", vulnerabilityExploitableScore="
+	return "AppCompVulnDetails [applicationName=" + applicationName
+		+ ", applicationVersion=" + applicationVersion
+		+ ", appCompVulnKey=" + appCompVulnKey + ", componentName="
+		+ componentName + ", componentVersion=" + componentVersion
+		+ ", requestId=" + requestId + ", vulnerabilityName="
+		+ vulnerabilityName + ", vulnerabilitySeverity="
+		+ vulnerabilitySeverity + ", vulnerabilitySeverityString="
+		+ vulnerabilitySeverityString + ", vulnerabilityBaseScore="
+		+ vulnerabilityBaseScore + ", vulnerabilityExploitableScore="
 		+ vulnerabilityExploitableScore + ", vulnerabilityImpactScore="
 		+ vulnerabilityImpactScore + ", vulnerabilityDateCreated="
 		+ vulnerabilityDateCreated + ", vulnerabilityDateModified="
 		+ vulnerabilityDateModified + ", vulnerabilityDatePublished="
 		+ vulnerabilityDatePublished + ", vulnerabilityDescription="
-		+ vulnerabilityDescription
+		+ vulnerabilityDescription + ", vulnerabilityDescriptionShort="
+		+ vulnerabilityDescriptionShort
 		+ ", vulnerabilityTargetRemediationDate="
 		+ vulnerabilityTargetRemediationDate
 		+ ", vulnerabilityActualRemediationDate="
@@ -174,7 +215,11 @@ public class AppCompVulnDetails {
 		+ ", vulnerabilityRemediationStatus="
 		+ vulnerabilityRemediationStatus
 		+ ", vulnerabilityRemediationComments="
-		+ vulnerabilityRemediationComments + "]";
+		+ vulnerabilityRemediationComments
+		+ ", vulnerabilityRemediationCommentsShort="
+		+ vulnerabilityRemediationCommentsShort
+		+ ", vulnerabilityRemediationCommentsPopUpText="
+		+ vulnerabilityRemediationCommentsPopUpText + "]";
     }
 
     public String getVulnerabilitySeverityString() {
@@ -228,7 +273,8 @@ public class AppCompVulnDetails {
     public void setVulnerabilityRemediationComments(
 	    String vulnerabilityRemediationComments) {
 	this.vulnerabilityRemediationComments = vulnerabilityRemediationComments;
-	this.vulnerabilityRemediationCommentsShort = shortenComment(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsShort = generateCommentTableRowText(vulnerabilityRemediationComments);
+	this.vulnerabilityRemediationCommentsPopUpText = generateCommentPopUpText(vulnerabilityRemediationComments);
     }
 
     public void setVulnerabilityRemediationStatus(
@@ -242,6 +288,10 @@ public class AppCompVulnDetails {
 
     public String getVulnerabilityRemediationCommentsShort() {
 	return vulnerabilityRemediationCommentsShort;
+    }
+
+    public String getVulnerabilityRemediationCommentsPopUpText() {
+	return vulnerabilityRemediationCommentsPopUpText;
     }
 
     @Override

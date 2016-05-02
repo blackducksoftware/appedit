@@ -120,8 +120,13 @@ public class CcAppDao implements AppDao {
      * Get the details of an application by name.
      */
     @Override
-    public AppDetails loadFromName(String appName) throws Exception {
-
+    public AppDetails loadFromName(String appName, boolean refreshCache)
+	    throws Exception {
+	if (refreshCache) {
+	    ccsw.getApplicationManager()
+		    .removeApplicationFromCacheByNameVersion(appName,
+			    config.getAppVersion());
+	}
 	ApplicationNameVersionToken appNameToken = new ApplicationNameVersionToken();
 	appNameToken.setName(appName);
 	appNameToken.setVersion(config.getAppVersion());
@@ -136,8 +141,11 @@ public class CcAppDao implements AppDao {
      * Get the details of an application by ID.
      */
     @Override
-    public AppDetails loadFromId(String appId) throws Exception {
-
+    public AppDetails loadFromId(String appId, boolean refreshCache)
+	    throws Exception {
+	if (refreshCache) {
+	    ccsw.getApplicationManager().removeApplicationFromCacheById(appId);
+	}
 	ApplicationPojo app = ccsw.getApplicationManager().getApplicationById(
 		appId);
 	AppDetails appDetails = deriveAppDetails(app);

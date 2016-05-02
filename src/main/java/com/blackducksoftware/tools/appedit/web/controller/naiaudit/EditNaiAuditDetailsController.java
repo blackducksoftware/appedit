@@ -115,6 +115,7 @@ public class EditNaiAuditDetailsController {
 	try {
 	    fullVulnNaiAuditDetailsList = getFullVulnNaiAuditDetailsList(formData);
 	    verifyRowIsSelected(model, formData, fullVulnNaiAuditDetailsList);
+	    validateStatusValue(model, formData, fullVulnNaiAuditDetailsList);
 	    checkCommentLength(model, formData, fullVulnNaiAuditDetailsList);
 	    validateCommentValue(config, model, formData,
 		    fullVulnNaiAuditDetailsList);
@@ -187,19 +188,17 @@ public class EditNaiAuditDetailsController {
 
     private AppCompVulnKey generateKey(String selectedRowKey)
 	    throws AppEditControllerException {
-	String[] selectedKeyParts = selectedRowKey.split("\\|");
-	if (selectedKeyParts.length != 4) {
+
+	AppCompVulnKey key;
+	try {
+	    key = AppCompVulnKey.createFromString(selectedRowKey);
+	} catch (AppEditException e) {
 	    String msg = "The selected row key (" + selectedRowKey
 		    + ") is invalid; failed extracting IDs.";
 
 	    throw new AppEditControllerException("error/programError", msg);
 	}
-	String applicationId = selectedKeyParts[0];
-	String requestId = selectedKeyParts[1];
-	String componentId = selectedKeyParts[2];
-	String vulnerabilityId = selectedKeyParts[3];
-	AppCompVulnKey key = new AppCompVulnKey(applicationId, requestId,
-		componentId, vulnerabilityId);
+
 	return key;
     }
 
@@ -260,6 +259,21 @@ public class EditNaiAuditDetailsController {
 	}
     }
 
+    private void validateStatusValue(ModelMap model, NaiAuditViewData formData,
+	    List<AppCompVulnComposite> fullVulnNaiAuditDetailsList)
+	    throws AppEditControllerException {
+	if (formData.getVulnerabilityNaiAuditStatus().length() <= 0) {
+	    String msg = "NAI Audit Status is required";
+
+	    populateModelWithFormData(model, formData.getApplicationId(),
+		    formData.getApplicationName(),
+		    formData.getApplicationVersion(),
+		    fullVulnNaiAuditDetailsList);
+
+	    throw new AppEditControllerException("editNaiAuditDetailsForm", msg);
+	}
+    }
+
     private List<AppCompVulnComposite> getFullVulnNaiAuditDetailsList(
 	    NaiAuditViewData formData) throws AppEditControllerException {
 	List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
@@ -307,7 +321,7 @@ public class EditNaiAuditDetailsController {
 	if (appId == null) {
 	    try {
 		app = vulnNaiAuditDetailsService.getApplicationByNameVersion(
-			appName, config.getAppVersion());
+			appName, config.getAppVersion(), true);
 	    } catch (AppEditException e) {
 		String msg = "Error loading application " + appName + ": "
 			+ e.getMessage();
@@ -316,7 +330,8 @@ public class EditNaiAuditDetailsController {
 	    appId = app.getId();
 	} else {
 	    try {
-		app = vulnNaiAuditDetailsService.getApplicationById(appId);
+		app = vulnNaiAuditDetailsService
+			.getApplicationById(appId, true);
 	    } catch (AppEditException e) {
 		String msg = "Error loading application with ID " + appId
 			+ ": " + e.getMessage();
@@ -332,6 +347,7 @@ public class EditNaiAuditDetailsController {
 	    String appName, String appVersion,
 	    List<AppCompVulnComposite> vulnNaiAuditDetailsList) {
 
+	logger.debug("Sending to view: " + vulnNaiAuditDetailsList);
 	NaiAuditViewData auditFormData = new NaiAuditViewData();
 	auditFormData.setApplicationId(appId);
 	auditFormData.setApplicationName(appName);
