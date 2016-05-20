@@ -171,6 +171,7 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	userSpecificProps.setProperty("cc.user.name", username); // change
 								 // username
 	userSpecificProps.setProperty("cc.password", password); // and password
+	userSpecificProps.setProperty("cc.password.isencrypted", "false");
 	AppEditConfigManager userSpecificConfig;
 	try {
 	    userSpecificConfig = new AppEditConfigManager(userSpecificProps);
