@@ -47,7 +47,7 @@
 	    // DataTable
 	    var table = $('#table_id').DataTable( {
 	    	select: true,
-	    	dom: 'lftpir',
+	    	dom: 'fptirl',
 	    	"lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
 	    	"pageLength": 5
 	    } );
@@ -85,6 +85,9 @@
 		} else {
 			table.rows( { page: 'current' } ).nodes().to$().removeClass( 'selected' );
 		}
+		
+		console.log("NNN: " + table.rows('.selected').data().length +' row(s) selected');
+
 	}
 
 	function formChanged() {
@@ -139,6 +142,7 @@
 	<!-- CSRF token is inserted automatically by form:form tag -->
 		
 
+	<form:checkbox onchange="javascript:selectAllChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /> Select All Visible Rows<br/>
 		
 	<table id="table_id" class="display">
     <thead>
@@ -200,12 +204,12 @@
         </c:forEach>
     </tbody>
 	</table>
-
-		<form:checkbox onchange="javascript:selectAllChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /> Select All Visible Rows<br/>
+	<br/>
+	<br/>
 	<label for="naiauditstatus_field"><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.status" text="NAI Audit Status" />: </label>
 	
 	<form:select onchange="javascript:formChanged();" id="status" path="vulnerabilityNaiAuditStatus">
-		<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
+	<form:options items="${vulnerabilityNaiAuditStatusOptions}"  />		
 	</form:select>
 	<br />
 	<form:errors path="vulnerabilityNaiAuditStatus" cssClass="error" />
