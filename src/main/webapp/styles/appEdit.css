@@ -87,7 +87,23 @@ td {
 	font-style: italic;
 }
 
+.filter {
+	margin-bottom: 20;
+	padding: 12px 0px;
+}
 
+.pagination {
+}
+
+.info {
+	padding: 6px 6px;
+}
+
+.pageLen {
+	horizontal-align: right;
+	margin-top: 30;
+	padding: 6px 6px;
+}
 
 .btn {
   display: inline-block;

@@ -54,7 +54,7 @@
 	    // DataTable
 	    var table = $('#table_id').DataTable( {
 	    	select: true,
-	    	dom: 'fptirl',
+	    	dom: '<"filter"f><"pagination"p>t<"info"i>r<"pageLen"l>',
 	    	"lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
 	    	"displayStart": firstRowIndex,
 	    	"pageLength": displayedRowCount
