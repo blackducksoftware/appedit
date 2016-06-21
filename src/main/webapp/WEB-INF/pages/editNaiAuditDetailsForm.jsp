@@ -44,13 +44,20 @@
 	        	$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 	        }
 	    } );
+	    
+	    var displayedRowCount = <c:out value="${selectedVulnerabilities.displayedRowCount}"/>
+	    console.log("document ready: displayedRowCount: " + displayedRowCount);
+	    
+	    var firstRowIndex = <c:out value="${selectedVulnerabilities.firstRowIndex}"/>
+	    console.log("document ready: firstRowIndex: " + firstRowIndex);
 	 
 	    // DataTable
 	    var table = $('#table_id').DataTable( {
 	    	select: true,
 	    	dom: 'fptirl',
 	    	"lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
-	    	"pageLength": 5
+	    	"displayStart": firstRowIndex,
+	    	"pageLength": displayedRowCount
 	    } );
 	    
 	    
@@ -82,6 +89,8 @@
 	        console.log( 'Page change' );
 	        selectAllCheckbox.checked=false;
 	    } );
+	    
+	    
 	    
 	    document.getElementById('saveButton').disabled=true;
 	} );

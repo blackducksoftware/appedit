@@ -56,6 +56,9 @@ import com.blackducksoftware.tools.connector.codecenter.application.ApplicationP
 @Controller
 @SessionAttributes({ "app", "dataSource" })
 public class EditNaiAuditDetailsController {
+	private static final String SELECT_ALL_VISIBLE_CHECKBOX_KEY_STRING = "selectAllValue";
+	private static final int INITIAL_FIRST_ROW_INDEX = 0;
+	private static final int INITIAL_DISPLAYED_ROW_COUNT = 5;
 	private AppEditConfigManager config;
 
 	@Inject
@@ -182,7 +185,7 @@ public class EditNaiAuditDetailsController {
 			final AppCompVulnKey key, final String keyString)
 					throws AppEditControllerException {
 
-		if ("selectAllValue".equals(keyString)) {
+		if (SELECT_ALL_VISIBLE_CHECKBOX_KEY_STRING.equals(keyString)) {
 			logger.debug("Ignoring vulnerability keyString: " + keyString);
 			return null;
 		}
@@ -200,7 +203,7 @@ public class EditNaiAuditDetailsController {
 	private AppCompVulnKey generateKey(final String selectedRowKey)
 			throws AppEditControllerException {
 
-		if ("selectAllValue".equals(selectedRowKey)) {
+		if (SELECT_ALL_VISIBLE_CHECKBOX_KEY_STRING.equals(selectedRowKey)) {
 			logger.debug("Ignoring vulnerability keyString: " + selectedRowKey);
 			return null;
 		}
@@ -368,6 +371,8 @@ public class EditNaiAuditDetailsController {
 		auditFormData.setApplicationId(appId);
 		auditFormData.setApplicationName(appName);
 		auditFormData.setApplicationVersion(appVersion);
+		auditFormData.setFirstRowIndex(INITIAL_FIRST_ROW_INDEX);
+		auditFormData.setDisplayedRowCount(INITIAL_DISPLAYED_ROW_COUNT);
 
 		model.addAttribute("selectedVulnerabilities", auditFormData);
 
