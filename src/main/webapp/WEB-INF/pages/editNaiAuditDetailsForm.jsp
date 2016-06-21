@@ -58,7 +58,7 @@
 	    table.columns().every( function () {
 	        var that = this;
 	        
-	        console.log("Column index is: " + this.index());
+	        //console.log("Column index is: " + this.index());
 	        if (this.index() == 0) {
 	        	return;
 	        }
@@ -75,6 +75,12 @@
 	    $("input").keyup(function(){
 	        formChanged();
 	    });
+	    
+	    
+	    $('#table_id').on( 'page.dt', function () {
+	        console.log( 'Page change' );
+	        selectAllCheckbox.checked=false;
+	    } );
 	    
 	    document.getElementById('saveButton').disabled=true;
 	} );
