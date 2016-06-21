@@ -57,6 +57,11 @@
 	    // Apply the search
 	    table.columns().every( function () {
 	        var that = this;
+	        
+	        console.log("Column index is: " + this.index());
+	        if (this.index() == 0) {
+	        	return;
+	        }
 	 
 	        $( 'input', this.header() ).on( 'keyup change', function () {
 	            if ( that.search() !== this.value ) {
@@ -74,20 +79,40 @@
 	    document.getElementById('saveButton').disabled=true;
 	} );
 	
-	function selectAllChanged() {
-		console.log("selectAllChanged() called");
+	function selectAllVisibleChanged() {
+		console.log("selectAllVisibleChanged() called");
 		
 		var selectAllValue = $("#selectAllCheckbox");
 		console.log("Value of selectAllChecked: " + selectAllCheckbox.checked);
 		var table = new $.fn.dataTable.Api( '#table_id' );
 		if (selectAllCheckbox.checked == true) {
-			table.rows( { page: 'current' } ).nodes().to$().addClass( 'selected' );
+			//table.rows( { page: 'current' } ).nodes().to$().addClass( 'selected' );
 		} else {
-			table.rows( { page: 'current' } ).nodes().to$().removeClass( 'selected' );
+			//table.rows( { page: 'current' } ).nodes().to$().removeClass( 'selected' );
 		}
 		
 		console.log("NNN: " + table.rows('.selected').data().length +' row(s) selected');
-
+		console.log("MMM: " + table.rows('.selected input'));
+		
+		// Process each row in table
+		 //var data = table.rows().data();
+		 //data.each(function (value, index) {
+		     //console.log('Data at row index: ' + index + ': ' + value);
+		 //});
+		 
+		 // Identify visible rows
+		 console.log("Page start row index: " + table.page.info().start);
+		 console.log("Page end row index: " + table.page.info().end);
+		 
+		 for (var rowIndex=table.page.info().start; rowIndex < table.page.info().end; rowIndex++) {
+			 console.log("Processing row " + rowIndex);
+			 var cbox = document.getElementById("checkbox" + rowIndex);
+			 if (selectAllCheckbox.checked == true) {
+			 	cbox.checked = true;
+			 } else {
+				 cbox.checked = false;
+			 }
+		 }
 	}
 
 	function formChanged() {
@@ -142,11 +167,12 @@
 	<!-- CSRF token is inserted automatically by form:form tag -->
 		
 
-	<form:checkbox onchange="javascript:selectAllChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /> Select All Visible Rows<br/>
+	
 		
 	<table id="table_id" class="display">
     <thead>
         <tr>
+        	<th></th>
             <th><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></th>
@@ -163,6 +189,7 @@
             <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></th>
         </tr>
         <tr>
+        	<td><form:checkbox onchange="javascript:selectAllVisibleChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
             <td><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></td>
@@ -182,6 +209,7 @@
     <tbody>
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}" varStatus="rowCount">
         	<tr>
+        		<td><form:checkbox onchange="javascript:formChanged();" id="checkbox${rowCount.index}" path="itemList" value="${vulnerability.key.asString}" /></td>
             	<td><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a></td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
