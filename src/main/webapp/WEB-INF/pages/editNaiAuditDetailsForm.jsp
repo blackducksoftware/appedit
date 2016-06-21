@@ -36,9 +36,10 @@
 
 
 	    // Setup - add a text input to each header cell
+	    var colIndex=0;
 	    $('#table_id thead td').each( function () {
-	        var title = $(this).text();
 	        
+	        var title = $(this).text();
 	        if (title.length > 0) {
 	        	$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 	        }
@@ -195,7 +196,7 @@
             <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></th>
         </tr>
         <tr>
-        	<td><form:checkbox onchange="javascript:selectAllVisibleChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
+        	<td style="background:none;"><form:checkbox onchange="javascript:selectAllVisibleChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
             <td><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></td>
