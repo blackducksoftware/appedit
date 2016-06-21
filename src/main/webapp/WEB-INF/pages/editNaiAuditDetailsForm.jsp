@@ -120,6 +120,7 @@
 				 cbox.checked = false;
 			 }
 		 }
+		 formChanged();
 	}
 
 	function formChanged() {
@@ -127,8 +128,9 @@
 		var userCheckedARow = false;
 		var userEnteredSomething = false;
 
-		for (var i = 0; i < ${fn:length(vulnNaiAuditDetailsList)}; i++) {
-			console.log("formChanged() row " + i);
+		var table = new $.fn.dataTable.Api( '#table_id' );
+		for (var i = table.page.info().start; i < table.page.info().end; i++) {
+			console.log("formChanged() checking row " + i);
 			var cbox = document.getElementById("checkbox" + i);
 			if (cbox.checked == true) {
 				console.log("formChanged() row " + i + ": user checked this row");
