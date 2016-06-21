@@ -88,9 +88,15 @@
 	    $('#table_id').on( 'page.dt', function () {
 	        console.log( 'Page change' );
 	        selectAllCheckbox.checked=false;
+	        
+	        var oFormObject = document.forms['theForm'];
+			
+	        console.log("Page start row index: " + table.page.info().start);
+			console.log("Page end row index: " + table.page.info().end);
+			 
+			oFormObject.elements["firstRowIndex"].value = table.page.info().start;
+			oFormObject.elements["displayedRowCount"].value = table.page.info().end - table.page.info().start;
 	    } );
-	    
-	    
 	    
 	    document.getElementById('saveButton').disabled=true;
 	} );
@@ -270,11 +276,13 @@
 	<form:hidden path="applicationId" />
 	<form:hidden path="applicationName" />
 	<form:hidden path="applicationVersion" />
+	
+	<form:hidden path="firstRowIndex" />
+	<form:hidden path="displayedRowCount" />
 			
-		<button id="saveButton" type="submit" class="btn btn-primary" name="action"
-			value="submit">
+	<button id="saveButton" type="submit" class="btn btn-primary" name="action" value="submit">
 			<spring:message code="label.naiauditdetailsedit.submit" />
-		</button>
+	</button>
 	</form:form>
 	 
 </div> 

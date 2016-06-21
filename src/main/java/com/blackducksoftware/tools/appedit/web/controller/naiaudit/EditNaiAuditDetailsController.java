@@ -61,6 +61,9 @@ public class EditNaiAuditDetailsController {
 	private static final int INITIAL_DISPLAYED_ROW_COUNT = 5;
 	private AppEditConfigManager config;
 
+	private int currentFirstRowIndex = INITIAL_FIRST_ROW_INDEX;
+	private int currentDisplayedRowCount = INITIAL_DISPLAYED_ROW_COUNT;
+
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
@@ -109,6 +112,9 @@ public class EditNaiAuditDetailsController {
 
 		logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: "
 				+ formData);
+
+		currentFirstRowIndex = formData.getFirstRowIndex();
+		currentDisplayedRowCount = formData.getDisplayedRowCount();
 
 		logger.debug("Application name / version: "
 				+ formData.getApplicationName() + " / "
@@ -371,8 +377,8 @@ public class EditNaiAuditDetailsController {
 		auditFormData.setApplicationId(appId);
 		auditFormData.setApplicationName(appName);
 		auditFormData.setApplicationVersion(appVersion);
-		auditFormData.setFirstRowIndex(INITIAL_FIRST_ROW_INDEX);
-		auditFormData.setDisplayedRowCount(INITIAL_DISPLAYED_ROW_COUNT);
+		auditFormData.setFirstRowIndex(currentFirstRowIndex);
+		auditFormData.setDisplayedRowCount(currentDisplayedRowCount);
 
 		model.addAttribute("selectedVulnerabilities", auditFormData);
 
