@@ -21,9 +21,19 @@
   
 	<script type="text/javascript" class="init">
 	
+	var selectAllElem;
+	var allRowCheckboxes;
+	
 	$(document).ready(function() {
 
+		selectAllElem = document.getElementById("selectAllCheckbox");
+		console.log("Init: selectAllElem id: " + selectAllElem.id);
+		console.log("Init: selectAllElem value: " + selectAllElem.checked);
 
+		allRowCheckboxes = document.getElementsByClassName("rowCheckbox");
+		console.log("Recorded this many row checkboxes: " + allRowCheckboxes.length);
+		unCheckAllRows();
+		
 	    // Setup - add a text input to each header cell
 	    var colIndex=0;
 	    $('#table_id thead td').each( function () {
@@ -76,7 +86,7 @@
 	    
 	    $('#table_id').on( 'page.dt', function () {
 	        console.log( 'Page change' );
-	        selectAllCheckbox.checked=false;
+	        selectAllElem.checked=false;
 	        
 	        var oFormObject = document.forms['theForm'];
 			
@@ -85,6 +95,8 @@
 			 
 			oFormObject.elements["firstRowIndex"].value = table.page.info().start;
 			oFormObject.elements["displayedRowCount"].value = table.page.info().end - table.page.info().start;
+			
+			unCheckAllRows();
 	    } );
 	    
 	    $('#table_id').on( 'order.dt', function () {
@@ -100,7 +112,7 @@
 	        console.log('Ordering on column '+order[0][0]+' ('+order[0][1]+')');
     		//$('#orderInfo').html( 'Ordering on column '+order[0][0]+' ('+order[0][1]+')' );
     
-	        selectAllCheckbox.checked=false;
+	        selectAllElem.checked=false;
 	        
 	        var oFormObject = document.forms['theForm'];
 			
@@ -110,31 +122,44 @@
 			oFormObject.elements["firstRowIndex"].value = table.page.info().start;
 			oFormObject.elements["displayedRowCount"].value = table.page.info().end - table.page.info().start;
 			
+			unCheckAllRows();
 			// Process each visible row
-			var data = table.rows().data();
-			data.each(function (value, index) {
+			//var data = table.rows().data();
+			//data.each(function (value, index) {
 			   
 			   
-			   if ((index >= table.page.info().start) && (index < table.page.info().end)) {
-				   console.log('2. Data at row index: ' + index + ': ' + value + " SHOULD UNCHECK IT");
-				   var checkboxId = "checkbox" + index;
-				   	console.log("Getting checkbox for checkbox ID: " + checkboxId);
-			   		var cbox = document.getElementById(checkboxId);
-			   		cbox.checked = false;
-			   }
-			});
+			   //if ((index >= table.page.info().start) && (index < table.page.info().end)) {
+				   //console.log('2. Data at row index: ' + index + ': ' + value + " SHOULD UNCHECK IT");
+				   //var checkboxId = "checkbox" + index;
+				   	//console.log("Getting checkbox for checkbox ID: " + checkboxId);
+			   		//var cbox = document.getElementById(checkboxId);
+			   		//cbox.checked = false;
+			   //}
+			//});
 	    } );
 	    
 	    document.getElementById('saveButton').disabled=true;
 	} );
 	
-	function selectAllVisibleChanged() {
+	function unCheckAllRows() {
+		console.log("Clearing " + allRowCheckboxes.length + " checkboxes");
+		for (var i=0; i < allRowCheckboxes.length; i++) {
+			var rowCheckbox = allRowCheckboxes.item(i); 
+			console.log("Setting this checkbox value to false: " + rowCheckbox.id);
+			rowCheckbox.checked = false;
+		}
+	}
+	
+	function selectAllVisibleChanged(elem) {
 		console.log("selectAllVisibleChanged() called");
 		
-		var selectAllValue = $("#selectAllCheckbox");
-		console.log("Value of selectAllChecked: " + selectAllCheckbox.checked);
+		console.log("selectAll checkbox value: " + elem.checked);
+		console.log("selectAll checkbox id: " + elem.id);
+		
+		
+		
 		var table = new $.fn.dataTable.Api( '#table_id' );
-		if (selectAllCheckbox.checked == true) {
+		if (elem.checked == true) {
 			//table.rows( { page: 'current' } ).nodes().to$().addClass( 'selected' );
 		} else {
 			//table.rows( { page: 'current' } ).nodes().to$().removeClass( 'selected' );
@@ -149,22 +174,11 @@
 		     //console.log('Data at row index: ' + index + ': ' + value);
 		 //});
 		 
+		 unCheckAllRows();
+		 
 		 // Identify visible rows
 		 console.log("Page start row index: " + table.page.info().start);
 		 console.log("Page end row index: " + table.page.info().end);
-		 
-		 console.log("Document body: " + document.body.innerHTML);
-		 for (var cb in document.getElementsByTagName("input")) {
-			 console.log("Input element ID: " + cb.id);
-			 console.log("Input element tagName: " + cb.tagName);
-			 console.log("Input element nodeName: " + cb.nodeName);
-			 console.log("Input element innerHTML: " + cb.innerHTML);
-			 console.log("Input element toString(): " + cb.toString());
-		 }
-		 
-		 for (var row in table.rows( {page:'current'} )) {
-			 console.log("Processing one visible row: " + row.toString());
-		 }
 		 
 		 for (var rowIndex=table.page.info().start; rowIndex < table.page.info().end; rowIndex++) {
 			 console.log("Processing row " + rowIndex);
@@ -172,7 +186,7 @@
 			 console.log("Row: " + table.rows(rowIndex).data().toString());
 			 
 			 var cbox = document.getElementById("checkbox" + rowIndex);
-			 if (selectAllCheckbox.checked == true) {
+			 if (elem.checked == true) {
 			 	cbox.checked = true;
 			 } else {
 				 cbox.checked = false;
@@ -256,7 +270,7 @@
             <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></th>
         </tr>
         <tr>
-        	<td style="background:none;"><form:checkbox onchange="javascript:selectAllVisibleChanged();" id="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
+        	<td style="background:none;"><form:checkbox onchange="javascript:selectAllVisibleChanged(this);" id="selectAllCheckbox" name="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
             <td><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></td>
@@ -276,7 +290,7 @@
     <tbody>
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}" varStatus="rowCount">
         	<tr>
-        		<td><form:checkbox onchange="javascript:formChanged();" id="checkbox${rowCount.index}" path="itemList" value="${vulnerability.key.asString}" /></td>
+        		<td><form:checkbox class="rowCheckbox" onchange="javascript:formChanged();" id="checkbox${rowCount.index}" path="itemList" value="${vulnerability.key.asString}" /></td>
             	<td><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a></td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
