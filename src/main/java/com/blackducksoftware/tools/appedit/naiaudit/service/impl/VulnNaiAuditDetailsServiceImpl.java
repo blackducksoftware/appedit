@@ -43,213 +43,213 @@ import com.blackducksoftware.tools.connector.codecenter.application.ApplicationP
 
 /**
  * NAI Audit services implementation.
- * 
+ *
  * @author sbillings
  *
  */
 public class VulnNaiAuditDetailsServiceImpl implements
-	VulnNaiAuditDetailsService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+VulnNaiAuditDetailsService {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()
+			.getName());
 
-    // config (wired)
-    private AppEditConfigManager config;
+	// config (wired)
+	private AppEditConfigManager config;
 
-    @Inject
-    public void setConfig(AppEditConfigManager config) {
-	this.config = config;
-    }
-
-    // DAO objects (wired)
-    private VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao;
-
-    @Inject
-    public void setVulnNaiAuditDetailsDao(
-	    VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao) {
-	this.vulnNaiAuditDetailsDao = vulnNaiAuditDetailsDao;
-    }
-
-    private AppCompVulnDetailsDao appCompVulnDetailsDao;
-
-    @Inject
-    public void setAppCompVulnDetailsDao(
-	    AppCompVulnDetailsDao appCompVulnDetailsDao) {
-	this.appCompVulnDetailsDao = appCompVulnDetailsDao;
-    }
-
-    private VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao;
-
-    @Inject
-    public void setVulnNaiAuditChangeHistoryDao(
-	    VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao) {
-	this.vulnNaiAuditChangeHistoryDao = vulnNaiAuditChangeHistoryDao;
-    }
-
-    /**
-     * Get an applications components+vulnerabilities.
-     * 
-     * @param applicationId
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public List<AppCompVulnComposite> getAppCompVulnCompositeList(
-	    String applicationId) throws AppEditException {
-	List<AppCompVulnComposite> result = new ArrayList<>();
-	Map<AppCompVulnKey, AppCompVulnDetails> ccParts = appCompVulnDetailsDao
-		.getAppCompVulnDetailsMap(applicationId);
-	Map<AppCompVulnKey, VulnNaiAuditDetails> auditParts = vulnNaiAuditDetailsDao
-		.getVulnNaiAuditDetailsMap(applicationId);
-	for (AppCompVulnKey key : ccParts.keySet()) {
-	    VulnNaiAuditDetails auditDetails;
-	    if (auditParts.containsKey(key)) {
-		auditDetails = auditParts.get(key);
-	    } else {
-		auditDetails = new VulnNaiAuditDetails(key, "", "");
-		vulnNaiAuditDetailsDao.insertVulnNaiAuditDetails(auditDetails);
-	    }
-	    AppCompVulnComposite appCompVulnComposite = new AppCompVulnComposite(
-		    key, ccParts.get(key), auditDetails);
-	    result.add(appCompVulnComposite);
+	@Inject
+	public void setConfig(final AppEditConfigManager config) {
+		this.config = config;
 	}
-	return result;
-    }
 
-    /**
-     * Update the NAI Audit details for one component's vulnerability.
-     * 
-     * @param appCompVulnComposite
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public AppCompVulnComposite updateVulnNaiAuditDetails(
-	    AppCompVulnComposite appCompVulnComposite) throws AppEditException {
+	// DAO objects (wired)
+	private VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao;
 
-	logger.debug("updateVulnNaiAuditDetails() called with: "
-		+ appCompVulnComposite);
-
-	updateRemStatusIfNeeded(appCompVulnComposite);
-
-	String origRemediationComment = appCompVulnComposite.getCcPart()
-		.getVulnerabilityRemediationComments();
-	String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
-		.getVulnerabilityNaiAuditComment();
-	String newRemediationComment = deriveNewRemediationComment(
-		origRemediationComment, incomingNaiAuditComment,
-		appCompVulnComposite.getAuditPart()
-			.getVulnerabilityNaiAuditStatus());
-
-	appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
-		newRemediationComment);
-
-	appCompVulnComposite.getAuditPart().setVulnerabilityNaiAuditComment(
-		incomingNaiAuditComment);
-
-	AppCompVulnDetails ccPart = appCompVulnDetailsDao
-		.updateAppCompVulnDetails(appCompVulnComposite.getCcPart());
-	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
-		.updateVulnNaiAuditDetails(appCompVulnComposite.getAuditPart());
-
-	addToChangeHistory(appCompVulnComposite, auditPart);
-
-	return new AppCompVulnComposite(ccPart.getAppCompVulnKey(), ccPart,
-		auditPart);
-    }
-
-    private void addToChangeHistory(AppCompVulnComposite appCompVulnComposite,
-	    VulnNaiAuditDetails auditPart) throws AppEditException {
-	VulnNaiAuditChange vulnNaiAuditChange = new VulnNaiAuditChange(
-		new Date(), appCompVulnComposite.getKey(),
-		auditPart.getUsername(), auditPart.getOrigNaiAuditStatus(),
-		auditPart.getOrigNaiAuditComment(), appCompVulnComposite
-			.getAuditPart().getVulnerabilityNaiAuditStatus(),
-		appCompVulnComposite.getAuditPart()
-			.getVulnerabilityNaiAuditComment());
-	insertVulnNaiAuditChange(vulnNaiAuditChange);
-    }
-
-    private String deriveNewRemediationComment(String origRemediationComment,
-	    String incomingNaiAuditComment, String incomingNaiAuditStatus) {
-	origRemediationComment = ensureNotNull(origRemediationComment);
-	String separator = "";
-	if (!StringUtils.isBlank(origRemediationComment)) {
-	    separator = "\n\n";
+	@Inject
+	public void setVulnNaiAuditDetailsDao(
+			final VulnNaiAuditDetailsDao vulnNaiAuditDetailsDao) {
+		this.vulnNaiAuditDetailsDao = vulnNaiAuditDetailsDao;
 	}
-	String nowString = config.getNaiAuditDateFormat().format(new Date());
-	String newRemediationComment = origRemediationComment + separator + "["
-		+ nowString + ": NAI Audit Status: " + incomingNaiAuditStatus
-		+ "; " + incomingNaiAuditComment + "]";
-	return newRemediationComment;
-    }
 
-    private String ensureNotNull(String origRemediationComment) {
-	if (origRemediationComment == null) {
-	    origRemediationComment = "";
+	private AppCompVulnDetailsDao appCompVulnDetailsDao;
+
+	@Inject
+	public void setAppCompVulnDetailsDao(
+			final AppCompVulnDetailsDao appCompVulnDetailsDao) {
+		this.appCompVulnDetailsDao = appCompVulnDetailsDao;
 	}
-	return origRemediationComment;
-    }
 
-    private void updateRemStatusIfNeeded(
-	    AppCompVulnComposite appCompVulnComposite) {
-	if (appCompVulnComposite.getAuditPart()
-		.getVulnerabilityNaiAuditStatus()
-		.equals(config.getNaiAuditRejectedStatusName())) {
-	    logger.debug("Auditor rejected, changing rem status to: "
-		    + config.getNaiAuditRejectedStatusChangesRemStatusTo());
-	    appCompVulnComposite.getCcPart().setVulnerabilityRemediationStatus(
-		    config.getNaiAuditRejectedStatusChangesRemStatusTo());
+	private VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao;
+
+	@Inject
+	public void setVulnNaiAuditChangeHistoryDao(
+			final VulnNaiAuditChangeHistoryDao vulnNaiAuditChangeHistoryDao) {
+		this.vulnNaiAuditChangeHistoryDao = vulnNaiAuditChangeHistoryDao;
 	}
-    }
 
-    /**
-     * Get Application by name/version.
-     * 
-     * @param appName
-     * @param appVersion
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public ApplicationPojo getApplicationByNameVersion(String appName,
-	    String appVersion, boolean refreshCache) throws AppEditException {
-	ApplicationPojo app = appCompVulnDetailsDao
-		.getApplicationByNameVersion(appName, appVersion, refreshCache);
-	return app;
-    }
+	/**
+	 * Get an application's components+vulnerabilities.
+	 * 
+	 * @param applicationId
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public List<AppCompVulnComposite> getAppCompVulnCompositeList(
+			final String applicationId) throws AppEditException {
+		final List<AppCompVulnComposite> result = new ArrayList<>();
+		final Map<AppCompVulnKey, AppCompVulnDetails> ccParts = appCompVulnDetailsDao
+				.getAppCompVulnDetailsMap(applicationId);
+		final Map<AppCompVulnKey, VulnNaiAuditDetails> auditParts = vulnNaiAuditDetailsDao
+				.getVulnNaiAuditDetailsMap(applicationId);
+		for (final AppCompVulnKey key : ccParts.keySet()) {
+			VulnNaiAuditDetails auditDetails;
+			if (auditParts.containsKey(key)) {
+				auditDetails = auditParts.get(key);
+			} else {
+				auditDetails = new VulnNaiAuditDetails(key, "", "");
+				vulnNaiAuditDetailsDao.insertVulnNaiAuditDetails(auditDetails);
+			}
+			final AppCompVulnComposite appCompVulnComposite = new AppCompVulnComposite(
+					key, ccParts.get(key), auditDetails);
+			result.add(appCompVulnComposite);
+		}
+		return result;
+	}
 
-    /**
-     * Get application by ID.
-     * 
-     * @param appId
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public ApplicationPojo getApplicationById(String appId, boolean refreshCache)
-	    throws AppEditException {
-	ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId,
-		refreshCache);
-	return app;
-    }
+	/**
+	 * Update the NAI Audit details for one component's vulnerability.
+	 *
+	 * @param appCompVulnComposite
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public AppCompVulnComposite updateVulnNaiAuditDetails(
+			final AppCompVulnComposite appCompVulnComposite) throws AppEditException {
 
-    private void insertVulnNaiAuditChange(VulnNaiAuditChange vulnNaiAuditChange)
-	    throws AppEditException {
-	vulnNaiAuditChangeHistoryDao
+		logger.debug("updateVulnNaiAuditDetails() called with: "
+				+ appCompVulnComposite);
+
+		updateRemStatusIfNeeded(appCompVulnComposite);
+
+		final String origRemediationComment = appCompVulnComposite.getCcPart()
+				.getVulnerabilityRemediationComments();
+		final String incomingNaiAuditComment = appCompVulnComposite.getAuditPart()
+				.getVulnerabilityNaiAuditComment();
+		final String newRemediationComment = deriveNewRemediationComment(
+				origRemediationComment, incomingNaiAuditComment,
+				appCompVulnComposite.getAuditPart()
+				.getVulnerabilityNaiAuditStatus());
+
+		appCompVulnComposite.getCcPart().setVulnerabilityRemediationComments(
+				newRemediationComment);
+
+		appCompVulnComposite.getAuditPart().setVulnerabilityNaiAuditComment(
+				incomingNaiAuditComment);
+
+		final AppCompVulnDetails ccPart = appCompVulnDetailsDao
+				.updateAppCompVulnDetails(appCompVulnComposite.getCcPart());
+		final VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
+				.updateVulnNaiAuditDetails(appCompVulnComposite.getAuditPart());
+
+		addToChangeHistory(appCompVulnComposite, auditPart);
+
+		return new AppCompVulnComposite(ccPart.getAppCompVulnKey(), ccPart,
+				auditPart);
+	}
+
+	private void addToChangeHistory(final AppCompVulnComposite appCompVulnComposite,
+			final VulnNaiAuditDetails auditPart) throws AppEditException {
+		final VulnNaiAuditChange vulnNaiAuditChange = new VulnNaiAuditChange(
+				new Date(), appCompVulnComposite.getKey(),
+				auditPart.getUsername(), auditPart.getOrigNaiAuditStatus(),
+				auditPart.getOrigNaiAuditComment(), appCompVulnComposite
+				.getAuditPart().getVulnerabilityNaiAuditStatus(),
+				appCompVulnComposite.getAuditPart()
+				.getVulnerabilityNaiAuditComment());
+		insertVulnNaiAuditChange(vulnNaiAuditChange);
+	}
+
+	private String deriveNewRemediationComment(String origRemediationComment,
+			final String incomingNaiAuditComment, final String incomingNaiAuditStatus) {
+		origRemediationComment = ensureNotNull(origRemediationComment);
+		String separator = "";
+		if (!StringUtils.isBlank(origRemediationComment)) {
+			separator = "\n\n";
+		}
+		final String nowString = config.getNaiAuditDateFormat().format(new Date());
+		final String newRemediationComment = origRemediationComment + separator + "["
+				+ nowString + ": NAI Audit Status: " + incomingNaiAuditStatus
+				+ "; " + incomingNaiAuditComment + "]";
+		return newRemediationComment;
+	}
+
+	private String ensureNotNull(String origRemediationComment) {
+		if (origRemediationComment == null) {
+			origRemediationComment = "";
+		}
+		return origRemediationComment;
+	}
+
+	private void updateRemStatusIfNeeded(
+			final AppCompVulnComposite appCompVulnComposite) {
+		if (appCompVulnComposite.getAuditPart()
+				.getVulnerabilityNaiAuditStatus()
+				.equals(config.getNaiAuditRejectedStatusName())) {
+			logger.debug("Auditor rejected, changing rem status to: "
+					+ config.getNaiAuditRejectedStatusChangesRemStatusTo());
+			appCompVulnComposite.getCcPart().setVulnerabilityRemediationStatus(
+					config.getNaiAuditRejectedStatusChangesRemStatusTo());
+		}
+	}
+
+	/**
+	 * Get Application by name/version.
+	 *
+	 * @param appName
+	 * @param appVersion
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public ApplicationPojo getApplicationByNameVersion(final String appName,
+			final String appVersion, final boolean refreshCache) throws AppEditException {
+		final ApplicationPojo app = appCompVulnDetailsDao
+				.getApplicationByNameVersion(appName, appVersion, refreshCache);
+		return app;
+	}
+
+	/**
+	 * Get application by ID.
+	 *
+	 * @param appId
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public ApplicationPojo getApplicationById(final String appId, final boolean refreshCache)
+			throws AppEditException {
+		final ApplicationPojo app = appCompVulnDetailsDao.getApplicationById(appId,
+				refreshCache);
+		return app;
+	}
+
+	private void insertVulnNaiAuditChange(final VulnNaiAuditChange vulnNaiAuditChange)
+			throws AppEditException {
+		vulnNaiAuditChangeHistoryDao
 		.insertVulnNaiAuditChange(vulnNaiAuditChange);
-    }
+	}
 
-    @Override
-    public AppCompVulnComposite getAppCompVulnComposite(AppCompVulnKey key)
-	    throws AppEditException {
-	AppCompVulnDetails ccPart = appCompVulnDetailsDao
-		.getAppCompVulnDetails(key);
-	VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
-		.getVulnNaiAuditDetails(key);
+	@Override
+	public AppCompVulnComposite getAppCompVulnComposite(final AppCompVulnKey key)
+			throws AppEditException {
+		final AppCompVulnDetails ccPart = appCompVulnDetailsDao
+				.getAppCompVulnDetails(key);
+		final VulnNaiAuditDetails auditPart = vulnNaiAuditDetailsDao
+				.getVulnNaiAuditDetails(key);
 
-	AppCompVulnComposite composite = new AppCompVulnComposite(key, ccPart,
-		auditPart);
-	return composite;
-    }
+		final AppCompVulnComposite composite = new AppCompVulnComposite(key, ccPart,
+				auditPart);
+		return composite;
+	}
 
 }
