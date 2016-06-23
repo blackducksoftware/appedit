@@ -92,7 +92,7 @@ public class EditNaiAuditDetailsController {
 
 		try {
 			final ApplicationPojo app = getApplication(request);
-			processVulnNaiAuditDetailsList(model, app);
+			populateModelForApp(model, app);
 		} catch (final AppEditControllerException e) {
 			logger.error(e.getMessage());
 			model.addAttribute("message", e.getMessage());
@@ -134,16 +134,29 @@ public class EditNaiAuditDetailsController {
 				updateVulnFromRow(model, formData, fullVulnNaiAuditDetailsList,
 						currentUser, selectedRowKey);
 			}
+
+			// TODO this will hurt performance; Can we get away with cached
+			// data? Don't think so
+			final ApplicationPojo app = getApplication(formData);
+			populateModelForApp(model, app);
 		} catch (final AppEditControllerException e1) {
 			logger.error(e1.getMessage());
 			model.addAttribute("message", e1.getMessage());
 			return e1.getReturnValue();
 		}
 
-		populateModelWithFormData(model, formData.getApplicationId(),
-				formData.getApplicationName(),
-				formData.getApplicationVersion(), fullVulnNaiAuditDetailsList);
 		return "editNaiAuditDetailsForm";
+	}
+
+	private ApplicationPojo getApplication(final NaiAuditViewData formData) throws AppEditControllerException {
+		ApplicationPojo app;
+		try {
+			app = vulnNaiAuditDetailsService.getApplicationById(formData.getApplicationId(), true);
+		} catch (final AppEditException e) {
+			final String msg = "Error updating getting application: " + e.getMessage();
+			throw new AppEditControllerException("error/programError", msg);
+		}
+		return app;
 	}
 
 	private void updateVulnFromRow(final ModelMap model, final NaiAuditViewData formData,
@@ -314,7 +327,7 @@ public class EditNaiAuditDetailsController {
 		return fullVulnNaiAuditDetailsList;
 	}
 
-	private List<AppCompVulnComposite> processVulnNaiAuditDetailsList(
+	private List<AppCompVulnComposite> populateModelForApp(
 			final ModelMap model, final ApplicationPojo app)
 					throws AppEditControllerException {
 		List<AppCompVulnComposite> vulnNaiAuditDetailsList;
@@ -377,12 +390,27 @@ public class EditNaiAuditDetailsController {
 		auditFormData.setApplicationId(appId);
 		auditFormData.setApplicationName(appName);
 		auditFormData.setApplicationVersion(appVersion);
+		adjustCurrentFirstRowIndex(vulnNaiAuditDetailsList);
 		auditFormData.setFirstRowIndex(currentFirstRowIndex);
 		auditFormData.setDisplayedRowCount(currentDisplayedRowCount);
 
 		model.addAttribute("selectedVulnerabilities", auditFormData);
 
 		model.addAttribute("vulnNaiAuditDetailsList", vulnNaiAuditDetailsList);
+	}
+
+	/**
+	 * Rows might have been removed, so make sure first row index is valid given
+	 * current #rows.
+	 *
+	 * @param auditFormData
+	 */
+	private void adjustCurrentFirstRowIndex(final List<AppCompVulnComposite> vulnNaiAuditDetailsList) {
+		if (vulnNaiAuditDetailsList.size() == 0) {
+			currentFirstRowIndex = 0;
+		} else if (currentFirstRowIndex > vulnNaiAuditDetailsList.size() - 1) {
+			currentFirstRowIndex = vulnNaiAuditDetailsList.size() - 1;
+		}
 	}
 
 	/**
