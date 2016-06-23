@@ -257,7 +257,7 @@
 	<table id="table_id" class="display">
     <thead>
         <tr>
-        	<th></th>
+        	<th style="background:none;"></th>
             <th><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></th>
@@ -276,7 +276,7 @@
     </thead>
     <tfoot>
         <tr>
-        	<th style="background:none;"></th>
+        	<th></th>
             <th><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></th>
             <th><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></th>
