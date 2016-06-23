@@ -21,14 +21,13 @@
   
 	<script type="text/javascript" class="init">
 	
-	var selectAllElem;
 	var allRowCheckboxes;
+	var tableGlobal;
 	
 	$(document).ready(function() {
-
-		selectAllElem = document.getElementById("selectAllCheckbox");
-		console.log("Init: selectAllElem id: " + selectAllElem.id);
-		console.log("Init: selectAllElem value: " + selectAllElem.checked);
+		console.log("==================================================");
+		console.log("Document ready")
+		console.log("---------------------------------");
 
 		allRowCheckboxes = document.getElementsByClassName("rowCheckbox");
 		console.log("Recorded this many row checkboxes: " + allRowCheckboxes.length);
@@ -51,7 +50,7 @@
 	    console.log("document ready: firstRowIndex: " + firstRowIndex);
 	 
 	    // DataTable
-	    var table = $('#table_id').DataTable( {
+	    tableGlobal = $('#table_id').DataTable( {
 	    	select: true,
 	    	dom: '<"filter"f><"pagination"p>t<"info"i>r<"pageLen"l>',
 	    	"lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
@@ -62,7 +61,7 @@
 	    
 
 	    // Apply the search
-	    table.columns().every( function () {
+	    tableGlobal.columns().every( function () {
 	        var that = this;
 	        
 	        //console.log("Column index is: " + this.index());
@@ -85,23 +84,26 @@
 	    
 	    
 	    $('#table_id').on( 'page.dt', function () {
-	        console.log( 'Page change' );
-	        selectAllElem.checked=false;
+	    	console.log("==================================================");
+	        console.log( 'Page change event' );
+	        console.log("---------------------------------");
 	        
 	        var oFormObject = document.forms['theForm'];
 			
-	        console.log("Page start row index: " + table.page.info().start);
-			console.log("Page end row index: " + table.page.info().end);
+	        console.log("Page start row index: " + tableGlobal.page.info().start);
+			console.log("Page end row index: " + tableGlobal.page.info().end);
 			 
-			oFormObject.elements["firstRowIndex"].value = table.page.info().start;
-			oFormObject.elements["displayedRowCount"].value = table.page.info().end - table.page.info().start;
+			oFormObject.elements["firstRowIndex"].value = tableGlobal.page.info().start;
+			oFormObject.elements["displayedRowCount"].value = tableGlobal.page.info().end - tableGlobal.page.info().start;
 			
 			unCheckAllRows();
 	    } );
 	    
 	    $('#table_id').on( 'order.dt', function () {
+	    	console.log("==================================================");
 	        console.log( 'Sort by column event' );
-	        var order = table.order();
+	        console.log("---------------------------------");
+	        var order = tableGlobal.order();
 	        
 	        var colNum = order[0][0];
 	        console.log("Col #: " + colNum);
@@ -110,17 +112,14 @@
 	        	return;
 	        }
 	        console.log('Ordering on column '+order[0][0]+' ('+order[0][1]+')');
-    		//$('#orderInfo').html( 'Ordering on column '+order[0][0]+' ('+order[0][1]+')' );
-    
-	        selectAllElem.checked=false;
 	        
 	        var oFormObject = document.forms['theForm'];
 			
-	        console.log("Page start row index: " + table.page.info().start);
-			console.log("Page end row index: " + table.page.info().end);
+	        console.log("Page start row index: " + tableGlobal.page.info().start);
+			console.log("Page end row index: " + tableGlobal.page.info().end);
 			 
-			oFormObject.elements["firstRowIndex"].value = table.page.info().start;
-			oFormObject.elements["displayedRowCount"].value = table.page.info().end - table.page.info().start;
+			oFormObject.elements["firstRowIndex"].value = tableGlobal.page.info().start;
+			oFormObject.elements["displayedRowCount"].value = tableGlobal.page.info().end - tableGlobal.page.info().start;
 			
 			unCheckAllRows();
 			// Process each visible row
@@ -142,7 +141,9 @@
 	} );
 	
 	function unCheckAllRows() {
-		console.log("Clearing " + allRowCheckboxes.length + " checkboxes");
+		console.log("==================================================");
+		console.log("unCheckAllRows() called: Clearing " + allRowCheckboxes.length + " checkboxes");
+		console.log("---------------------------------");
 		for (var i=0; i < allRowCheckboxes.length; i++) {
 			var rowCheckbox = allRowCheckboxes.item(i); 
 			console.log("Setting this checkbox value to false: " + rowCheckbox.id);
@@ -150,66 +151,80 @@
 		}
 	}
 	
-	function selectAllVisibleChanged(elem) {
-		console.log("selectAllVisibleChanged() called");
-		
-		console.log("selectAll checkbox value: " + elem.checked);
-		console.log("selectAll checkbox id: " + elem.id);
-		
-		
-		
-		var table = new $.fn.dataTable.Api( '#table_id' );
-		if (elem.checked == true) {
-			//table.rows( { page: 'current' } ).nodes().to$().addClass( 'selected' );
-		} else {
-			//table.rows( { page: 'current' } ).nodes().to$().removeClass( 'selected' );
-		}
-		
-		console.log("NNN: " + table.rows('.selected').data().length +' row(s) selected');
-		console.log("MMM: " + table.rows('.selected input'));
-		
-		// Process each row in table
-		 //var data = table.rows().data();
-		 //data.each(function (value, index) {
-		     //console.log('Data at row index: ' + index + ': ' + value);
-		 //});
-		 
-		 unCheckAllRows();
+	function selectAllButtonClicked() {
+		console.log("==================================================");
+		console.log("selectAllButtonClicked() called");
+		console.log("---------------------------------");
 		 
 		 // Identify visible rows
-		 console.log("Page start row index: " + table.page.info().start);
-		 console.log("Page end row index: " + table.page.info().end);
+		 globalTable = new $.fn.dataTable.Api( '#table_id' );
+		 console.log("Page start row index: " + tableGlobal.page.info().start);
+		 console.log("Page end row index: " + tableGlobal.page.info().end);
 		 
-		 for (var rowIndex=table.page.info().start; rowIndex < table.page.info().end; rowIndex++) {
+		 for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
 			 console.log("Processing row " + rowIndex);
 			 
-			 console.log("Row: " + table.rows(rowIndex).data().toString());
+			 console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
 			 
 			 var cbox = document.getElementById("checkbox" + rowIndex);
-			 if (elem.checked == true) {
-			 	cbox.checked = true;
-			 } else {
-				 cbox.checked = false;
-			 }
+			 cbox.checked = true;
 		 }
 		 formChanged();
 	}
+	
+	function deSelectAllButtonClicked() {
+		console.log("==================================================");
+		console.log("deSelectAllButtonClicked() called");
+		console.log("---------------------------------");
+		 
+		 // Identify visible rows
+		 globalTable = new $.fn.dataTable.Api( '#table_id' );
+		 console.log("Page start row index: " + tableGlobal.page.info().start);
+		 console.log("Page end row index: " + tableGlobal.page.info().end);
+		 
+		 for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
+			 console.log("Processing row " + rowIndex);
+			 
+			 console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
+			 
+			 var cbox = document.getElementById("checkbox" + rowIndex);
+			 cbox.checked = false;
+		 }
+		 formChanged();
+	}
+	
 
 	function formChanged() {
+		console.log("==================================================");
 		console.log("formChanged() called");
+		console.log("---------------------------------");
 		var userCheckedARow = false;
 		var userEnteredSomething = false;
 
-		var table = new $.fn.dataTable.Api( '#table_id' );
-		for (var i = table.page.info().start; i < table.page.info().end; i++) {
-			console.log("formChanged() examining row " + i);
-			var cbox = document.getElementById("checkbox" + i);
-			if (cbox.checked == true) {
+		
+		console.log("Examining " + allRowCheckboxes.length + " checkboxes");
+		for (var i=0; i < allRowCheckboxes.length; i++) {
+			var rowCheckbox = allRowCheckboxes.item(i); 
+			console.log("Examining checkbox with this ID: " + rowCheckbox.id);
+			if (rowCheckbox.checked == true) {
 				console.log("formChanged() row " + i + ": user checked this row");
 				userCheckedARow = true;
 				break;
 			}
 		}
+		
+		
+		//var table = new $.fn.dataTable.Api( '#table_id' );
+		//for (var i = table.page.info().start; i < table.page.info().end; i++) {
+			//var checkboxId = "checkbox" + i;
+			//console.log("formChanged() examining row " + i + ": " + checkboxId);
+			//var cbox = document.getElementById(checkboxId);
+			//if (cbox.checked == true) {
+				//console.log("formChanged() row " + i + ": user checked this row");
+				//userCheckedARow = true;
+				//break;
+			//}
+		//}
 		
 		if (userCheckedARow) {
 			console.log("formChanged() row " + i + ": user checked a row");
@@ -242,7 +257,9 @@
         <br />
     </div>
     <div class="regular">
-
+    
+    <button onclick="selectAllButtonClicked()" class="btn btn-primary">Select All Visible Rows</button>
+	<button onclick="deSelectAllButtonClicked()" class="btn btn-primary">Clear Selection</button>
 
 	<form:form id="theForm" method="post" modelAttribute="selectedVulnerabilities"  action="editnaiauditdetails">
 	<!-- CSRF token is inserted automatically by form:form tag -->
@@ -270,7 +287,7 @@
             <th><spring:message code="label.naiauditdetailsedit.vuln.nai.audit.comment" text="NAI Audit Comment" /></th>
         </tr>
         <tr>
-        	<td style="background:none;"><form:checkbox onchange="javascript:selectAllVisibleChanged(this);" id="selectAllCheckbox" name="selectAllCheckbox" path="itemList" value="selectAllValue" /></td>
+        	<td style="background:none;"></td>
             <td><spring:message code="label.naiauditdetailsedit.vuln.name" text="Vulnerability Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.name" text="Component Name" /></td>
             <td><spring:message code="label.naiauditdetailsedit.comp.version" text="Component Version" /></td>
