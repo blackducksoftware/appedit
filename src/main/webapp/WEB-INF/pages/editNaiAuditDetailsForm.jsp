@@ -21,7 +21,8 @@
   
 	<script type="text/javascript" class="init">
 	
-	var allRowCheckboxes;
+	var allRowCheckboxes; // This is no good after initial page load
+	var clonedCheckboxes = [];
 	var tableGlobal;
 	
 	$(document).ready(function() {
@@ -30,7 +31,22 @@
 		console.log("---------------------------------");
 
 		allRowCheckboxes = document.getElementsByClassName("rowCheckbox");
-		console.log("Recorded this many row checkboxes: " + allRowCheckboxes.length);
+		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		
+		
+		for (var i=0; i < allRowCheckboxes.length; i++) {
+			var rowCheckbox = allRowCheckboxes.item(i); 
+			console.log("*** Detected this checkbox: " + rowCheckbox.id);
+			var cboxClone = rowCheckbox.cloneNode(true);
+			console.log("*** Cloned checkbox: " + cboxClone.id);
+			clonedCheckboxes[i] = cboxClone;
+		}
+		
+		console.log("clonedCheckboxes.length: " + clonedCheckboxes.length);
+		for (var i=0; i < clonedCheckboxes.length; i++) {
+			console.log("*** Read back checkbox: " + clonedCheckboxes[i]);
+			console.log("*** Read back checkbox id: " + clonedCheckboxes[i].id);
+		}
 		unCheckAllRows();
 		
 	    // Setup - add a text input to each header cell
@@ -87,6 +103,8 @@
 	    	console.log("==================================================");
 	        console.log( 'Page change event' );
 	        console.log("---------------------------------");
+	        console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+	        console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 	        
 	        var oFormObject = document.forms['theForm'];
 			
@@ -103,6 +121,9 @@
 	    	console.log("==================================================");
 	        console.log( 'Sort by column event' );
 	        console.log("---------------------------------");
+	        console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+	        console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
+	        
 	        var order = tableGlobal.order();
 	        
 	        var colNum = order[0][0];
@@ -142,12 +163,22 @@
 	
 	function unCheckAllRows() {
 		console.log("==================================================");
-		console.log("unCheckAllRows() called: Clearing " + allRowCheckboxes.length + " checkboxes");
+		console.log("unCheckAllRows() called: Clearing " + clonedCheckboxes.length + " checkboxes");
 		console.log("---------------------------------");
-		for (var i=0; i < allRowCheckboxes.length; i++) {
-			var rowCheckbox = allRowCheckboxes.item(i); 
-			console.log("Setting this checkbox value to false: " + rowCheckbox.id);
-			rowCheckbox.checked = false;
+		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
+		
+		for (var i=0; i < clonedCheckboxes.length; i++) {
+			var rowCheckbox = clonedCheckboxes[i]; 
+			console.log("Attempting to set this checkbox value to false: " + rowCheckbox.id);
+			var actualCheckbox = document.getElementById(rowCheckbox.id);
+			if (actualCheckbox == null) {
+				console.log("*** Unable to set the actual checkbox to false because it is null");
+			} else {
+				console.log("Actually setting this checkbox value to false: " + actualCheckbox.id);
+				console.log("    value was: " + actualCheckbox.checked);
+				actualCheckbox.checked = false;
+			}
 		}
 	}
 	
@@ -155,20 +186,47 @@
 		console.log("==================================================");
 		console.log("selectAllButtonClicked() called");
 		console.log("---------------------------------");
+		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		 
 		 // Identify visible rows
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
 		 console.log("Page start row index: " + tableGlobal.page.info().start);
 		 console.log("Page end row index: " + tableGlobal.page.info().end);
 		 
-		 for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
-			 console.log("Processing row " + rowIndex);
+		 //var anNodes = $("#table_id tbody tr");
+		 //console.log("anNodes: " + anNodes);
+		 //console.log("anNodes.length: " + anNodes.length);
+		 //for (var i = 0; i < anNodes.length; ++i)
+		 //{
+		 //var rowData = tableGlobal.fnGetData( anNodes[i] );
+
+		 //some stuff with the obtained data
+		 //...
+		 //}
+		 
+		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"}).data();
+		 console.log("============ visibleRows found " + visibleRows.length + " rows");
+		 
+		 visibleRows.each( function ( rowIdx, tableLoop, rowLoop ) {
+			    //var data = this.data();
+			    // ... do something with data(), or this.node(), etc
+			    console.log("=== this: " + this);
+			} );
+		 
+		 //for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
+			 //console.log("Selecting row " + rowIndex);
+			 // TODO THIS IS WRONG; After re-sort, rowIndex != checkbox ID suffix
+			 // Have to figure out how to get the checkbox dom object out of the row
+			 //console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
 			 
-			 console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
-			 
-			 var cbox = document.getElementById("checkbox" + rowIndex);
-			 cbox.checked = true;
-		 }
+			 //var cbox = document.getElementById("checkbox" + rowIndex);
+			 //if (cbox == null) {
+				 //console.log("*** Unable to set this checkbox to true; it is null");
+			 //} else {
+			 	//cbox.checked = true;
+			 //}
+		 //}
 		 formChanged();
 	}
 	
@@ -176,6 +234,8 @@
 		console.log("==================================================");
 		console.log("deSelectAllButtonClicked() called");
 		console.log("---------------------------------");
+		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		 
 		 // Identify visible rows
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
@@ -198,6 +258,9 @@
 		console.log("==================================================");
 		console.log("formChanged() called");
 		console.log("---------------------------------");
+		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
+		
 		var userCheckedARow = false;
 		var userEnteredSomething = false;
 
