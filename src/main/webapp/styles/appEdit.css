@@ -38,7 +38,7 @@ body {
   background-color: #ffffff;
 }
 
-thead input {
+tfoot input {
     width: 100%;
     padding: 3px;
     box-sizing: border-box;
