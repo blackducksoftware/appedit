@@ -193,40 +193,31 @@
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
 		 console.log("Page start row index: " + tableGlobal.page.info().start);
 		 console.log("Page end row index: " + tableGlobal.page.info().end);
-		 
-		 //var anNodes = $("#table_id tbody tr");
-		 //console.log("anNodes: " + anNodes);
-		 //console.log("anNodes.length: " + anNodes.length);
-		 //for (var i = 0; i < anNodes.length; ++i)
-		 //{
-		 //var rowData = tableGlobal.fnGetData( anNodes[i] );
-
-		 //some stuff with the obtained data
-		 //...
-		 //}
-		 
-		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"}).data();
+		 		 
+		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"});
 		 console.log("============ visibleRows found " + visibleRows.length + " rows");
 		 
-		 visibleRows.each( function ( rowIdx, tableLoop, rowLoop ) {
-			    //var data = this.data();
-			    // ... do something with data(), or this.node(), etc
-			    console.log("=== this: " + this);
+		 visibleRows.every( function ( rowIdx, tableLoop, rowLoop ) {
+			    console.log("about to get row at " + rowIdx);
+			 	var row = tableGlobal.row( rowIdx );
+			 	console.log("--- row: " + row);
+			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
+			 	console.log("--- htmlTableRowElement: " + htmlTableRowElement);
+			    var data = row.data();
+			    console.log("--- data: " + data);
+			    
+			    var htmlCollectionCells = htmlTableRowElement.cells;
+			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
+			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
+			    
+			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
+			    console.log("cboxElement: " + cboxElementCollection);
+			    var cbox = cboxElementCollection.item(0);
+			    console.log("cbox: " + cbox);
+			    console.log("cbox.checked: " + cbox.checked);
+			    cbox.checked = true;
 			} );
 		 
-		 //for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
-			 //console.log("Selecting row " + rowIndex);
-			 // TODO THIS IS WRONG; After re-sort, rowIndex != checkbox ID suffix
-			 // Have to figure out how to get the checkbox dom object out of the row
-			 //console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
-			 
-			 //var cbox = document.getElementById("checkbox" + rowIndex);
-			 //if (cbox == null) {
-				 //console.log("*** Unable to set this checkbox to true; it is null");
-			 //} else {
-			 	//cbox.checked = true;
-			 //}
-		 //}
 		 formChanged();
 	}
 	
@@ -241,15 +232,31 @@
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
 		 console.log("Page start row index: " + tableGlobal.page.info().start);
 		 console.log("Page end row index: " + tableGlobal.page.info().end);
+		 		 
+		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"});
+		 console.log("============ visibleRows found " + visibleRows.length + " rows");
 		 
-		 for (var rowIndex=tableGlobal.page.info().start; rowIndex < tableGlobal.page.info().end; rowIndex++) {
-			 console.log("Processing row " + rowIndex);
-			 
-			 console.log("Row: " + tableGlobal.rows(rowIndex).data().toString());
-			 
-			 var cbox = document.getElementById("checkbox" + rowIndex);
-			 cbox.checked = false;
-		 }
+		 visibleRows.every( function ( rowIdx, tableLoop, rowLoop ) {
+			    console.log("about to get row at " + rowIdx);
+			 	var row = tableGlobal.row( rowIdx );
+			 	console.log("--- row: " + row);
+			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
+			 	console.log("--- htmlTableRowElement: " + htmlTableRowElement);
+			    var data = row.data();
+			    console.log("--- data: " + data);
+			    
+			    var htmlCollectionCells = htmlTableRowElement.cells;
+			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
+			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
+			    
+			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
+			    console.log("cboxElement: " + cboxElementCollection);
+			    var cbox = cboxElementCollection.item(0);
+			    console.log("cbox: " + cbox);
+			    console.log("cbox.checked: " + cbox.checked);
+			    cbox.checked = false;
+			} );
+		 
 		 formChanged();
 	}
 	
