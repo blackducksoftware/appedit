@@ -120,6 +120,9 @@ public class EditNaiAuditDetailsController {
 				+ formData.getApplicationName() + " / "
 				+ formData.getApplicationVersion());
 
+		logger.debug("currentFirstRowIndex: " + currentFirstRowIndex);
+		logger.debug("currentDisplayedRowCount: " + currentDisplayedRowCount);
+
 		List<AppCompVulnComposite> fullVulnNaiAuditDetailsList;
 		try {
 			fullVulnNaiAuditDetailsList = getFullVulnNaiAuditDetailsList(formData);
