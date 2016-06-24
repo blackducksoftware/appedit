@@ -425,8 +425,6 @@ public class EditNaiAuditDetailsController {
 	@ModelAttribute("vulnerabilityNaiAuditStatusOptions")
 	public List<String> populateVulnerabilityNaiAuditStatusOptions() {
 		final List<String> vulnerabilityNaiAuditStatusOptions = new ArrayList<>();
-		vulnerabilityNaiAuditStatusOptions.add(""); // First/default value:
-		// <empty>
 		for (final String choice : config.getNaiAuditStatusChoices()) {
 			vulnerabilityNaiAuditStatusOptions.add(choice);
 		}
