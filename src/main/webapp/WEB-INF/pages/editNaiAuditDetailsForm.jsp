@@ -21,7 +21,7 @@
   
 	<script type="text/javascript" class="init">
 	
-	var allRowCheckboxes; // This is no good after initial page load
+	var documentCheckboxes; // This is no good after initial page load
 	var clonedCheckboxes = [];
 	var tableGlobal;
 	
@@ -30,12 +30,12 @@
 		console.log("Document ready")
 		console.log("---------------------------------");
 
-		allRowCheckboxes = document.getElementsByClassName("rowCheckbox");
-		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		documentCheckboxes = document.getElementsByClassName("rowCheckbox");
+		console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 		
 		
-		for (var i=0; i < allRowCheckboxes.length; i++) {
-			var rowCheckbox = allRowCheckboxes.item(i); 
+		for (var i=0; i < documentCheckboxes.length; i++) {
+			var rowCheckbox = documentCheckboxes.item(i); 
 			console.log("*** Detected this checkbox: " + rowCheckbox.id);
 			var cboxClone = rowCheckbox.cloneNode(true);
 			console.log("*** Cloned checkbox: " + cboxClone.id);
@@ -52,11 +52,12 @@
 	    // Setup - add a text input to each header cell
 	    var colIndex=0;
 	    $('#table_id tfoot th').each( function () {
-	        
+			console.log("Column sort field initialization")
 	        var title = $(this).text();
 	        if (title.length > 0) {
 	        	$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
 	        }
+	        
 	    } );
 	    
 	    var displayedRowCount = <c:out value="${selectedVulnerabilities.displayedRowCount}"/>
@@ -78,6 +79,7 @@
 
 	    // Apply the search
 	    tableGlobal.columns().every( function () {
+			console.log("Column sort keyup initialization")
 	        var that = this;
 	        
 	        //console.log("Column index is: " + this.index());
@@ -86,15 +88,23 @@
 	        }
 	 
 	        $( 'input', this.footer() ).on( 'keyup change', function () {
+	        	
 	            if ( that.search() !== this.value ) {
+	            	console.log("==================================================");
+					console.log("Column sort keyup activated")
+					console.log("---------------------------------");
 	                that
 	                    .search( this.value )
 	                    .draw();
+	                unCheckAllRows();
 	            }
 	        } );
 	    } );
 	    
 	    $("input").keyup(function(){
+	    	console.log("==================================================");
+			console.log("Input keyup activated")
+			console.log("---------------------------------");
 	        formChanged();
 	    });
 	    
@@ -103,7 +113,7 @@
 	    	console.log("==================================================");
 	        console.log( 'Page change event' );
 	        console.log("---------------------------------");
-	        console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+	        console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 	        console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 	        
 	        var oFormObject = document.forms['theForm'];
@@ -117,11 +127,21 @@
 			unCheckAllRows();
 	    } );
 	    
+	    $('#table_id').on( 'search.dt', function () {
+	    	console.log("==================================================");
+	        console.log( 'Search table event' );
+	        console.log("---------------------------------");
+	        console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
+	        console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
+	        
+	        unCheckAllRows();
+	    } );
+	    
 	    $('#table_id').on( 'order.dt', function () {
 	    	console.log("==================================================");
 	        console.log( 'Sort by column event' );
 	        console.log("---------------------------------");
-	        console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+	        console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 	        console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 	        
 	        var order = tableGlobal.order();
@@ -165,7 +185,7 @@
 		console.log("==================================================");
 		console.log("unCheckAllRows() called: Clearing " + clonedCheckboxes.length + " checkboxes");
 		console.log("---------------------------------");
-		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		
 		for (var i=0; i < clonedCheckboxes.length; i++) {
@@ -186,37 +206,10 @@
 		console.log("==================================================");
 		console.log("selectAllButtonClicked() called");
 		console.log("---------------------------------");
-		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		 
-		 // Identify visible rows
-		 globalTable = new $.fn.dataTable.Api( '#table_id' );
-		 console.log("Page start row index: " + tableGlobal.page.info().start);
-		 console.log("Page end row index: " + tableGlobal.page.info().end);
-		 		 
-		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"});
-		 console.log("============ visibleRows found " + visibleRows.length + " rows");
-		 
-		 visibleRows.every( function ( rowIdx, tableLoop, rowLoop ) {
-			    console.log("about to get row at " + rowIdx);
-			 	var row = tableGlobal.row( rowIdx );
-			 	console.log("--- row: " + row);
-			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
-			 	console.log("--- htmlTableRowElement: " + htmlTableRowElement);
-			    var data = row.data();
-			    console.log("--- data: " + data);
-			    
-			    var htmlCollectionCells = htmlTableRowElement.cells;
-			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
-			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
-			    
-			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
-			    console.log("cboxElement: " + cboxElementCollection);
-			    var cbox = cboxElementCollection.item(0);
-			    console.log("cbox: " + cbox);
-			    console.log("cbox.checked: " + cbox.checked);
-			    cbox.checked = true;
-			} );
+		 setAllVisibleRowCheckboxes(true);
 		 
 		 formChanged();
 	}
@@ -225,10 +218,16 @@
 		console.log("==================================================");
 		console.log("deSelectAllButtonClicked() called");
 		console.log("---------------------------------");
-		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		 
-		 // Identify visible rows
+		setAllVisibleRowCheckboxes(false);
+		 
+		 formChanged();
+	}
+	
+	function setAllVisibleRowCheckboxes(newValue) {
+		// Identify visible rows
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
 		 console.log("Page start row index: " + tableGlobal.page.info().start);
 		 console.log("Page end row index: " + tableGlobal.page.info().end);
@@ -254,10 +253,8 @@
 			    var cbox = cboxElementCollection.item(0);
 			    console.log("cbox: " + cbox);
 			    console.log("cbox.checked: " + cbox.checked);
-			    cbox.checked = false;
+			    cbox.checked = newValue;
 			} );
-		 
-		 formChanged();
 	}
 	
 
@@ -265,16 +262,16 @@
 		console.log("==================================================");
 		console.log("formChanged() called");
 		console.log("---------------------------------");
-		console.log("***allRowCheckboxes.length: " + allRowCheckboxes.length);
+		console.log("***documentCheckboxes.length: " + documentCheckboxes.length);
 		console.log("***clonedCheckboxes.length: " + clonedCheckboxes.length);
 		
 		var userCheckedARow = false;
 		var userEnteredSomething = false;
 
 		
-		console.log("Examining " + allRowCheckboxes.length + " checkboxes");
-		for (var i=0; i < allRowCheckboxes.length; i++) {
-			var rowCheckbox = allRowCheckboxes.item(i); 
+		console.log("Examining " + documentCheckboxes.length + " checkboxes");
+		for (var i=0; i < documentCheckboxes.length; i++) {
+			var rowCheckbox = documentCheckboxes.item(i); 
 			console.log("Examining checkbox with this ID: " + rowCheckbox.id);
 			if (rowCheckbox.checked == true) {
 				console.log("formChanged() row " + i + ": user checked this row");
