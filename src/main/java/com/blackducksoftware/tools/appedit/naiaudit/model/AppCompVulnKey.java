@@ -38,7 +38,7 @@ public class AppCompVulnKey {
 		this.requestId = requestId;
 		this.componentId = componentId;
 		this.vulnerabilityId = vulnerabilityId;
-		asString = applicationId + "|" + componentId + "|" + vulnerabilityId;
+		asString = applicationId + "|" + requestId + "|" + componentId + "|" + vulnerabilityId;
 	}
 
 	public String getAsString() {
