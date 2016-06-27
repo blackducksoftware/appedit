@@ -236,8 +236,8 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			List<RequestVulnerabilityPojo> requestVulnerabilities;
 			try {
 				requestVulnerabilities = ccsw.getRequestManager()
-.getVulnerabilitiesByRequestIdRemediationStatus(
-						requestId, remStatusName);
+						.getVulnerabilitiesByRequestIdRemediationStatus(
+								requestId, remStatusName);
 			} catch (final CommonFrameworkException e) {
 				throw new AppEditException(
 						"Error getting vulnerabilities for request ID "
@@ -271,7 +271,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	private AppCompVulnKey deriveKey(final String applicationId,
 			final CodeCenterComponentPojo comp,
 			final RequestVulnerabilityPojo requestVulnerability) {
-		final AppCompVulnKey key = new AppCompVulnKey(applicationId, comp.getId(),
+		final AppCompVulnKey key = new AppCompVulnKey(applicationId, requestVulnerability.getRequestId(), comp.getId(),
 				requestVulnerability.getVulnerabilityId());
 		return key;
 	}

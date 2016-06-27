@@ -37,175 +37,178 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 
 /**
  * JDBC DAO that adds/gets/updates NAI Audit details.
- * 
+ *
  * @author sbillings
  *
  */
 public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
-    private static final String SQL_INSERT_VULNERABILITY = "INSERT INTO vuln_nai_audit (application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) VALUES (:appId, :compId, :vulnId, :naiAuditStatus, :naiAuditComment)";
+	private static final String SQL_INSERT_VULNERABILITY = "INSERT INTO vuln_nai_audit (application_id, componentuse_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment) VALUES (:appId, :compUseId, :compId, :vulnId, :naiAuditStatus, :naiAuditComment)";
 
-    private static final String SQL_UPDATE_VULNERABILITIES = "UPDATE vuln_nai_audit SET nai_audit_status=:naiAuditStatus, nai_audit_comment=:naiAuditComment WHERE application_id = :appId AND component_id = :compId AND vulnerability_id = :vulnId";
+	private static final String SQL_UPDATE_VULNERABILITIES = "UPDATE vuln_nai_audit SET nai_audit_status=:naiAuditStatus, nai_audit_comment=:naiAuditComment WHERE application_id = :appId AND componentuse_id = :compUseId AND component_id = :compId AND vulnerability_id = :vulnId";
 
-    private static final String SQL_SELECT_ALL_VULNERABILITIES_FOR_APP = "SELECT application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId";
+	private static final String SQL_SELECT_ALL_VULNERABILITIES_FOR_APP = "SELECT application_id, componentuse_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId";
 
-    private static final String SQL_FETCH_ONE_VULNERABILITY_BY_KEY = "SELECT application_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId AND component_id = :compId AND vulnerability_id = :vulnId";
+	private static final String SQL_FETCH_ONE_VULNERABILITY_BY_KEY = "SELECT application_id, componentuse_id, component_id, vulnerability_id, nai_audit_status, nai_audit_comment FROM vuln_nai_audit WHERE application_id = :appId AND componentuse_id = :compUseId AND component_id = :compId AND vulnerability_id = :vulnId";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()
+			.getName());
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Inject
-    public void setJdbcTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
-	this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public JdbcVulnNaiAuditDetailsDao() {
-
-    }
-
-    /**
-     * Update a set of NAI Audit details.
-     * 
-     * @param vunlNaiAuditDetails
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public VulnNaiAuditDetails insertVulnNaiAuditDetails(
-	    VulnNaiAuditDetails vulnNaiAuditDetails) {
-
-	String SQL = SQL_INSERT_VULNERABILITY;
-	Map<String, String> namedParameters = new HashMap<>();
-	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getApplicationId());
-	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getComponentId());
-	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getVulnerabilityId());
-	namedParameters.put("naiAuditStatus",
-		vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
-	namedParameters.put("naiAuditComment",
-		vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
-
-	jdbcTemplate.update(SQL, namedParameters);
-	logger.debug("Inserted Vuln NAI Audit Details Record for: "
-		+ vulnNaiAuditDetails);
-
-	return vulnNaiAuditDetails;
-    }
-
-    /**
-     * Update a set of NAI Audit details.
-     * 
-     * @param vunlNaiAuditDetails
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public VulnNaiAuditDetails updateVulnNaiAuditDetails(
-	    VulnNaiAuditDetails vulnNaiAuditDetails) {
-
-	String SQL = SQL_UPDATE_VULNERABILITIES;
-	Map<String, String> namedParameters = new HashMap<>();
-	namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getApplicationId());
-	namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getComponentId());
-	namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
-		.getVulnerabilityId());
-	namedParameters.put("naiAuditStatus",
-		vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
-	namedParameters.put("naiAuditComment",
-		vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
-
-	jdbcTemplate.update(SQL, namedParameters);
-	logger.debug("Updated Vuln NAI Audit Details Record for: "
-		+ vulnNaiAuditDetails);
-
-	return vulnNaiAuditDetails;
-    }
-
-    /**
-     * Get a map containing all NAI Audit Details for the given application.
-     * 
-     * @param applicationId
-     * @return
-     * @throws AppEditException
-     */
-    @Override
-    public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
-	    String applicationId) {
-
-	String SQL = SQL_SELECT_ALL_VULNERABILITIES_FOR_APP;
-	SqlParameterSource namedParameters = new MapSqlParameterSource("appId",
-		applicationId);
-	logger.debug("Getting vulnNaiAuditDetails for appID " + applicationId
-		+ "; SQL: " + SQL);
-
-	List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
-	try {
-	    vulnNaiAuditDetailsList = (List<VulnNaiAuditDetails>) jdbcTemplate
-		    .query(SQL, namedParameters,
-			    new VulnNaiAuditDetailsMapper());
-	} catch (BadSqlGrammarException e) {
-	    String msg = "Error getting NAI Audit details. Make sure the NAI Audit database tables have been created. Details: "
-		    + e.getMessage();
-	    logger.error(msg);
-	    throw new IllegalStateException(msg);
+	@Inject
+	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	logger.debug("Read " + vulnNaiAuditDetailsList.size()
-		+ " vulnNaiAuditDetail records.");
-	Map<AppCompVulnKey, VulnNaiAuditDetails> vulnNaiAuditDetailsMap = new HashMap<>();
-	for (VulnNaiAuditDetails vulnNaiAuditDetails : vulnNaiAuditDetailsList) {
-	    logger.info("VulnNaiAuditDetails: " + vulnNaiAuditDetails);
-	    vulnNaiAuditDetailsMap.put(vulnNaiAuditDetails.getAppCompVulnKey(),
-		    vulnNaiAuditDetails);
-	}
-	return vulnNaiAuditDetailsMap;
-    }
+	public JdbcVulnNaiAuditDetailsDao() {
 
-    @Override
-    public VulnNaiAuditDetails getVulnNaiAuditDetails(AppCompVulnKey key)
-	    throws AppEditException {
-
-	String SQL = SQL_FETCH_ONE_VULNERABILITY_BY_KEY;
-	Map<String, String> paramMap = new HashMap<>();
-	paramMap.put("appId", key.getApplicationId());
-	paramMap.put("compId", key.getComponentId());
-	paramMap.put("vulnId", key.getVulnerabilityId());
-	SqlParameterSource namedParameters = new MapSqlParameterSource(paramMap);
-	logger.debug("Getting vulnNaiAuditDetails for key " + key + "; SQL: "
-		+ SQL);
-
-	List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
-	try {
-	    vulnNaiAuditDetailsList = (List<VulnNaiAuditDetails>) jdbcTemplate
-		    .query(SQL, namedParameters,
-			    new VulnNaiAuditDetailsMapper());
-	} catch (BadSqlGrammarException e) {
-	    String msg = "Error getting NAI Audit details for vulnerability. Make sure the NAI Audit database tables have been created. Details: "
-		    + e.getMessage();
-	    logger.error(msg);
-	    throw new IllegalStateException(msg);
 	}
 
-	logger.debug("Read " + vulnNaiAuditDetailsList.size()
-		+ " vulnNaiAuditDetail records.");
+	/**
+	 * Update a set of NAI Audit details.
+	 *
+	 * @param vunlNaiAuditDetails
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public VulnNaiAuditDetails insertVulnNaiAuditDetails(
+			final VulnNaiAuditDetails vulnNaiAuditDetails) {
 
-	if (vulnNaiAuditDetailsList.size() == 0) {
-	    logger.warn("No NAI Audit details record found for key: " + key);
-	    return null;
-	} else if (vulnNaiAuditDetailsList.size() > 1) {
-	    String msg = "The NAI Audit details contains "
-		    + vulnNaiAuditDetailsList.size() + "records with key "
-		    + key + "; it should contains at most one";
-	    logger.error(msg);
-	    throw new IllegalStateException(msg);
+		final String SQL = SQL_INSERT_VULNERABILITY;
+		final Map<String, String> namedParameters = new HashMap<>();
+		namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getApplicationId());
+		namedParameters.put("compUseId", vulnNaiAuditDetails.getAppCompVulnKey().getRequestId());
+		namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getComponentId());
+		namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getVulnerabilityId());
+		namedParameters.put("naiAuditStatus",
+				vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
+		namedParameters.put("naiAuditComment",
+				vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
+
+		jdbcTemplate.update(SQL, namedParameters);
+		logger.debug("Inserted Vuln NAI Audit Details Record for: "
+				+ vulnNaiAuditDetails);
+
+		return vulnNaiAuditDetails;
 	}
 
-	return vulnNaiAuditDetailsList.get(0);
-    }
+	/**
+	 * Update a set of NAI Audit details.
+	 *
+	 * @param vunlNaiAuditDetails
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public VulnNaiAuditDetails updateVulnNaiAuditDetails(
+			final VulnNaiAuditDetails vulnNaiAuditDetails) {
+
+		final String SQL = SQL_UPDATE_VULNERABILITIES;
+		final Map<String, String> namedParameters = new HashMap<>();
+		namedParameters.put("appId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getApplicationId());
+		namedParameters.put("compUseId", vulnNaiAuditDetails.getAppCompVulnKey().getRequestId());
+		namedParameters.put("compId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getComponentId());
+		namedParameters.put("vulnId", vulnNaiAuditDetails.getAppCompVulnKey()
+				.getVulnerabilityId());
+		namedParameters.put("naiAuditStatus",
+				vulnNaiAuditDetails.getVulnerabilityNaiAuditStatus());
+		namedParameters.put("naiAuditComment",
+				vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
+
+		jdbcTemplate.update(SQL, namedParameters);
+		logger.debug("Updated Vuln NAI Audit Details Record for: "
+				+ vulnNaiAuditDetails);
+
+		return vulnNaiAuditDetails;
+	}
+
+	/**
+	 * Get a map containing all NAI Audit Details for the given application.
+	 *
+	 * @param applicationId
+	 * @return
+	 * @throws AppEditException
+	 */
+	@Override
+	public Map<AppCompVulnKey, VulnNaiAuditDetails> getVulnNaiAuditDetailsMap(
+			final String applicationId) {
+
+		final String SQL = SQL_SELECT_ALL_VULNERABILITIES_FOR_APP;
+		final SqlParameterSource namedParameters = new MapSqlParameterSource("appId",
+				applicationId);
+		logger.debug("Getting vulnNaiAuditDetails for appID " + applicationId
+				+ "; SQL: " + SQL);
+
+		List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
+		try {
+			vulnNaiAuditDetailsList = jdbcTemplate
+					.query(SQL, namedParameters,
+							new VulnNaiAuditDetailsMapper());
+		} catch (final BadSqlGrammarException e) {
+			final String msg = "Error getting NAI Audit details. Make sure the NAI Audit database tables have been created. Details: "
+					+ e.getMessage();
+			logger.error(msg);
+			throw new IllegalStateException(msg);
+		}
+
+		logger.debug("Read " + vulnNaiAuditDetailsList.size()
+				+ " vulnNaiAuditDetail records.");
+		final Map<AppCompVulnKey, VulnNaiAuditDetails> vulnNaiAuditDetailsMap = new HashMap<>();
+		for (final VulnNaiAuditDetails vulnNaiAuditDetails : vulnNaiAuditDetailsList) {
+			logger.info("VulnNaiAuditDetails: " + vulnNaiAuditDetails);
+			vulnNaiAuditDetailsMap.put(vulnNaiAuditDetails.getAppCompVulnKey(),
+					vulnNaiAuditDetails);
+		}
+		return vulnNaiAuditDetailsMap;
+	}
+
+	@Override
+	public VulnNaiAuditDetails getVulnNaiAuditDetails(final AppCompVulnKey key)
+			throws AppEditException {
+
+		final String SQL = SQL_FETCH_ONE_VULNERABILITY_BY_KEY;
+		final Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("appId", key.getApplicationId());
+		paramMap.put("compUseId", key.getRequestId());
+		paramMap.put("compId", key.getComponentId());
+		paramMap.put("vulnId", key.getVulnerabilityId());
+		final SqlParameterSource namedParameters = new MapSqlParameterSource(paramMap);
+		logger.debug("Getting vulnNaiAuditDetails for key " + key + "; SQL: "
+				+ SQL);
+
+		List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
+		try {
+			vulnNaiAuditDetailsList = jdbcTemplate
+					.query(SQL, namedParameters,
+							new VulnNaiAuditDetailsMapper());
+		} catch (final BadSqlGrammarException e) {
+			final String msg = "Error getting NAI Audit details for vulnerability. Make sure the NAI Audit database tables have been created. Details: "
+					+ e.getMessage();
+			logger.error(msg);
+			throw new IllegalStateException(msg);
+		}
+
+		logger.debug("Read " + vulnNaiAuditDetailsList.size()
+				+ " vulnNaiAuditDetail records.");
+
+		if (vulnNaiAuditDetailsList.size() == 0) {
+			logger.warn("No NAI Audit details record found for key: " + key);
+			return null;
+		} else if (vulnNaiAuditDetailsList.size() > 1) {
+			final String msg = "The NAI Audit details contains "
+					+ vulnNaiAuditDetailsList.size() + "records with key "
+					+ key + "; it should contains at most one";
+			logger.error(msg);
+			throw new IllegalStateException(msg);
+		}
+
+		return vulnNaiAuditDetailsList.get(0);
+	}
 
 }

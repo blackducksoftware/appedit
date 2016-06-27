@@ -33,59 +33,60 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditChange;
 /**
  * JDBC Data Access Object for the change history (audit trail) that records
  * changes to NAI Audit data.
- * 
+ *
  * @author sbillings
  *
  */
 public class JdbcVulnNaiAuditChangeHistoryDao implements
-	VulnNaiAuditChangeHistoryDao {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+VulnNaiAuditChangeHistoryDao {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()
+			.getName());
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Inject
-    public void setJdbcTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
-	this.jdbcTemplate = jdbcTemplate;
-    }
+	@Inject
+	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    /**
-     * Add a new NAI Audit Change history record.
-     * 
-     * @param vunlNaiAuditChange
-     * @throws AppEditException
-     */
-    @Override
-    public void insertVulnNaiAuditChange(VulnNaiAuditChange vunlNaiAuditChange)
-	    throws AppEditException {
-	String SQL = "INSERT INTO vuln_nai_audit_change_history (change_time, application_id, component_id, vulnerability_id, "
-		+ "cc_user_name, old_nai_audit_status, old_nai_audit_comment, new_nai_audit_status, new_nai_audit_comment) "
-		+ "VALUES (:changeTime, :appId, :compId, :vulnId, :ccUserName, :oldNaiAuditStatus, :oldNaiAuditComment, :newNaiAuditStatus, :newNaiAuditComment)";
-	Map<String, Object> namedParameters = new HashMap<>();
+	/**
+	 * Add a new NAI Audit Change history record.
+	 *
+	 * @param vunlNaiAuditChange
+	 * @throws AppEditException
+	 */
+	@Override
+	public void insertVulnNaiAuditChange(final VulnNaiAuditChange vunlNaiAuditChange)
+			throws AppEditException {
+		final String SQL = "INSERT INTO vuln_nai_audit_change_history (change_time, application_id, componentuse_id, component_id, vulnerability_id, "
+				+ "cc_user_name, old_nai_audit_status, old_nai_audit_comment, new_nai_audit_status, new_nai_audit_comment) "
+				+ "VALUES (:changeTime, :appId, :compUseId, :compId, :vulnId, :ccUserName, :oldNaiAuditStatus, :oldNaiAuditComment, :newNaiAuditStatus, :newNaiAuditComment)";
+		final Map<String, Object> namedParameters = new HashMap<>();
 
-	namedParameters.put("changeTime", vunlNaiAuditChange.getChangeTime());
-	namedParameters.put("appId", vunlNaiAuditChange.getAppCompVulnKey()
-		.getApplicationId());
-	namedParameters.put("compId", vunlNaiAuditChange.getAppCompVulnKey()
-		.getComponentId());
-	namedParameters.put("vulnId", vunlNaiAuditChange.getAppCompVulnKey()
-		.getVulnerabilityId());
+		namedParameters.put("changeTime", vunlNaiAuditChange.getChangeTime());
+		namedParameters.put("appId", vunlNaiAuditChange.getAppCompVulnKey()
+				.getApplicationId());
+		namedParameters.put("compUseId", vunlNaiAuditChange.getAppCompVulnKey().getRequestId());
+		namedParameters.put("compId", vunlNaiAuditChange.getAppCompVulnKey()
+				.getComponentId());
+		namedParameters.put("vulnId", vunlNaiAuditChange.getAppCompVulnKey()
+				.getVulnerabilityId());
 
-	namedParameters.put("ccUserName", vunlNaiAuditChange.getCcUserName());
+		namedParameters.put("ccUserName", vunlNaiAuditChange.getCcUserName());
 
-	namedParameters.put("oldNaiAuditStatus",
-		vunlNaiAuditChange.getOldNaiAuditStatus());
-	namedParameters.put("oldNaiAuditComment",
-		vunlNaiAuditChange.getOldNaiAuditComment());
-	namedParameters.put("newNaiAuditStatus",
-		vunlNaiAuditChange.getNewNaiAuditStatus());
-	namedParameters.put("newNaiAuditComment",
-		vunlNaiAuditChange.getNewNaiAuditComment());
+		namedParameters.put("oldNaiAuditStatus",
+				vunlNaiAuditChange.getOldNaiAuditStatus());
+		namedParameters.put("oldNaiAuditComment",
+				vunlNaiAuditChange.getOldNaiAuditComment());
+		namedParameters.put("newNaiAuditStatus",
+				vunlNaiAuditChange.getNewNaiAuditStatus());
+		namedParameters.put("newNaiAuditComment",
+				vunlNaiAuditChange.getNewNaiAuditComment());
 
-	jdbcTemplate.update(SQL, namedParameters);
-	logger.debug("Inserted Vuln NAI Audit Change Record for: "
-		+ vunlNaiAuditChange);
+		jdbcTemplate.update(SQL, namedParameters);
+		logger.debug("Inserted Vuln NAI Audit Change Record for: "
+				+ vunlNaiAuditChange);
 
-    }
+	}
 
 }

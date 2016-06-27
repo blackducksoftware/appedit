@@ -28,26 +28,26 @@ import com.blackducksoftware.tools.appedit.naiaudit.model.VulnNaiAuditDetails;
 /**
  * Builds a VulnNaiAuditDetails object from result sets fetched from the NAI
  * Audit Details table.
- * 
+ *
  * @author sbillings
  *
  */
 public class VulnNaiAuditDetailsMapper implements
-	RowMapper<VulnNaiAuditDetails> {
+RowMapper<VulnNaiAuditDetails> {
 
-    /**
-     * Create a VulnNaiAuditDetails object from a result set.
-     */
-    @Override
-    public VulnNaiAuditDetails mapRow(ResultSet rs, int rowNum)
-	    throws SQLException {
+	/**
+	 * Create a VulnNaiAuditDetails object from a result set.
+	 */
+	@Override
+	public VulnNaiAuditDetails mapRow(final ResultSet rs, final int rowNum)
+			throws SQLException {
 
-	AppCompVulnKey key = new AppCompVulnKey(rs.getString("application_id"),
-		rs.getString("component_id"), rs.getString("vulnerability_id"));
-	VulnNaiAuditDetails result = new VulnNaiAuditDetails(key,
-		rs.getString("nai_audit_status"),
-		rs.getString("nai_audit_comment"));
-	return result;
-    }
+		final AppCompVulnKey key = new AppCompVulnKey(rs.getString("application_id"), rs.getString("componentuse_id"),
+				rs.getString("component_id"), rs.getString("vulnerability_id"));
+		final VulnNaiAuditDetails result = new VulnNaiAuditDetails(key,
+				rs.getString("nai_audit_status"),
+				rs.getString("nai_audit_comment"));
+		return result;
+	}
 
 }
