@@ -135,7 +135,7 @@ VulnNaiAuditDetailsService {
 			return null;
 		}
 
-		updateRemStatusIfNeeded(appCompVulnComposite);
+		updateRemediationDetailsIfNeeded(appCompVulnComposite);
 
 		final String origRemediationComment = appCompVulnComposite.getCcPart()
 				.getVulnerabilityRemediationComments();
@@ -210,15 +210,17 @@ VulnNaiAuditDetailsService {
 		return origRemediationComment;
 	}
 
-	private void updateRemStatusIfNeeded(
+	private void updateRemediationDetailsIfNeeded(
 			final AppCompVulnComposite appCompVulnComposite) {
 		if (appCompVulnComposite.getAuditPart()
 				.getVulnerabilityNaiAuditStatus()
 				.equals(config.getNaiAuditRejectedStatusName())) {
-			logger.debug("Auditor rejected, changing rem status to: "
-					+ config.getNaiAuditRejectedStatusChangesRemStatusTo());
+			logger.debug("Auditor rejected; remediation status will be changed to: '"
+					+ config.getNaiAuditRejectedStatusChangesRemStatusTo() + "', and remediation dates will be cleared");
 			appCompVulnComposite.getCcPart().setVulnerabilityRemediationStatus(
 					config.getNaiAuditRejectedStatusChangesRemStatusTo());
+			appCompVulnComposite.getCcPart().setVulnerabilityTargetRemediationDate(null);
+			appCompVulnComposite.getCcPart().setVulnerabilityActualRemediationDate(null);
 		}
 	}
 
