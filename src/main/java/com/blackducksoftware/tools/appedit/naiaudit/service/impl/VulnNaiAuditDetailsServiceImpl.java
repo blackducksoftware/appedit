@@ -87,7 +87,7 @@ VulnNaiAuditDetailsService {
 
 	/**
 	 * Get an application's components+vulnerabilities.
-	 * 
+	 *
 	 * @param applicationId
 	 * @return
 	 * @throws AppEditException
@@ -129,6 +129,12 @@ VulnNaiAuditDetailsService {
 		logger.debug("updateVulnNaiAuditDetails() called with: "
 				+ appCompVulnComposite);
 
+		if (!auditStatusChanged(appCompVulnComposite)) {
+			logger.info("Audit status unchanged for this vulnerability, so no changes (including comment) made to it it: "
+					+ appCompVulnComposite);
+			return null;
+		}
+
 		updateRemStatusIfNeeded(appCompVulnComposite);
 
 		final String origRemediationComment = appCompVulnComposite.getCcPart()
@@ -155,6 +161,20 @@ VulnNaiAuditDetailsService {
 
 		return new AppCompVulnComposite(ccPart.getAppCompVulnKey(), ccPart,
 				auditPart);
+	}
+
+	private boolean auditStatusChanged(final AppCompVulnComposite appCompVulnComposite) {
+		logger.debug("Checking to see if a change was made to audit status for: " + appCompVulnComposite);
+		if (appCompVulnComposite.getAuditPart().getVulnerabilityNaiAuditStatus()
+				.equals(appCompVulnComposite.getAuditPart().getOrigNaiAuditStatus())) {
+			logger.debug("No change detected; audit status remained at: "
+					+ appCompVulnComposite.getAuditPart().getVulnerabilityNaiAuditStatus());
+			return false;
+		} else {
+			logger.debug("Change detected from " + appCompVulnComposite.getAuditPart().getOrigNaiAuditStatus() + " to "
+					+ appCompVulnComposite.getAuditPart().getVulnerabilityNaiAuditStatus());
+			return true;
+		}
 	}
 
 	private void addToChangeHistory(final AppCompVulnComposite appCompVulnComposite,

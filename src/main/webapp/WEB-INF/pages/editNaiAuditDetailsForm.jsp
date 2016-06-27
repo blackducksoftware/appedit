@@ -163,19 +163,6 @@
 			oFormObject.elements["displayedRowCount"].value = tableGlobal.page.info().end - tableGlobal.page.info().start;
 			
 			unCheckAllRows();
-			// Process each visible row
-			//var data = table.rows().data();
-			//data.each(function (value, index) {
-			   
-			   
-			   //if ((index >= table.page.info().start) && (index < table.page.info().end)) {
-				   //console.log('2. Data at row index: ' + index + ': ' + value + " SHOULD UNCHECK IT");
-				   //var checkboxId = "checkbox" + index;
-				   	//console.log("Getting checkbox for checkbox ID: " + checkboxId);
-			   		//var cbox = document.getElementById(checkboxId);
-			   		//cbox.checked = false;
-			   //}
-			//});
 	    } );
 	    
 	    document.getElementById('saveButton').disabled=true;
