@@ -110,11 +110,34 @@ VulnNaiAuditDetailsService {
 				auditDetails = new VulnNaiAuditDetails(key, "", "");
 				vulnNaiAuditDetailsDao.insertVulnNaiAuditDetails(auditDetails);
 			}
+			final AppCompVulnDetails ccDetails = ccParts.get(key);
+
+			if (!include(ccDetails, auditDetails)) {
+				continue;
+			}
+
 			final AppCompVulnComposite appCompVulnComposite = new AppCompVulnComposite(
-					key, ccParts.get(key), auditDetails);
+					key, ccDetails, auditDetails);
 			result.add(appCompVulnComposite);
 		}
 		return result;
+	}
+
+	private boolean include(final AppCompVulnDetails ccDetails, final VulnNaiAuditDetails auditDetails) {
+		if (ccDetails.getVulnerabilityRemediationStatus().equals(config.getNaiAuditRemStatusToAudit())) {
+			return true;
+		}
+		// if here: rem status is NOT NAI, so only include if NAI audit status
+		// has been set
+		if (StringUtils.isBlank(auditDetails.getVulnerabilityNaiAuditStatus())) {
+			return false;
+		}
+		// if here: NAI audit status has a value; if it's the first
+		// (unreviewed): don't include vuln in list
+		if (auditDetails.getVulnerabilityNaiAuditStatus().equals(config.getNaiAuditStatusChoices().get(0))) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

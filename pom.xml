@@ -11,7 +11,7 @@
 
   <groupId>com.blackducksoftware.tools</groupId>
   <artifactId>appedit</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>Application Details Edit Webapp</name>

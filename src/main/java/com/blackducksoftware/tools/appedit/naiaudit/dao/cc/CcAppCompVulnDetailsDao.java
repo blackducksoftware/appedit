@@ -232,14 +232,10 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 						+ request.getComponentId() + ": " + e1.getMessage(), e1);
 			}
 
-			final String remStatusName = config.getNaiAuditRemStatusToAudit();
-			logger.debug("Remediation status to audit: " + remStatusName);
-
 			List<RequestVulnerabilityPojo> requestVulnerabilities;
 			try {
 				requestVulnerabilities = ccsw.getRequestManager()
-						.getVulnerabilitiesByRequestIdRemediationStatus(
-								requestId, remStatusName);
+.getVulnerabilitiesByRequestId(requestId);
 			} catch (final CommonFrameworkException e) {
 				throw new AppEditException(
 						"Error getting vulnerabilities for request ID "
