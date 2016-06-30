@@ -87,6 +87,9 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private static final String NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY = "nai.audit.rejected.status.name";
 	private static final String NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY = "nai.audit.rejected.status.changes.rem.status.to";
 
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS = "nai.audit.preload.components";
+	private static final String NAI_AUDIT_PRELOAD_BATCH_SIZE = "nai.audit.preload.batch.size";
+
 	private final Logger log = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
@@ -119,6 +122,8 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private String naiAuditRemStatusToAudit;
 	private String naiAuditRejectedStatusChangesRemStatusTo;
 	private String fieldInputValidationRegexNaiAuditComment;
+	private boolean naiAuditPreloadComponents;
+	private int naiAuditPreloadBatchSize = 1000;
 
 	public AppEditConfigManager() {
 		super();
@@ -233,6 +238,17 @@ public class AppEditConfigManager extends ConfigurationManager {
 		fieldInputValidationRegexNaiAuditComment = getOptionalProperty(FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_PROPERTY);
 		if (fieldInputValidationRegexNaiAuditComment == null) {
 			fieldInputValidationRegexNaiAuditComment = FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_DEFAULT;
+		}
+		final String naiAuditPreloadComponentsString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS);
+		if ("true".equalsIgnoreCase(naiAuditPreloadComponentsString)) {
+			naiAuditPreloadComponents = true;
+		} else {
+			naiAuditPreloadComponents = false;
+		}
+
+		final String naiAuditPreloadBatchSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_BATCH_SIZE);
+		if (naiAuditPreloadBatchSizeString != null) {
+			naiAuditPreloadBatchSize = Integer.parseInt(naiAuditPreloadBatchSizeString);
 		}
 
 		enableOrDisableNaiAudit();
@@ -366,6 +382,14 @@ public class AppEditConfigManager extends ConfigurationManager {
 
 	public String getNaiAuditRejectedStatusChangesRemStatusTo() {
 		return naiAuditRejectedStatusChangesRemStatusTo;
+	}
+
+	public boolean isNaiAuditPreloadComponents() {
+		return naiAuditPreloadComponents;
+	}
+
+	public int getNaiAuditPreloadBatchSize() {
+		return naiAuditPreloadBatchSize;
 	}
 
 }

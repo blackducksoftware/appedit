@@ -55,10 +55,14 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			.getName());
 
 	private ICodeCenterServerWrapper ccsw;
+	private boolean componentCachePopulated = false;
 
 	@Inject
 	public void setCcsw(final ICodeCenterServerWrapper ccsw) {
 		this.ccsw = ccsw;
+		if (config != null) {
+			populateComponentCache();
+		}
 	}
 
 	private AppEditConfigManager config;
@@ -66,6 +70,23 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
+		if (ccsw != null) {
+			populateComponentCache();
+		}
+	}
+
+	private void populateComponentCache() {
+		if (componentCachePopulated) {
+			return;
+		}
+		try {
+			logger.info("Pre-loading component cache from catalog");
+			ccsw.getComponentManager().populateComponentCacheFromCatalog(config.getNaiAuditPreloadBatchSize());
+			logger.info("Done pre-loading component cache from catalog");
+		} catch (final CommonFrameworkException e) {
+			logger.error("Error pre-populating component cache from catalog; the NAI Audit screen will take longer to load");
+		}
+		componentCachePopulated = true;
 	}
 
 	/**
@@ -235,7 +256,7 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			List<RequestVulnerabilityPojo> requestVulnerabilities;
 			try {
 				requestVulnerabilities = ccsw.getRequestManager()
-.getVulnerabilitiesByRequestId(requestId);
+						.getVulnerabilitiesByRequestId(requestId);
 			} catch (final CommonFrameworkException e) {
 				throw new AppEditException(
 						"Error getting vulnerabilities for request ID "
