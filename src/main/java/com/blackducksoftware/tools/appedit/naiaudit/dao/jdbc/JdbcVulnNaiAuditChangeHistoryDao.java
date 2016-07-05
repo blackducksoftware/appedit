@@ -44,11 +44,11 @@ VulnNaiAuditChangeHistoryDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
-	private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplateVulnNaiAudit;
 
 	@Inject
-	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplateVulnNaiAudit) {
+		this.jdbcTemplateVulnNaiAudit = jdbcTemplateVulnNaiAudit;
 	}
 
 	/**
@@ -85,7 +85,7 @@ VulnNaiAuditChangeHistoryDao {
 		namedParameters.put("newNaiAuditComment",
 				vunlNaiAuditChange.getNewNaiAuditComment());
 
-		jdbcTemplate.update(SQL, namedParameters);
+		jdbcTemplateVulnNaiAudit.update(SQL, namedParameters);
 		logger.debug("Inserted Vuln NAI Audit Change Record for: "
 				+ vunlNaiAuditChange);
 

@@ -44,12 +44,12 @@ import com.blackducksoftware.tools.commonframework.core.config.ConfigurationPass
  * Configuration Manager for the AppEdit application.
  */
 public class AppEditConfigManager extends ConfigurationManager {
+	private static final String DB_DATABASE_DEFAULT = "bds_catalog";
 	private static final String DB_PASSWORD_DEFAULT = "mallard";
 
 	private static final String DB_USER_DEFAULT = "blackduck";
 
 	private static final String DB_PORT_DEFAULT = "55433";
-	private static final String DB_DATABASE_DEFAULT = "bds_catalog";
 
 	private static final String ATTR_PROPERTY_REGEX_SUFFIX = "regex";
 
@@ -77,7 +77,13 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private static final String DB_PORT_PROPERTY = "db.port";
 	private static final String DB_USER_PROPERTY = "db.user";
 	private static final String DB_PASSWORD_PROPERTY_PREFIX = "db";
-	private static final String DB_DATABASE_PROPERTY = "db.database";
+
+	private static final String DB_SERVER_NAI_AUDIT_PROPERTY = "db.nai.audit.server";
+	private static final String DB_PORT_NAI_AUDIT_PROPERTY = "db.nai.audit.port";
+	private static final String DB_USER_NAI_AUDIT_PROPERTY = "db.nai.audit.user";
+	private static final String DB_PASSWORD_NAI_AUDIT_PROPERTY_PREFIX = "db.nai.audit";
+	private static final String DB_DATABASE_NAI_AUDIT_PROPERTY = "db.nai.audit.database";
+
 	private static final String NAI_AUDIT_STATUS_CHOICE_PROPERTY_PREFIX = "nai.audit.status";
 
 	private static final String NAI_AUDIT_DATE_FORMAT_PROPERTY = "nai.audit.date.format";
@@ -109,10 +115,16 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private final Map<Integer, String> attrLabelsByIndex = new HashMap<Integer, String>();
 
 	private String dbServer;
-	private String dbDatabase = DB_DATABASE_DEFAULT;
 	private String dbPort = DB_PORT_DEFAULT;
 	private String dbUser = DB_USER_DEFAULT;
 	private String dbPassword = DB_PASSWORD_DEFAULT;
+
+	private String dbServerNaiAudit;
+	private String dbDatabaseNaiAudit = DB_DATABASE_DEFAULT;
+	private String dbPortNaiAudit = DB_PORT_DEFAULT;
+	private String dbUserNaiAudit = DB_USER_DEFAULT;
+	private String dbPasswordNaiAudit = DB_PASSWORD_DEFAULT;
+
 	private List<String> naiAuditStatusChoices;
 	private DateFormat naiAuditDateFormat;
 	private String naiAuditRejectedStatusName;
@@ -151,16 +163,12 @@ public class AppEditConfigManager extends ConfigurationManager {
 		if (propValue != null) {
 			dbPort = propValue;
 		}
-		propValue = getOptionalProperty(DB_DATABASE_PROPERTY);
-		if (propValue != null) {
-			dbDatabase = propValue;
-		}
 		propValue = getOptionalProperty(DB_USER_PROPERTY);
 		if (propValue != null) {
 			dbUser = propValue;
 		}
 
-		final ConfigurationPassword configurationPassword = ConfigurationPassword
+		ConfigurationPassword configurationPassword = ConfigurationPassword
 				.createFromProperty(getProps(), DB_PASSWORD_PROPERTY_PREFIX); // Read
 		// the
 		// value
@@ -168,6 +176,49 @@ public class AppEditConfigManager extends ConfigurationManager {
 		// db.password
 		if (configurationPassword.getPlainText() != null) {
 			dbPassword = configurationPassword.getPlainText(); // get the plain
+			// text value of
+			// the password
+			// (even if it
+			// was encrypted
+			// in the
+			// property file)
+		}
+
+		// If specified: get NAI Audit database details
+		// If not specified: default to the database details read above
+		dbServerNaiAudit = getOptionalProperty(DB_SERVER_NAI_AUDIT_PROPERTY);
+		if (dbServerNaiAudit == null) {
+			dbServerNaiAudit = dbServer;
+		}
+		propValue = getOptionalProperty(DB_PORT_NAI_AUDIT_PROPERTY);
+		if (propValue == null) {
+			dbPortNaiAudit = dbPort;
+		} else {
+			dbPortNaiAudit = propValue;
+		}
+		propValue = getOptionalProperty(DB_DATABASE_NAI_AUDIT_PROPERTY);
+		if (propValue == null) {
+			dbDatabaseNaiAudit = DB_DATABASE_DEFAULT;
+		} else {
+			dbDatabaseNaiAudit = propValue;
+		}
+		propValue = getOptionalProperty(DB_USER_NAI_AUDIT_PROPERTY);
+		if (propValue == null) {
+			dbUserNaiAudit = dbUser;
+		} else {
+			dbUserNaiAudit = propValue;
+		}
+
+		configurationPassword = ConfigurationPassword.createFromProperty(getProps(),
+				DB_PASSWORD_NAI_AUDIT_PROPERTY_PREFIX); // Read
+		// the
+		// value
+		// of
+		// db.password
+		if (configurationPassword.getPlainText() != null) {
+			dbPasswordNaiAudit = configurationPassword.getPlainText(); // get
+			// the
+			// plain
 			// text value of
 			// the password
 			// (even if it
@@ -281,10 +332,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 
 	public String getDbServer() {
 		return dbServer;
-	}
-
-	public String getDbDatabase() {
-		return dbDatabase;
 	}
 
 	public String getDbPort() {

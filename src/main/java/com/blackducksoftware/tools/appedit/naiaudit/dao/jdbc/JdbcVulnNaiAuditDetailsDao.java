@@ -55,11 +55,11 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
-	private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplateVulnNaiAudit;
 
 	@Inject
-	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public void setJdbcTemplate(final NamedParameterJdbcTemplate jdbcTemplateVulnNaiAudit) {
+		this.jdbcTemplateVulnNaiAudit = jdbcTemplateVulnNaiAudit;
 	}
 
 	public JdbcVulnNaiAuditDetailsDao() {
@@ -91,7 +91,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 		namedParameters.put("naiAuditComment",
 				vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
 
-		jdbcTemplate.update(SQL, namedParameters);
+		jdbcTemplateVulnNaiAudit.update(SQL, namedParameters);
 		logger.debug("Inserted Vuln NAI Audit Details Record for: "
 				+ vulnNaiAuditDetails);
 
@@ -123,7 +123,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 		namedParameters.put("naiAuditComment",
 				vulnNaiAuditDetails.getVulnerabilityNaiAuditComment());
 
-		jdbcTemplate.update(SQL, namedParameters);
+		jdbcTemplateVulnNaiAudit.update(SQL, namedParameters);
 		logger.debug("Updated Vuln NAI Audit Details Record for: "
 				+ vulnNaiAuditDetails);
 
@@ -149,7 +149,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 
 		List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
 		try {
-			vulnNaiAuditDetailsList = jdbcTemplate
+			vulnNaiAuditDetailsList = jdbcTemplateVulnNaiAudit
 					.query(SQL, namedParameters,
 							new VulnNaiAuditDetailsMapper());
 		} catch (final BadSqlGrammarException e) {
@@ -186,7 +186,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 
 		List<VulnNaiAuditDetails> vulnNaiAuditDetailsList = null;
 		try {
-			vulnNaiAuditDetailsList = jdbcTemplate
+			vulnNaiAuditDetailsList = jdbcTemplateVulnNaiAudit
 					.query(SQL, namedParameters,
 							new VulnNaiAuditDetailsMapper());
 		} catch (final BadSqlGrammarException e) {

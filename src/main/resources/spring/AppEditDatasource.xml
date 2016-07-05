@@ -5,13 +5,37 @@
  
  	<bean id="vulnNaiAuditDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-    	<property name="url" value="jdbc:postgresql://#{config.dbServer}:#{config.dbPort}/#{config.dbDatabase}" />
+    	<property name="url" value="jdbc:postgresql://#{config.dbNaiAuditServer}:#{config.dbNaiAuditPort}/#{config.dbNaiAuditDatabase}" />
+		<property name="username" value="#{config.dbNaiAuditUser}" />
+    	<property name="password" value="#{config.dbNaiAuditPassword}" /> 
+	</bean>
+	
+	<bean  id="jdbcTemplateVulnNaiAudit" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  
+   		<constructor-arg ref="vulnNaiAuditDS"></constructor-arg> 
+	</bean> 
+	
+	
+	<bean id="bdsCatalogDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+    	<property name="url" value="jdbc:postgresql://#{config.dbServer}:#{config.dbPort}/bds_catalog" />
 		<property name="username" value="#{config.dbUser}" />
     	<property name="password" value="#{config.dbPassword}" /> 
 	</bean>
 	
-	<bean  id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  
-   		<constructor-arg ref="vulnNaiAuditDS"></constructor-arg> 
+	<bean  id="jdbcTemplateBdsCatalog" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  
+   		<constructor-arg ref="bdsCatalogDS"></constructor-arg> 
+	</bean> 
+	
+	
+	<bean id="bdsVulnDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+    	<property name="url" value="jdbc:postgresql://#{config.dbServer}:#{config.dbPort}/bds_vuln" />
+		<property name="username" value="#{config.dbUser}" />
+    	<property name="password" value="#{config.dbPassword}" /> 
+	</bean>
+	
+	<bean  id="jdbcTemplateBdsVuln" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  
+   		<constructor-arg ref="bdsVulnDS"></constructor-arg> 
 	</bean> 
 
 </beans>
