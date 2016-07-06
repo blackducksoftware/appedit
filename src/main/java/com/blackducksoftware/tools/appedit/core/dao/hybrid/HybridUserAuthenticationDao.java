@@ -17,9 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.core.dao.cc;
+package com.blackducksoftware.tools.appedit.core.dao.hybrid;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -29,11 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
-import com.blackducksoftware.sdk.codecenter.role.data.RoleTypeEnum;
-import com.blackducksoftware.sdk.codecenter.role.data.UserRoleAssignment;
-import com.blackducksoftware.sdk.codecenter.user.data.UserNameToken;
+import com.blackducksoftware.sdk.codecenter.role.data.RoleNameToken;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticationDao;
+import com.blackducksoftware.tools.appedit.core.dao.UserRoleDao;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.core.exception.AuthenticationException;
 import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
 import com.blackducksoftware.tools.appedit.core.model.Role;
@@ -46,14 +45,14 @@ import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 /**
  * Authenticates a given username/password via Code Center.
  *
- * TODO: Obsolete once HybridAuthenticationDao works.
- *
  * @author sbillings
  *
  */
-public class CcUserAuthenticationDao implements UserAuthenticationDao {
+public class HybridUserAuthenticationDao implements UserAuthenticationDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
+
+	private String auditorRoleId;
 
 	private AppEditConfigManager config;
 
@@ -62,12 +61,19 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 		this.config = config;
 	}
 
+	private UserRoleDao userRoleDao;
+
+	@Inject
+	public void setUserRoleDao(final UserRoleDao userRoleDao) {
+		this.userRoleDao = userRoleDao;
+	}
+
 	/**
 	 * Default constructor
 	 *
 	 * @throws Exception
 	 */
-	public CcUserAuthenticationDao() throws Exception {
+	public HybridUserAuthenticationDao() throws Exception {
 		logger.debug("Default constructor called");
 	}
 
@@ -77,7 +83,7 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	 * @param config
 	 * @throws Exception
 	 */
-	public CcUserAuthenticationDao(final AppEditConfigManager config)
+	public HybridUserAuthenticationDao(final AppEditConfigManager config)
 			throws Exception {
 		logger.debug("Config passed via constructor");
 		this.config = config;
@@ -89,6 +95,7 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 	@Override
 	public AuthenticationResult authenticate(final String username, final String password) {
 		logger.debug("authenticate(): Username: " + username);
+
 		AppEditConfigManager userSpecificConfig;
 		CodeCenterUserPojo user;
 		boolean isAuditor;
@@ -96,6 +103,7 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 			userSpecificConfig = createConfig(username, password);
 			final CodeCenterServerWrapper userSpecificCcsw = createCodeCenterServerWrapper(userSpecificConfig);
 			user = getUser(userSpecificCcsw, username);
+			ensureAuditorRoleIdIsPopulated(userSpecificCcsw, user.getId(), username);
 			isAuditor = isAuditor(userSpecificCcsw, username, user);
 		} catch (final AuthenticationException e1) {
 			logger.warn(e1.getMessage());
@@ -114,14 +122,39 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 				"Login as User was successful.", Role.ROLE_USER);
 	}
 
+	private void ensureAuditorRoleIdIsPopulated(final CodeCenterServerWrapper userSpecificCcsw, final String userId,
+			final String username) throws AuthenticationException {
+		if (auditorRoleId != null) {
+			return;
+		}
+		final String auditorRoleName = config.getAuditorRoleName();
+		final RoleNameToken roleNameToken = new RoleNameToken();
+		roleNameToken.setName(auditorRoleName);
+		com.blackducksoftware.sdk.codecenter.role.data.Role ccRole;
+
+		try {
+			logger.debug("SDK: Getting role for role name: " + auditorRoleName);
+			ccRole = userSpecificCcsw.getInternalApiWrapper().getProxy().getRoleApi().getRole(roleNameToken);
+			logger.debug("SDK: Done getting auditor role; the auditor role ID is: " + ccRole.getRoleId().getId());
+		} catch (final SdkFault e) {
+			logger.debug("SDK: Error getting role");
+			final String message = "Error looking up the auditor role " + auditorRoleName + e.getMessage()
+					+ "; Authorizing this user as an end user";
+			final AuthenticationResult authResult = new AuthenticationResult(userId, username, true,
+					"Login as User was successful.", Role.ROLE_USER);
+			throw new AuthenticationException(authResult, message);
+		}
+		this.auditorRoleId = ccRole.getRoleId().getId();
+	}
+
 	private boolean isAuditor(final CodeCenterServerWrapper userSpecificCcsw,
 			final String username, final CodeCenterUserPojo user)
 					throws AuthenticationException {
 		// Now see if this user is an auditor
 		boolean isAuditor = false;
 		try {
-			isAuditor = userIsAuditor(username, userSpecificCcsw);
-		} catch (final CommonFrameworkException e) {
+			isAuditor = userIsAuditor(userSpecificCcsw, username, user);
+		} catch (final AppEditException e) {
 			final String message = "Error attempting to authorize this user an an auditor: "
 					+ e.getMessage() + "; Authorizing this user as an end user";
 			final AuthenticationResult authResult = new AuthenticationResult(
@@ -189,66 +222,16 @@ public class CcUserAuthenticationDao implements UserAuthenticationDao {
 		return userSpecificConfig;
 	}
 
-	private boolean userIsAuditor(final String username,
-			final CodeCenterServerWrapper userSpecificCcsw)
-					throws CommonFrameworkException {
+	private boolean userIsAuditor(final CodeCenterServerWrapper userSpecificCcsw, final String username,
+			final CodeCenterUserPojo user) throws AppEditException {
 		logger.debug("userIsAuditor(): Username: " + username);
 		if (!config.isEditNaiAuditEnabled()) {
 			logger.info("The Edit NAI Audit feature has not been enabled");
 			return false;
 		}
 
-		List<UserRoleAssignment> roleAssignments;
-		final UserNameToken userNameToken = new UserNameToken();
-		userNameToken.setName(username);
-		try {
-			logger.debug("SDK: Getting user's roles for user: " + username);
-			roleAssignments = userSpecificCcsw.getInternalApiWrapper()
-					.getProxy().getRoleApi().getUserRoles(userNameToken);
-			logger.debug("SDK: Done getting user's roles; role count: " + roleAssignments.size());
-		} catch (final SdkFault e) {
-			logger.debug("SDK: Error getting user's roles");
-			throw new CommonFrameworkException("Error getting user's roles: "
-					+ e.getMessage());
-		}
-		final boolean isAuditor = hasAuditorRole(userSpecificCcsw, username,
-				roleAssignments);
+		final long userId = Long.parseLong(user.getId());
+		final boolean isAuditor = userRoleDao.userHasRole(userId, this.auditorRoleId);
 		return isAuditor;
-	}
-
-	private boolean hasAuditorRole(final CodeCenterServerWrapper userSpecificCcsw,
-			final String username, final List<UserRoleAssignment> roleAssignments)
-					throws CommonFrameworkException {
-		logger.info("Checking user " + username + " to see if it has been assigned the auditor role");
-		for (final UserRoleAssignment roleAssignment : roleAssignments) {
-
-			com.blackducksoftware.sdk.codecenter.role.data.Role ccRole;
-			try {
-				logger.debug("SDK: Getting role for role ID: " + roleAssignment.getRoleIdToken().getId());
-				ccRole = userSpecificCcsw.getInternalApiWrapper().getProxy()
-						.getRoleApi().getRole(roleAssignment.getRoleIdToken());
-				logger.debug("SDK: Done getting role");
-			} catch (final SdkFault e) {
-				logger.debug("SDK: Error getting role");
-				throw new CommonFrameworkException(
-						"Error getting details for user role "
-								+ roleAssignment.getRoleNameToken().getName()
-								+ ": " + e.getMessage());
-			}
-			if (ccRole.getRoleType() != RoleTypeEnum.OVERALL) {
-				logger.debug("This role is not an overall role so cannot be the auditor role: "
-						+ ccRole.getName().getName());
-				continue;
-			}
-			logger.debug("User: " + username + "; CC Role: "
-					+ roleAssignment.getRoleNameToken().getName());
-			if (config.getAuditorRoleName().equals(
-					roleAssignment.getRoleNameToken().getName())) {
-				logger.info("Found auditor role; this user is an auditor");
-				return true;
-			}
-		}
-		logger.info("Did not find auditor role; this user is not an auditor");
-		return false;
 	}
 }

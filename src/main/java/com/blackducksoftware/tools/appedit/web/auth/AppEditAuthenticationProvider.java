@@ -46,89 +46,90 @@ import com.blackducksoftware.tools.appedit.core.service.UserAuthenticationServic
  *
  */
 public class AppEditAuthenticationProvider implements AuthenticationProvider {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass()
-	    .getName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()
+			.getName());
 
-    private UserAuthenticationService userAuthenticationService;
+	private UserAuthenticationService userAuthenticationService;
 
-    @Inject
-    public void setUserAuthenticationService(
-	    UserAuthenticationService userAuthenticationService) {
-	this.userAuthenticationService = userAuthenticationService;
-    }
-
-    private InputValidatorLogin inputValidatorLogin;
-
-    @Inject
-    public void setInputValidatorLogin(InputValidatorLogin inputValidatorLogin) {
-	this.inputValidatorLogin = inputValidatorLogin;
-    }
-
-    /**
-     * Returns true when asked if UsernamePassword authentication method is
-     * supported, false otherwise.
-     *
-     * @param authentication
-     * @return
-     */
-    @Override
-    public boolean supports(Class<? extends Object> authentication) {
-	return authentication.equals(UsernamePasswordAuthenticationToken.class);
-    }
-
-    /**
-     * Attempt to authenticate the given user.
-     */
-    @Override
-    public Authentication authenticate(Authentication authentication) {
-	try {
-	    // User provided data from login page
-	    String username = (String) authentication.getPrincipal();
-	    String password = (String) authentication.getCredentials();
-
-	    validateInput(username, password);
-
-	    UsernamePasswordAuthenticationToken auth = generateAuthenticationToken(
-		    username, password);
-
-	    return auth;
-	} catch (Exception e) {
-	    throw new AuthenticationServiceException(e.getMessage(), e);
+	@Inject
+	public void setUserAuthenticationService(
+			final UserAuthenticationService userAuthenticationService) {
+		this.userAuthenticationService = userAuthenticationService;
 	}
-    }
 
-    private UsernamePasswordAuthenticationToken generateAuthenticationToken(
-	    String username, String password) {
-	AuthenticationResult authResult = authenticateUser(username, password);
-	// Grant access
-	List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-	authorities
+	private InputValidatorLogin inputValidatorLogin;
+
+	@Inject
+	public void setInputValidatorLogin(final InputValidatorLogin inputValidatorLogin) {
+		this.inputValidatorLogin = inputValidatorLogin;
+	}
+
+	/**
+	 * Returns true when asked if UsernamePassword authentication method is
+	 * supported, false otherwise.
+	 *
+	 * @param authentication
+	 * @return
+	 */
+	@Override
+	public boolean supports(final Class<? extends Object> authentication) {
+		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+	}
+
+	/**
+	 * Attempt to authenticate the given user.
+	 */
+	@Override
+	public Authentication authenticate(final Authentication authentication) {
+		try {
+			// User provided data from login page
+			final String username = (String) authentication.getPrincipal();
+			final String password = (String) authentication.getCredentials();
+
+			validateInput(username, password);
+
+			final UsernamePasswordAuthenticationToken auth = generateAuthenticationToken(
+					username, password);
+
+			return auth;
+		} catch (final Exception e) {
+			throw new AuthenticationServiceException(e.getMessage(), e);
+		}
+	}
+
+	private UsernamePasswordAuthenticationToken generateAuthenticationToken(
+			final String username, final String password) {
+		final AuthenticationResult authResult = authenticateUser(username, password);
+		// Grant access
+		final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities
 		.add(new SimpleGrantedAuthority(authResult.getRole().name()));
-	UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-		username, password, authorities);
-	auth.setDetails(authResult);
-	return auth;
-    }
-
-    private AuthenticationResult authenticateUser(String username,
-	    String password) {
-	// Authenticate in Code Center
-
-	AuthenticationResult authResult = userAuthenticationService
-		.authenticate(username, password);
-	if (!authResult.isAuthenticated()) {
-	    throw new AuthenticationServiceException(authResult.getMessage());
+		final UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+				username, password, authorities);
+		auth.setDetails(authResult);
+		return auth;
 	}
-	return authResult;
-    }
 
-    private void validateInput(String username, String password) {
-	// Validate input
-	if ((!inputValidatorLogin.validateUsername(username))
-		|| (!inputValidatorLogin.validatePassword(password))) {
-	    String msg = "Authorization failed: The user name or password provided was not valid. ";
-	    logger.error(msg);
-	    throw new AuthenticationServiceException(msg);
+	private AuthenticationResult authenticateUser(final String username,
+			final String password) {
+		// Authenticate in Code Center
+
+		final AuthenticationResult authResult = userAuthenticationService
+				.authenticate(username, password);
+		if (!authResult.isAuthenticated()) {
+			logger.debug("Authentication failed");
+			throw new AuthenticationServiceException(authResult.getMessage());
+		}
+		return authResult;
 	}
-    }
+
+	private void validateInput(final String username, final String password) {
+		// Validate input
+		if ((!inputValidatorLogin.validateUsername(username))
+				|| (!inputValidatorLogin.validatePassword(password))) {
+			final String msg = "Authorization failed: The user name or password provided was not valid. ";
+			logger.error(msg);
+			throw new AuthenticationServiceException(msg);
+		}
+	}
 }

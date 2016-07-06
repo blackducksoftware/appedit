@@ -22,7 +22,7 @@
     </bean>
     
     <bean id="userAuthenticationService" class="com.blackducksoftware.tools.appedit.core.service.impl.UserAuthenticationServiceImpl" />
-    <bean id="userAuthenticationDao" class="com.blackducksoftware.tools.appedit.core.dao.cc.CcUserAuthenticationDao" />
+    <bean id="userAuthenticationDao" class="com.blackducksoftware.tools.appedit.core.dao.hybrid.HybridUserAuthenticationDao" />
     <bean id="inputValidatorLogin" class="com.blackducksoftware.tools.appedit.core.inputvalidation.InputValidatorLogin" >
     	<constructor-arg ref="config" />
     </bean>
@@ -35,6 +35,7 @@
     <bean id="vulnNaiAuditDetailsService" class="com.blackducksoftware.tools.appedit.naiaudit.service.impl.VulnNaiAuditDetailsServiceImpl" scope="singleton" />
     <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" />
     <bean id="vulnerabilityDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnerabilityDao" />
+    <bean id="userRoleDao" class="com.blackducksoftware.tools.appedit.core.dao.jdbc.JdbcUserRoleDao" />
       
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
