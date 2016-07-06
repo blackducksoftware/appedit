@@ -415,4 +415,24 @@ public class AppEditConfigManager extends ConfigurationManager {
 		return naiAuditRejectedStatusChangesRemStatusTo;
 	}
 
+	public String getDbServerNaiAudit() {
+		return dbServerNaiAudit;
+	}
+
+	public String getDbDatabaseNaiAudit() {
+		return dbDatabaseNaiAudit;
+	}
+
+	public String getDbPortNaiAudit() {
+		return dbPortNaiAudit;
+	}
+
+	public String getDbUserNaiAudit() {
+		return dbUserNaiAudit;
+	}
+
+	public String getDbPasswordNaiAudit() {
+		return dbPasswordNaiAudit;
+	}
+
 }

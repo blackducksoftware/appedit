@@ -5,9 +5,9 @@
  
  	<bean id="vulnNaiAuditDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-    	<property name="url" value="jdbc:postgresql://#{config.dbNaiAuditServer}:#{config.dbNaiAuditPort}/#{config.dbNaiAuditDatabase}" />
-		<property name="username" value="#{config.dbNaiAuditUser}" />
-    	<property name="password" value="#{config.dbNaiAuditPassword}" /> 
+    	<property name="url" value="jdbc:postgresql://#{config.dbServerNaiAudit}:#{config.dbPortNaiAudit}/#{config.dbDatabaseNaiAudit}" />
+		<property name="username" value="#{config.dbUserNaiAudit}" />
+    	<property name="password" value="#{config.dbPasswordNaiAudit}" /> 
 	</bean>
 	
 	<bean  id="jdbcTemplateVulnNaiAudit" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">  

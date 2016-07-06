@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.naiaudit.dao.cc;
+package com.blackducksoftware.tools.appedit.naiaudit.dao.hybrid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
+import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnerabilityDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetailsBuilder;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
@@ -47,13 +48,10 @@ import com.blackducksoftware.tools.connector.codecenter.common.RequestVulnerabil
  * details (remediation status and comments) specific to a vulnerability on a
  * specific application as used in a specific application.
  *
- * TODO: Once HybridAppCompVulnDetailsDao is working, this class may be
- * obsolete.
- *
  * @author sbillings
  *
  */
-public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
+public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
@@ -69,6 +67,13 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
+	}
+
+	private VulnerabilityDao vulnerabilityDao;
+
+	@Inject
+	public void setVulnerabilityDao(final VulnerabilityDao vulnerabilityDao) {
+		this.vulnerabilityDao = vulnerabilityDao;
 	}
 
 	/**
@@ -237,12 +242,11 @@ public class CcAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
 			List<RequestVulnerabilityPojo> requestVulnerabilities;
 			try {
-				requestVulnerabilities = ccsw.getRequestManager()
+				requestVulnerabilities = vulnerabilityDao
 						.getVulnerabilitiesByRequestId(requestId);
-			} catch (final CommonFrameworkException e) {
-				throw new AppEditException(
-						"Error getting vulnerabilities for request ID "
-								+ requestId + ": " + e.getMessage(), e);
+			} catch (final AppEditException e) {
+				logger.error("Error getting vulnerabilities for request ID " + requestId + ": " + e.getMessage());
+				throw e;
 			}
 			collectRequestVulnerabilities(vulnMap, app, comp,
 					requestVulnerabilities);
