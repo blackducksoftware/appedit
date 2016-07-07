@@ -108,8 +108,7 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 		logger.debug("updatedRequestVulnerability: "
 				+ updatedRequestVulnerability);
 		try {
-			ccsw.getRequestManager().updateRequestVulnerability(
-					updatedRequestVulnerability);
+			ccsw.getRequestManager().updateRequestVulnerability(updatedRequestVulnerability, config.isCcPre7_1_1());
 		} catch (final CommonFrameworkException e) {
 			throw new AppEditException(
 					"Error updating Vulnerability metadata for "
