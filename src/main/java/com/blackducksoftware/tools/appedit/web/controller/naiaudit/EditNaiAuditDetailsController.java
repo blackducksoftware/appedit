@@ -140,8 +140,6 @@ public class EditNaiAuditDetailsController {
 						currentUser, selectedRowKey);
 			}
 
-			// TODO this will hurt performance; Can we get away with cached
-			// data? Don't think so
 			final ApplicationPojo app = getApplication(formData);
 			populateModelForApp(model, app);
 		} catch (final AppEditControllerException e1) {

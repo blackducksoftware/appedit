@@ -46,8 +46,6 @@ import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 /**
  * Authenticates a given username/password via Code Center.
  *
- * TODO: Obsolete once HybridAuthenticationDao works.
- *
  * @author sbillings
  *
  */

@@ -47,9 +47,6 @@ import com.blackducksoftware.tools.connector.codecenter.common.RequestVulnerabil
  * details (remediation status and comments) specific to a vulnerability on a
  * specific application as used in a specific application.
  *
- * TODO: Once HybridAppCompVulnDetailsDao is working, this class may be
- * obsolete.
- *
  * @author sbillings
  *
  */
