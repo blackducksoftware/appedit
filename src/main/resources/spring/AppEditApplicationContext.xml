@@ -27,6 +27,7 @@
     	<constructor-arg ref="config" />
     </bean>
     
+    
     <bean id="componentCachePopulator" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcComponentCachePopulator" />
     <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao" />
     <bean id="appService" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppServiceImpl" />
@@ -38,6 +39,28 @@
     <bean id="vulnerabilityDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnerabilityDao" />
     <bean id="userRoleDao" class="com.blackducksoftware.tools.appedit.core.dao.jdbc.JdbcUserRoleDao" />
       
+    <bean id="componentCachePopulatorJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+    	<property name="targetObject" ref="componentCachePopulator" />
+    	<property name="targetMethod" value="run" />
+    </bean>
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+    	<property name="jobDetail" ref="componentCachePopulatorJob" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" >
+    	<property name="jobDetails">
+	   		<list>
+	      		<ref bean="componentCachePopulatorJob" />
+	   		</list>
+		</property>
+		
+		<property name="triggers">
+	    	<list>
+				<ref bean="cronTrigger" />
+	    	</list>
+		</property>
+    </bean>
+    
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 	  <property name="exceptionMappings">

@@ -1,6 +1,5 @@
 package com.blackducksoftware.tools.appedit.naiaudit.dao.cc;
 
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -12,7 +11,7 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
 
-public class CcComponentCachePopulator extends TimerTask {
+public class CcComponentCachePopulator {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	private final int COMP_CACHE_SIZE = 10000;
 	private final int COMP_CACHE_EXPIRATION_DAYS = 2;
@@ -36,7 +35,6 @@ public class CcComponentCachePopulator extends TimerTask {
 	public CcComponentCachePopulator() {
 	}
 
-	@Override
 	public void run() {
 		try {
 			logger.info("Pre-loading component cache from catalog");

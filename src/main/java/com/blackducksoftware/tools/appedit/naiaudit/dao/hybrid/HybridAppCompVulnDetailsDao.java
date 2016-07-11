@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -59,7 +58,7 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			.getName());
 
 	private boolean componentCachePopulatorScheduled = false;
-	private final Timer timer = new Timer();
+	// private final Timer timer = new Timer(); // TODO
 
 	private ICodeCenterServerWrapper ccsw;
 
@@ -110,18 +109,21 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 			return;
 		}
 
-		final int delayMinutes = 2; // TODO configurable
-		final int periodMinutes = 10;
-		logger.info("Scheduling component cache populator: delay: " + delayMinutes + " minutes; period: "
-				+ periodMinutes + " minutes");
-
-		timer.schedule(componentCachePopulator, (delayMinutes * 60 * 1000L), (periodMinutes * 60 * 1000L));
+		// TODO this is currently done in spring xml
+		// final int delayMinutes = 2; // TODO configurable
+		// final int periodMinutes = 10;
+		// logger.info("Scheduling component cache populator: delay: " +
+		// delayMinutes + " minutes; period: "
+		// + periodMinutes + " minutes");
+		//
+		// timer.schedule(componentCachePopulator, (delayMinutes * 60 * 1000L),
+		// (periodMinutes * 60 * 1000L));
 	}
 
 	@PreDestroy
 	public void destroy() {
 		logger.info("Cancelling component populator timed task");
-		timer.cancel();
+		// timer.cancel(); // TODO
 	}
 
 	/**
