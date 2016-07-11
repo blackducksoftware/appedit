@@ -30,11 +30,15 @@ public class CcComponentCachePopulator {
 	}
 
 	public void run() {
+		if (!config.isNaiAuditPreloadComponents()) {
+			logger.debug("Periodically loading/updating of components into cache is disabled.");
+			return;
+		}
 		try {
 			logger.info("Pre-loading component cache from catalog");
 
 			ccsw.getComponentManager()
-					.populateComponentCacheFromCatalog(config.getNaiAuditPreloadComponentsBatchSize());
+			.populateComponentCacheFromCatalog(config.getNaiAuditPreloadComponentsBatchSize());
 			logger.info("Done pre-loading component cache from catalog");
 		} catch (final CommonFrameworkException e) {
 			logger.error("Error pre-populating component cache from catalog; the NAI Audit screen will take longer to load");

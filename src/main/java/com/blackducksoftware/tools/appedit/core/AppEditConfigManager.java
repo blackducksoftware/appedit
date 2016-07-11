@@ -108,8 +108,9 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY = "nai.audit.preload.components.batch.size";
 
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_PROPERTY = "nai.audit.preload.components.cron";
-	// This value = preload components will never run (Feb 31 never comes)
-	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_DEFAULT = "0 0 0 31 2 ?";
+	// This value = call the component preloader once/year (when disabled, this
+	// is the closest we can get to "never"
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_DEFAULT = "0 0 0 1 1 ?";
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass()
 			.getName());
@@ -314,6 +315,9 @@ public class AppEditConfigManager extends ConfigurationManager {
 		final String naiAuditPreloadComponentsString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_PROPERTY);
 		if ("true".equalsIgnoreCase(naiAuditPreloadComponentsString)) {
 			naiAuditPreloadComponents = true;
+			log.debug("Periodic loading/updating of components into cache is enabled");
+		} else {
+			log.debug("Periodic loading/updating of components into cache is disabled");
 		}
 
 		final String naiAuditPreloadBatchSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY);
@@ -339,10 +343,10 @@ public class AppEditConfigManager extends ConfigurationManager {
 		naiAuditPreloadComponentsCronConfig = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_PROPERTY);
 		if (naiAuditPreloadComponentsCronConfig == null) {
 			naiAuditPreloadComponentsCronConfig = NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_DEFAULT;
-			log.info("Quartz CronTrigger expression for component cache populator explicitly set to: "
+			log.info("Quartz CronTrigger expression for component cache populator defaulting to: "
 					+ naiAuditPreloadComponentsCronConfig);
 		} else {
-			log.info("Quartz CronTrigger expression for component cache populator defaulting to: "
+			log.info("Quartz CronTrigger expression for component cache populator explicitly set to: "
 					+ naiAuditPreloadComponentsCronConfig);
 		}
 
