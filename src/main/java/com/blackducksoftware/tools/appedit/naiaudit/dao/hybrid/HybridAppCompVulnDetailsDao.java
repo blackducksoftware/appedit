@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnerabilityDao;
-import com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcComponentCachePopulator;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetailsBuilder;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
@@ -57,15 +57,14 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
-	private boolean componentCachePopulatorScheduled = false;
-	// private final Timer timer = new Timer(); // TODO
+	private boolean componentCacheInitialized = false;
 
 	private ICodeCenterServerWrapper ccsw;
 
 	@Inject
 	public void setCcsw(final ICodeCenterServerWrapper ccsw) {
 		this.ccsw = ccsw;
-		init();
+		initComponentCache();
 	}
 
 	private AppEditConfigManager config;
@@ -73,7 +72,7 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
-		init();
+		initComponentCache();
 	}
 
 	private VulnerabilityDao vulnerabilityDao;
@@ -83,47 +82,30 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 		this.vulnerabilityDao = vulnerabilityDao;
 	}
 
-	private CcComponentCachePopulator componentCachePopulator;
-
-	@Inject
-	public void setComponentCachePopulator(final CcComponentCachePopulator componentCachePopulator) {
-		this.componentCachePopulator = componentCachePopulator;
-		init();
-	}
-
-	private void init() {
-		logger.debug("init()");
-		if (componentCachePopulatorScheduled) {
-			logger.debug("Component cache populator already scheduled");
+	private void initComponentCache() {
+		if (componentCacheInitialized) {
 			return;
 		}
-		if ((config != null) && (ccsw != null) && (componentCachePopulator != null)) {
-			scheduleComponentCachePopulator();
-			componentCachePopulatorScheduled = true;
-		}
-
-	}
-
-	private void scheduleComponentCachePopulator() {
 		if (!config.isNaiAuditPreloadComponents()) {
 			return;
 		}
 
-		// TODO this is currently done in spring xml
-		// final int delayMinutes = 2; // TODO configurable
-		// final int periodMinutes = 10;
-		// logger.info("Scheduling component cache populator: delay: " +
-		// delayMinutes + " minutes; period: "
-		// + periodMinutes + " minutes");
-		//
-		// timer.schedule(componentCachePopulator, (delayMinutes * 60 * 1000L),
-		// (periodMinutes * 60 * 1000L));
+		if ((config == null) || (ccsw == null)) {
+			return;
+		}
+
+		logger.info("Initializing component cache: size: " + config.getNaiAuditPreloadComponentsCacheSize()
+				+ "; timeout: " + config.getNaiAuditPreloadComponentsTimeoutValue() + " "
+				+ config.getNaiAuditPreloadComponentsTimeoutUnits());
+		ccsw.getComponentManager().resetComponentCache(config.getNaiAuditPreloadComponentsCacheSize(),
+				config.getNaiAuditPreloadComponentsTimeoutValue(), TimeUnit.DAYS);
+		componentCacheInitialized = true;
 	}
 
 	@PreDestroy
 	public void destroy() {
 		logger.info("Cancelling component populator timed task");
-		// timer.cancel(); // TODO
+		// TODO HOW??
 	}
 
 	/**

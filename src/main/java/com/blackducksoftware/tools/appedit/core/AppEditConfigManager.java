@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ import com.blackducksoftware.tools.commonframework.core.config.ConfigurationPass
  * Configuration Manager for the AppEdit application.
  */
 public class AppEditConfigManager extends ConfigurationManager {
+
 	private static final String DB_DATABASE_DEFAULT = "bds_catalog";
 	private static final String DB_PASSWORD_DEFAULT = "mallard";
 
@@ -92,10 +94,22 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private static final String NAI_AUDIT_REM_STATUS_TO_AUDIT_PROPERTY = "nai.audit.rem.status.to.audit";
 	private static final String NAI_AUDIT_REJECTED_STATUS_NAME_PROPERTY = "nai.audit.rejected.status.name";
 	private static final String NAI_AUDIT_REJECTED_STATUS_CHANGES_REM_STATUS_TO_PROPERTY = "nai.audit.rejected.status.changes.rem.status.to";
-	private static final String NAI_AUDIT_CC_IS_PRE_7_1_1 = "nai.audit.cc.is.pre.7.1.1";
+	private static final String NAI_AUDIT_CC_IS_PRE_7_1_1_PROPERTY = "nai.audit.cc.is.pre.7.1.1";
 
-	private static final String NAI_AUDIT_PRELOAD_COMPONENTS = "nai.audit.preload.components";
-	private static final String NAI_AUDIT_PRELOAD_BATCH_SIZE = "nai.audit.preload.batch.size";
+	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_VALUE_DEFAULT = 2;
+	private static final TimeUnit NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_UNITS_DEFAULT = TimeUnit.DAYS;
+	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_DEFAULT = 50000;
+	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_DEFAULT = 1000;
+
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_PROPERTY = "nai.audit.preload.components";
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_PROPERTY = "nai.audit.preload.components.cache.size";
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_VALUE_PROPERTY = "nai.audit.preload.components.cache.timeout.value";
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_UNITS_PROPERTY = "nai.audit.preload.components.cache.timeout.units";
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY = "nai.audit.preload.components.batch.size";
+
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_PROPERTY = "nai.audit.preload.components.cron";
+	// This value = preload components will never run (Feb 31 never comes)
+	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_DEFAULT = "0 0 0 31 2 ?";
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass()
 			.getName());
@@ -135,8 +149,12 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private String naiAuditRemStatusToAudit;
 	private String naiAuditRejectedStatusChangesRemStatusTo;
 	private String fieldInputValidationRegexNaiAuditComment;
-	private boolean naiAuditPreloadComponents;
-	private int naiAuditPreloadBatchSize = 1000;
+	private boolean naiAuditPreloadComponents = false;
+	private int naiAuditPreloadComponentsBatchSize = NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_DEFAULT;
+	private int naiAuditPreloadComponentsCacheSize = NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_DEFAULT;
+	private int naiAuditPreloadComponentsTimeoutValue = NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_VALUE_DEFAULT;
+	private TimeUnit naiAuditPreloadComponentsTimeoutUnits = NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_UNITS_DEFAULT;
+	private String naiAuditPreloadComponentsCronConfig;
 
 	private boolean ccPre7_1_1 = false;
 
@@ -293,19 +311,42 @@ public class AppEditConfigManager extends ConfigurationManager {
 		if (fieldInputValidationRegexNaiAuditComment == null) {
 			fieldInputValidationRegexNaiAuditComment = FIELD_INPUT_VALIDATION_REGEX_NAIAUDITCOMMENT_DEFAULT;
 		}
-		final String naiAuditPreloadComponentsString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS);
+		final String naiAuditPreloadComponentsString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_PROPERTY);
 		if ("true".equalsIgnoreCase(naiAuditPreloadComponentsString)) {
 			naiAuditPreloadComponents = true;
-		} else {
-			naiAuditPreloadComponents = false;
 		}
 
-		final String naiAuditPreloadBatchSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_BATCH_SIZE);
+		final String naiAuditPreloadBatchSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY);
 		if (naiAuditPreloadBatchSizeString != null) {
-			naiAuditPreloadBatchSize = Integer.parseInt(naiAuditPreloadBatchSizeString);
+			naiAuditPreloadComponentsBatchSize = Integer.parseInt(naiAuditPreloadBatchSizeString);
 		}
 
-		final String ccPre7_1_1String = getOptionalProperty(NAI_AUDIT_CC_IS_PRE_7_1_1);
+		final String naiAuditPreloadComponentsCacheSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_PROPERTY);
+		if (naiAuditPreloadComponentsCacheSizeString != null) {
+			naiAuditPreloadComponentsCacheSize = Integer.parseInt(naiAuditPreloadComponentsCacheSizeString);
+		}
+
+		final String naiAuditPreloadComponentsTimeoutValueString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_VALUE_PROPERTY);
+		if (naiAuditPreloadComponentsTimeoutValueString != null) {
+			naiAuditPreloadComponentsTimeoutValue = Integer.parseInt(naiAuditPreloadComponentsTimeoutValueString);
+		}
+
+		final String naiAuditPreloadComponentsTimeoutUnitsString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_UNITS_PROPERTY);
+		if (naiAuditPreloadComponentsTimeoutUnitsString != null) {
+			naiAuditPreloadComponentsTimeoutUnits = TimeUnit.valueOf(naiAuditPreloadComponentsTimeoutUnitsString);
+		}
+
+		naiAuditPreloadComponentsCronConfig = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_PROPERTY);
+		if (naiAuditPreloadComponentsCronConfig == null) {
+			naiAuditPreloadComponentsCronConfig = NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_DEFAULT;
+			log.info("Quartz CronTrigger expression for component cache populator explicitly set to: "
+					+ naiAuditPreloadComponentsCronConfig);
+		} else {
+			log.info("Quartz CronTrigger expression for component cache populator defaulting to: "
+					+ naiAuditPreloadComponentsCronConfig);
+		}
+
+		final String ccPre7_1_1String = getOptionalProperty(NAI_AUDIT_CC_IS_PRE_7_1_1_PROPERTY);
 		if ("true".equalsIgnoreCase(ccPre7_1_1String)) {
 			ccPre7_1_1 = true;
 		}
@@ -467,8 +508,24 @@ public class AppEditConfigManager extends ConfigurationManager {
 		return naiAuditPreloadComponents;
 	}
 
-	public int getNaiAuditPreloadBatchSize() {
-		return naiAuditPreloadBatchSize;
+	public int getNaiAuditPreloadComponentsBatchSize() {
+		return naiAuditPreloadComponentsBatchSize;
+	}
+
+	public int getNaiAuditPreloadComponentsCacheSize() {
+		return naiAuditPreloadComponentsCacheSize;
+	}
+
+	public int getNaiAuditPreloadComponentsTimeoutValue() {
+		return naiAuditPreloadComponentsTimeoutValue;
+	}
+
+	public String getNaiAuditPreloadComponentsCronConfig() {
+		return naiAuditPreloadComponentsCronConfig;
+	}
+
+	public TimeUnit getNaiAuditPreloadComponentsTimeoutUnits() {
+		return naiAuditPreloadComponentsTimeoutUnits;
 	}
 
 }

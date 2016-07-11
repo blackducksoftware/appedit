@@ -38,15 +38,25 @@
     <bean id="appDetailsBeanConverter" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppDetailsBeanConverterImpl" />
     <bean id="vulnerabilityDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnerabilityDao" />
     <bean id="userRoleDao" class="com.blackducksoftware.tools.appedit.core.dao.jdbc.JdbcUserRoleDao" />
-      
+    
+    
+
     <bean id="componentCachePopulatorJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
     	<property name="targetObject" ref="componentCachePopulator" />
     	<property name="targetMethod" value="run" />
+    	<property name="concurrent" value="false" />
     </bean>
     <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
     	<property name="jobDetail" ref="componentCachePopulatorJob" />
-		<property name="cronExpression" value="0 0/5 * * * ?" />
+		<property name="cronExpression" value="#{config.naiAuditPreloadComponentsCronConfig}" />
     </bean>
+    
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    	<property name="corePoolSize" value="1" />
+    	<property name="maxPoolSize" value="1" />
+    	<property name="queueCapacity" value="1" />
+	</bean>
+	
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" >
     	<property name="jobDetails">
 	   		<list>
@@ -59,7 +69,10 @@
 				<ref bean="cronTrigger" />
 	    	</list>
 		</property>
+		
+		<property name="taskExecutor" ref="taskExecutor" />
     </bean>
+
     
 	<bean
 	  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
