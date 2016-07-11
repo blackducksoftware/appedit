@@ -50,6 +50,12 @@
     	<property name="jobDetail" ref="componentCachePopulatorJob" />
 		<property name="cronExpression" value="#{config.naiAuditPreloadComponentsCronConfig}" />
     </bean>
+    <bean id="runSoonTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean" >
+    	<property name="jobDetail" ref="componentCachePopulatorJob" />
+    	<property name="startDelay" value="1200000" />
+    	<property name="repeatCount" value="0" />
+    	<property name="repeatInterval" value="300000" />
+    </bean>
     
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
     	<property name="corePoolSize" value="1" />
@@ -66,6 +72,7 @@
 		
 		<property name="triggers">
 	    	<list>
+	    		<ref bean="runSoonTrigger" />
 				<ref bean="cronTrigger" />
 	    	</list>
 		</property>

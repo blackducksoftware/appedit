@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -100,12 +99,6 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 		ccsw.getComponentManager().resetComponentCache(config.getNaiAuditPreloadComponentsCacheSize(),
 				config.getNaiAuditPreloadComponentsTimeoutValue(), TimeUnit.DAYS);
 		componentCacheInitialized = true;
-	}
-
-	@PreDestroy
-	public void destroy() {
-		logger.info("Cancelling component populator timed task");
-		// TODO HOW??
 	}
 
 	/**
