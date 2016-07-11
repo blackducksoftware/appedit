@@ -27,6 +27,7 @@
     	<constructor-arg ref="config" />
     </bean>
     
+    <bean id="componentCachePopulator" class="com.blackducksoftware.tools.appedit.naiaudit.dao.cc.CcComponentCachePopulator" />
     <bean id="appDao" class="com.blackducksoftware.tools.appedit.appdetails.dao.cc.CcAppDao" />
     <bean id="appService" class="com.blackducksoftware.tools.appedit.appdetails.service.impl.AppServiceImpl" />
     <bean id="vulnNaiAuditDetailsDao" class="com.blackducksoftware.tools.appedit.naiaudit.dao.jdbc.JdbcVulnNaiAuditDetailsDao" />
