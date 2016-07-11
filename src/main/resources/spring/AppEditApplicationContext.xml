@@ -52,7 +52,7 @@
     </bean>
     <bean id="runSoonTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean" >
     	<property name="jobDetail" ref="componentCachePopulatorJob" />
-    	<property name="startDelay" value="1200000" />
+    	<property name="startDelay" value="#{config.naiAuditPreloadComponentsMillisecondsToInitialRun}" />
     	<property name="repeatCount" value="0" />
     	<property name="repeatInterval" value="300000" />
     </bean>
