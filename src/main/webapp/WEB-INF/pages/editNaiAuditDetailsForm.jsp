@@ -286,6 +286,16 @@
 		}
 	}
 	
+	function doExit() {
+		console.log("doExit()");
+		
+		$.ajax({
+			type : "GET",
+			url : "logout"
+		});
+		window.close();
+	}
+	
 </script>
 </head>
 <body>
@@ -404,7 +414,7 @@
 	 
 </div> 
 <p class="advice"><spring:message code="label.naiauditdetailsedit.advice"/></p>
-<button type="button" class="btn btn-primary" value="cancel" onclick="window.close()"><spring:message code="label.naiauditdetailsedit.exit"/></button>
+<button type="button" class="btn btn-primary" value="cancel" onclick="doExit()"><spring:message code="label.naiauditdetailsedit.exit"/></button>
 <br/>
 <br/>
 
