@@ -340,6 +340,10 @@
 					var data = {};
 					data["key"] = cbox.value;
 					
+					// Send status and comment values
+					data["status"] = $('#status').val();
+					data["comment"] = $('#comment_field').val();
+					
 					var token = $("meta[name='_csrf']").attr("content");
 					var header = $("meta[name='_csrf_header']").attr("content");
 					$(document).ajaxSend(function(e, xhr, options) {
@@ -347,7 +351,7 @@
 						xhr.setRequestHeader(header, token);
 					});
 					
-					//console.log("Will send: " + JSON.stringify(data));
+					console.log("Will send: " + JSON.stringify(data));
 					
 					$.post("xxx", data,
 						    function(data, status){

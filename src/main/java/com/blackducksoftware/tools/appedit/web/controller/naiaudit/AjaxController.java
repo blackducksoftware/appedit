@@ -11,9 +11,10 @@ public class AjaxController {
 
 	@ResponseBody
 	@RequestMapping(value = "/xxx", method = RequestMethod.POST)
-	public String naiAuditSave(@RequestParam final String key) {
-		System.out.println("naiAuditSave(): ID: " + key);
-		return "tbd";
+	public String naiAuditRowSave(@RequestParam final String key, @RequestParam final String status,
+			@RequestParam final String comment) {
+		System.out.println("naiAuditRowSave(): " + key + ": Status: " + status + "; Comment: " + comment);
+		return "OK";
 	}
 
 }
