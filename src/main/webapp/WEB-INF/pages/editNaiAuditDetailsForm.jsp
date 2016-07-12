@@ -353,7 +353,7 @@
 					
 					console.log("Will send: " + JSON.stringify(data));
 					
-					$.post("xxx", data,
+					$.post("editnaiauditdetails", data,
 						    function(data, status){
 						        console.log("Data: " + data + "\nStatus: " + status);
 						    });

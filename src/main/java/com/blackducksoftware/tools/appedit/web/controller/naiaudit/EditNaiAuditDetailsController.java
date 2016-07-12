@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
@@ -104,10 +105,29 @@ public class EditNaiAuditDetailsController {
 	}
 
 	/**
+	 * Handles Edit NAI Audit Details row submission. TODO
+	 *
+	 * @param key
+	 * @param status
+	 * @param comment
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
+	public String naiAuditRowSave(@RequestParam final String key, @RequestParam final String status,
+			@RequestParam final String comment) {
+		System.out.println("naiAuditRowSave(): " + key + ": Status: " + status + "; Comment: " + comment);
+		return "OK";
+	}
+
+	/**
 	 * Handles Edit NAI Audit Details form submissions. Updates app in Code
 	 * Center.
+	 *
+	 * TODO obsolete
 	 */
-	@RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
+	// @RequestMapping(value = "/editnaiauditdetails", method =
+	// RequestMethod.POST)
 	public String saveNaiAuditDetails(
 			@ModelAttribute("selectedVulnerabilities") final NaiAuditViewData formData,
 			@RequestParam final String action, final ModelMap model) {
