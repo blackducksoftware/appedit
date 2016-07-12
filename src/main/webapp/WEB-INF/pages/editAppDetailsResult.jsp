@@ -5,6 +5,18 @@
 <head>
     <title><spring:message code="label.result.title" text="Updated Application Details" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    function doExit() {
+		console.log("doExit()");
+		
+		$.ajax({
+			type : "GET",
+			url : "logout"
+		});
+		window.close();
+	}
+    </script>
 </head>
 <body>
 	<div class="page-header">
@@ -28,7 +40,7 @@
 </table> 
 </div> 
 <p class="advice"><spring:message code="label.result.advice"/></p>
-<button type="button" class="btn btn-primary" value="cancel" onclick="window.close()"><spring:message code="label.result.exit"/></button>
+<button type="button" class="btn btn-primary" value="cancel" onclick="doExit()"><spring:message code="label.result.exit"/></button>
 <br/>
 <br/>
 
