@@ -19,6 +19,10 @@
   		});
   	</script>
   
+  	<meta name="_csrf" content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+	
 	<script type="text/javascript" class="init">
 	
 	var documentCheckboxes; // This is no good after initial page load
@@ -296,6 +300,65 @@
 		window.close();
 	}
 	
+	function doSave() {
+		console.log("doSave()");
+		
+		// Identify visible rows
+		 globalTable = new $.fn.dataTable.Api( '#table_id' );
+		 console.log("Page start row index: " + tableGlobal.page.info().start);
+		 console.log("Page end row index: " + tableGlobal.page.info().end);
+		 		 
+		 var visibleRows = tableGlobal.rows({"page":"current", "filter":"applied", "search":"applied"});
+		 console.log("============ visibleRows found " + visibleRows.length + " rows");
+		 
+		 visibleRows.every( function ( rowIdx, tableLoop, rowLoop ) {
+			    console.log("about to get row at " + rowIdx);
+			 	var row = tableGlobal.row( rowIdx );
+			 	console.log("--- row: " + row);
+			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
+			 	console.log("--- htmlTableRowElement: " + htmlTableRowElement);
+			    var data = row.data();
+			    console.log("--- data: " + data);
+			    
+			    var htmlCollectionCells = htmlTableRowElement.cells;
+			    
+			    // Get checkbox value
+			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
+			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
+			    
+			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
+			    console.log("cboxElement: " + cboxElementCollection);
+			    var cbox = cboxElementCollection.item(0);
+			    console.log("cbox: " + cbox);
+			    console.log("cbox.checked: " + cbox.checked);
+			    console.log("cbox.value: " + cbox.value);
+			    
+			    if (cbox.checked) {
+			    	console.log("THIS CHECKBOX IS CHECKED");
+			    	
+			    	// Send: selected vuln key
+					var data = {};
+					data["key"] = cbox.value;
+					
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					$(document).ajaxSend(function(e, xhr, options) {
+						console.log("ajaxSend()");
+						xhr.setRequestHeader(header, token);
+					});
+					
+					//console.log("Will send: " + JSON.stringify(data));
+					
+					$.post("xxx", data,
+						    function(data, status){
+						        console.log("Data: " + data + "\nStatus: " + status);
+						    });
+			    }
+			} );
+		
+		
+	}
+	
 </script>
 </head>
 <body>
@@ -406,11 +469,13 @@
 	
 	<form:hidden path="firstRowIndex" />
 	<form:hidden path="displayedRowCount" />
-			
-	<button id="saveButton" type="submit" class="btn btn-primary" name="action" value="submit">
+	
+	</form:form>
+		
+	<button id="saveButton" onclick="doSave()" class="btn btn-primary">
 			<spring:message code="label.naiauditdetailsedit.submit" />
 	</button>
-	</form:form>
+	
 	 
 </div> 
 <p class="advice"><spring:message code="label.naiauditdetailsedit.advice"/></p>

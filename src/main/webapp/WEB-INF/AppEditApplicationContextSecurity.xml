@@ -29,6 +29,7 @@
     <security:intercept-url pattern="/loginRequest" access="permitAll"/>
     <security:intercept-url pattern="/editappdetails" access="hasAnyRole('ROLE_USER','ROLE_AUDITOR')"/>
     <security:intercept-url pattern="/editnaiauditdetails" access="hasRole('ROLE_AUDITOR')"/>
+    <security:intercept-url pattern="/xxx" access="permitAll"/>
     
     <!-- Enable Cross Site Request Forgery (CSRF) protection -->
     <security:csrf />
