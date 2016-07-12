@@ -10,6 +10,18 @@
 <head>
     <title><spring:message code="label.appdetailsedit.title" text="Edit Application Details" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
+    
+    <script type="text/javascript">
+    function doExit() {
+		console.log("doExit()");
+		
+		$.ajax({
+			type : "GET",
+			url : "logout"
+		});
+		window.close();
+	}
+    </script>
 </head>
 <body>
     <div class="page-header">
