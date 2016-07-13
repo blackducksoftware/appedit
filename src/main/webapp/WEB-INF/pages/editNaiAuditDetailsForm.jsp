@@ -341,8 +341,10 @@
 					data["key"] = cbox.value;
 					
 					// Send status and comment values
-					data["status"] = $('#status').val();
-					data["comment"] = $('#comment_field').val();
+					var newStatus = $('#status').val();
+					var newComment = $('#comment_field').val();
+					data["status"] = newStatus;
+					data["comment"] = newComment;
 					
 					var token = $("meta[name='_csrf']").attr("content");
 					var header = $("meta[name='_csrf_header']").attr("content");
@@ -364,6 +366,19 @@
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
 								}
+								console.log("Looking for NAI status in row (to update it)");
+								var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
+							    console.log("htmlTableCellElementNaiStatus: " + htmlTableCellElementNaiStatus);
+							    console.log("Changing " + htmlTableCellElementNaiStatus.innerText + " to " + newStatus);
+							    htmlTableCellElementNaiStatus.innerText = newStatus;
+							    
+							    console.log("Looking for Comment in row (to update it)");
+								var htmlTableCellElementNaiComment = htmlCollectionCells.item(12);
+							    console.log("htmlTableCellElementNaiComment: " + htmlTableCellElementNaiComment);
+							    console.log("Changing " + htmlTableCellElementNaiComment.innerText + " to " + newComment);
+							    htmlTableCellElementNaiComment.innerText = newComment;
+							    
+							    // TODO actually both of the above should set fields to values from response
 						    });
 			    }
 			} );
