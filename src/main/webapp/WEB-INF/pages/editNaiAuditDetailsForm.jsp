@@ -379,8 +379,16 @@
 							    console.log("Looking for Rem Comment in row (to update it)");
 								var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
 							    var returnedRemCommentShort = response.newRowData.ccPart.vulnerabilityRemediationCommentsShort;
-							    console.log("Changing " + htmlTableCellElementRemComment.innerText + " to " + returnedRemCommentShort);
-							    htmlTableCellElementRemComment.innerText = returnedRemCommentShort;
+							    
+							    // <c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if>
+							    if (response.newRowData.ccPart.vulnerabilityRemediationComments.length > response.newRowData.ccPart.vulnerabilityRemediationCommentsShort.length) {
+									var moreLink = '<br/><a target="_blank" href="showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=' + response.newRowData.key.asString + '" >more...</a>';
+									console.log("moreLink: " + moreLink);
+									returnedRemCommentShort += moreLink;
+							    }
+							    
+							    console.log("Changing " + htmlTableCellElementRemComment.innerHtml + " to " + returnedRemCommentShort);
+							    htmlTableCellElementRemComment.innerHtml = returnedRemCommentShort;
 							    var returnedRemCommentPopupText = response.newRowData.ccPart.vulnerabilityRemediationCommentsPopUpText;
 							    htmlTableCellElementRemComment.title = returnedRemCommentPopupText;
 								// TODO full text displayed in separate browser tab 
