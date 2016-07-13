@@ -378,9 +378,12 @@
 
 							    console.log("Looking for Rem Comment in row (to update it)");
 								var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
-							    var returnedRemComment = response.newRowData.ccPart.vulnerabilityRemediationComments;
-							    console.log("Changing " + htmlTableCellElementRemComment.innerText + " to " + returnedRemComment);
-							    htmlTableCellElementRemComment.innerText = returnedRemComment;
+							    var returnedRemCommentShort = response.newRowData.ccPart.vulnerabilityRemediationCommentsShort;
+							    console.log("Changing " + htmlTableCellElementRemComment.innerText + " to " + returnedRemCommentShort);
+							    htmlTableCellElementRemComment.innerText = returnedRemCommentShort;
+							    var returnedRemCommentPopupText = response.newRowData.ccPart.vulnerabilityRemediationCommentsPopUpText;
+							    htmlTableCellElementRemComment.title = returnedRemCommentPopupText;
+								// TODO full text displayed in separate browser tab 
 
 							    console.log("Looking for Rem Status in row (to update it)");
 								var htmlTableCellElementRemStatus = htmlCollectionCells.item(9);
@@ -408,7 +411,6 @@
 							    console.log("Changing " + htmlTableCellElementRemDateTarget.innerText + " to " + returnedRemDateTarget);
 							    htmlTableCellElementRemDateTarget.innerText = returnedRemDateTarget;
 							    
-							    // Need to set the short comments too!!
 						    });
 			    }
 			} );
