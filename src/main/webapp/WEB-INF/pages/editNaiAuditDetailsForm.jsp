@@ -368,18 +368,47 @@
 								}
 								console.log("Looking for NAI status in row (to update it)");
 								var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
-							    console.log("htmlTableCellElementNaiStatus: " + htmlTableCellElementNaiStatus);
 							    var returnedStatus = response.newRowData.auditPart.vulnerabilityNaiAuditStatus;
-							    console.log("Changing " + htmlTableCellElementNaiStatus.innerText + " to " + returnedStatus);
 							    htmlTableCellElementNaiStatus.innerText = newStatus;
 							    
 							    console.log("Looking for Comment in row (to update it)");
 								var htmlTableCellElementNaiComment = htmlCollectionCells.item(12);
-							    console.log("htmlTableCellElementNaiComment: " + htmlTableCellElementNaiComment);
 							    var returnedComment = response.newRowData.auditPart.vulnerabilityNaiAuditComment;
-							    console.log("Changing " + htmlTableCellElementNaiComment.innerText + " to " + returnedComment);
 							    htmlTableCellElementNaiComment.innerText = newComment;
 
+							    console.log("Looking for Rem Comment in row (to update it)");
+								var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
+							    var returnedRemComment = response.newRowData.ccPart.vulnerabilityRemediationComments;
+							    console.log("Changing " + htmlTableCellElementRemComment.innerText + " to " + returnedRemComment);
+							    htmlTableCellElementRemComment.innerText = returnedRemComment;
+
+							    console.log("Looking for Rem Status in row (to update it)");
+								var htmlTableCellElementRemStatus = htmlCollectionCells.item(9);
+							    var returnedRemStatus = response.newRowData.ccPart.vulnerabilityRemediationStatus;
+							    console.log("Changing " + htmlTableCellElementRemStatus.innerText + " to " + returnedRemStatus);
+							    htmlTableCellElementRemStatus.innerText = returnedRemStatus;
+							    
+
+							    console.log("Looking for Actual Rem Date in row (to update it)");
+								var htmlTableCellElementRemDateActual = htmlCollectionCells.item(8);
+							    var returnedRemDateActual = response.newRowData.ccPart.vulnerabilityActualRemediationDate;
+							    if (returnedRemDateActual == undefined) {
+							    		returnedRemDateActual = "";
+							    }
+							    console.log("Changing " + htmlTableCellElementRemDateActual.innerText + " to " + returnedRemDateActual);
+							    htmlTableCellElementRemDateActual.innerText = returnedRemDateActual;
+							    
+
+							    console.log("Looking for Target Rem Date in row (to update it)");
+							    var htmlTableCellElementRemDateTarget = htmlCollectionCells.item(7);
+							    var returnedRemDateTarget = response.newRowData.ccPart.vulnerabilityTargetRemediationDate;
+							    if (returnedRemDateTarget == undefined) {
+							    		returnedRemDateTarget = "";
+							    }
+							    console.log("Changing " + htmlTableCellElementRemDateTarget.innerText + " to " + returnedRemDateTarget);
+							    htmlTableCellElementRemDateTarget.innerText = returnedRemDateTarget;
+							    
+							    // Need to set the short comments too!!
 						    });
 			    }
 			} );
