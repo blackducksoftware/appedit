@@ -41,9 +41,11 @@ import org.springframework.web.context.request.WebRequest;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.AppEditConstants;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.naiaudit.NaiAuditNoChangeException;
 import com.blackducksoftware.tools.appedit.naiaudit.inputvalidation.InputValidatorEditNaiAuditDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
+import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditUpdateStatus;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
 import com.blackducksoftware.tools.appedit.naiaudit.model.RowUpdateResult;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
@@ -122,26 +124,54 @@ public class EditNaiAuditDetailsController {
 		AppCompVulnComposite updatedRowData;
 		try {
 			updatedRowData = updateVulnAndReturnNewRowData(key, status, comment);
-		} catch (final AppEditControllerException e) {
+		} catch (final NaiAuditNoChangeException e1) {
+			final String msg = e1.getMessage();
+			logger.error(msg);
+			return new RowUpdateResult(NaiAuditUpdateStatus.UNCHANGED, msg, null);
+		} catch (final AppEditException e) {
 			final String msg = e.getMessage();
 			logger.error(msg);
-			return new RowUpdateResult(false, msg, null);
+			return new RowUpdateResult(NaiAuditUpdateStatus.FAILED, msg, null);
 		}
-		return new RowUpdateResult(true, "OK", updatedRowData);
+		return new RowUpdateResult(NaiAuditUpdateStatus.SUCCEEDED, "OK", updatedRowData);
 	}
 
-	private AppCompVulnComposite  updateVulnAndReturnNewRowData(final String selectedRowKey, final String status, final String comment) throws AppEditControllerException {
+	private AppCompVulnComposite updateVulnAndReturnNewRowData(final String selectedRowKey, final String status,
+			final String comment) throws AppEditException {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
-		final AppCompVulnComposite updatedRowData = null;
+
 		final AppCompVulnKey key = generateKey(selectedRowKey);
 		if (key == null) {
 			logger.debug("Skipping selected row key: " + selectedRowKey);
 			return null;
 		}
-		//		final AppCompVulnComposite selectedVuln = getVuln(
-		//				fullVulnNaiAuditDetailsList, key, selectedRowKey);
+		validateInput(status, comment);
+		final AppCompVulnComposite vuln = vulnNaiAuditDetailsService.getAppCompVulnComposite(key);
+		final String currentUser = getUser();
+		vuln.getAuditPart().setVulnerabilityNaiAuditStatus(status);
+		vuln.getAuditPart().setVulnerabilityNaiAuditComment(comment);
+		vuln.getAuditPart().setUsername(currentUser);
 
-		return null;
+		final AppCompVulnComposite finalVuln = vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(vuln);
+
+		return finalVuln;
+	}
+
+	private void validateInput(final String status, final String comment) throws AppEditException {
+		if (status.length() <= 0) {
+			final String msg = "NAI Audit Status must have a value";
+			throw new AppEditException(msg);
+		}
+		if (comment.length() > AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH) {
+			final String msg = "The comment entered is too long. Maximum length is "
+					+ AppEditConstants.NAI_AUDIT_COMMENT_MAX_LENGTH + " characters";
+			throw new AppEditException(msg);
+		}
+		final InputValidatorEditNaiAuditDetails inputValidator = new InputValidatorEditNaiAuditDetails(config);
+		if (!inputValidator.validateCommentValue(comment)) {
+			final String msg = "The comment entered is invalid.";
+			throw new AppEditException(msg);
+		}
 	}
 
 	/**

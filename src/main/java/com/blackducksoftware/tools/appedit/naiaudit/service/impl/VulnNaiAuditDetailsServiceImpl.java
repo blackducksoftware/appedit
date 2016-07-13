@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.naiaudit.NaiAuditNoChangeException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditChangeHistoryDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnNaiAuditDetailsDao;
@@ -155,9 +156,14 @@ VulnNaiAuditDetailsService {
 				+ appCompVulnComposite);
 
 		if (!auditStatusChanged(appCompVulnComposite)) {
-			logger.info("Audit status unchanged for this vulnerability, so no changes (including comment) made to it it: "
-					+ appCompVulnComposite);
-			return null;
+			final String msg = "Audit status unchanged for this vulnerability, so no changes (including comment) made to it: "
+					+ appCompVulnComposite.getCcPart().getComponentName()
+					+ " / "
+					+ appCompVulnComposite.getCcPart().getComponentVersion()
+					+ ": "
+					+ appCompVulnComposite.getCcPart().getVulnerabilityName();
+			logger.warn(msg);
+			throw new NaiAuditNoChangeException(msg);
 		}
 
 		updateRemediationDetailsIfNeeded(appCompVulnComposite);

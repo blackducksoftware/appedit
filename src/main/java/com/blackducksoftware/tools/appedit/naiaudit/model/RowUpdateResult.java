@@ -1,19 +1,20 @@
 package com.blackducksoftware.tools.appedit.naiaudit.model;
 
 public class RowUpdateResult {
-	private final boolean success;
+	private final NaiAuditUpdateStatus status;
 	private final String message;
 	private final AppCompVulnComposite newRowData;
 
-	public RowUpdateResult(final boolean success, final String message, final AppCompVulnComposite newRowData) {
+	public RowUpdateResult(final NaiAuditUpdateStatus status, final String message,
+			final AppCompVulnComposite newRowData) {
 		super();
-		this.success = success;
+		this.status = status;
 		this.message = message;
 		this.newRowData = newRowData;
 	}
 
-	public boolean isSuccess() {
-		return success;
+	public NaiAuditUpdateStatus getStatus() {
+		return status;
 	}
 
 	public String getMessage() {
@@ -23,4 +24,10 @@ public class RowUpdateResult {
 	public AppCompVulnComposite getNewRowData() {
 		return newRowData;
 	}
+
+	@Override
+	public String toString() {
+		return "RowUpdateResult [status=" + status + ", message=" + message + "]";
+	}
+
 }

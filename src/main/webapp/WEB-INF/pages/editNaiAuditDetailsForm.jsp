@@ -355,10 +355,14 @@
 					
 					$.post("editnaiauditdetails", data,
 						    function(data, status){
-								if (data.success) {
+								if (data.status == 'SUCCEEDED') {
 									console.log("Row update succeeded; new row data: " + data.newRowData);
-								} else {
+								} else if (data.status == 'UNCHANGED') {
+									console.log("Row was unchangd");
+								} else if (data.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + data.message);
+								} else {
+									console.log("Row update returned an unknown status: " + data.status);
 								}
 						    });
 			    }
