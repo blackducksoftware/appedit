@@ -361,11 +361,17 @@
 									console.log("Row update succeeded; new row data: " + response.newRowData);
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchangd");
+									// TODO
 								} else if (response.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + response.message);
+						        	// TODO
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
+									// TODO
 								}
+								
+								cbox.checked = false;
+								
 								console.log("Looking for NAI status in row (to update it)");
 								var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
 							    var returnedStatus = response.newRowData.auditPart.vulnerabilityNaiAuditStatus;
@@ -380,7 +386,6 @@
 								var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
 							    var returnedRemCommentShort = response.newRowData.ccPart.vulnerabilityRemediationCommentsShort;
 							    
-							    // <c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if>
 							    if (response.newRowData.ccPart.vulnerabilityRemediationComments.length > response.newRowData.ccPart.vulnerabilityRemediationCommentsShort.length) {
 									var moreLink = '<br/><a target="_blank" href="showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=' + response.newRowData.key.asString + '" >more...</a>';
 									console.log("moreLink: " + moreLink);
@@ -391,7 +396,6 @@
 							    htmlTableCellElementRemComment.innerHtml = returnedRemCommentShort;
 							    var returnedRemCommentPopupText = response.newRowData.ccPart.vulnerabilityRemediationCommentsPopUpText;
 							    htmlTableCellElementRemComment.title = returnedRemCommentPopupText;
-								// TODO full text displayed in separate browser tab 
 
 							    console.log("Looking for Rem Status in row (to update it)");
 								var htmlTableCellElementRemStatus = htmlCollectionCells.item(9);
@@ -418,7 +422,6 @@
 							    }
 							    console.log("Changing " + htmlTableCellElementRemDateTarget.innerText + " to " + returnedRemDateTarget);
 							    htmlTableCellElementRemDateTarget.innerText = returnedRemDateTarget;
-							    
 						    });
 			    }
 			} );
