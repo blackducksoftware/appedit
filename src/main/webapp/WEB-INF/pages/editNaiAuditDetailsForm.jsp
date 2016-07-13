@@ -369,16 +369,17 @@
 								console.log("Looking for NAI status in row (to update it)");
 								var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
 							    console.log("htmlTableCellElementNaiStatus: " + htmlTableCellElementNaiStatus);
-							    console.log("Changing " + htmlTableCellElementNaiStatus.innerText + " to " + newStatus);
+							    var returnedStatus = response.newRowData.auditPart.vulnerabilityNaiAuditStatus;
+							    console.log("Changing " + htmlTableCellElementNaiStatus.innerText + " to " + returnedStatus);
 							    htmlTableCellElementNaiStatus.innerText = newStatus;
 							    
 							    console.log("Looking for Comment in row (to update it)");
 								var htmlTableCellElementNaiComment = htmlCollectionCells.item(12);
 							    console.log("htmlTableCellElementNaiComment: " + htmlTableCellElementNaiComment);
-							    console.log("Changing " + htmlTableCellElementNaiComment.innerText + " to " + newComment);
+							    var returnedComment = response.newRowData.auditPart.vulnerabilityNaiAuditComment;
+							    console.log("Changing " + htmlTableCellElementNaiComment.innerText + " to " + returnedComment);
 							    htmlTableCellElementNaiComment.innerText = newComment;
-							    
-							    // TODO actually both of the above should set fields to values from response
+
 						    });
 			    }
 			} );
