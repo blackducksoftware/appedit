@@ -354,15 +354,15 @@
 					console.log("Will send: " + JSON.stringify(data));
 					
 					$.post("editnaiauditdetails", data,
-						    function(data, status){
-								if (data.status == 'SUCCEEDED') {
-									console.log("Row update succeeded; new row data: " + data.newRowData);
-								} else if (data.status == 'UNCHANGED') {
+						    function(response, status){
+								if (response.status == 'SUCCEEDED') {
+									console.log("Row update succeeded; new row data: " + response.newRowData);
+								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchangd");
-								} else if (data.status == 'FAILED') {
-						        	console.log("Row update FAILED: " + data.message);
+								} else if (response.status == 'FAILED') {
+						        	console.log("Row update FAILED: " + response.message);
 								} else {
-									console.log("Row update returned an unknown status: " + data.status);
+									console.log("Row update returned an unknown status: " + response.status);
 								}
 						    });
 			    }
