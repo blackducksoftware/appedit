@@ -114,10 +114,10 @@ public class EditNaiAuditDetailsController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-	public String naiAuditRowSave(@RequestParam final String key, @RequestParam final String status,
+	public Integer saveRow(@RequestParam final String key, @RequestParam final String status,
 			@RequestParam final String comment) {
-		System.out.println("naiAuditRowSave(): " + key + ": Status: " + status + "; Comment: " + comment);
-		return "OK";
+		logger.debug("saveRow(): " + key + ": Status: " + status + "; Comment: " + comment);
+		return Integer.valueOf(7);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class EditNaiAuditDetailsController {
 
 			final String currentUser = getUser();
 			for (final String selectedRowKey : formData.getItemList()) {
-				updateVulnFromRow(model, formData, fullVulnNaiAuditDetailsList,
+				updateVulnFromRow(formData, fullVulnNaiAuditDetailsList,
 						currentUser, selectedRowKey);
 			}
 
@@ -182,7 +182,7 @@ public class EditNaiAuditDetailsController {
 		return app;
 	}
 
-	private void updateVulnFromRow(final ModelMap model, final NaiAuditViewData formData,
+	private void updateVulnFromRow(final NaiAuditViewData formData,
 			final List<AppCompVulnComposite> fullVulnNaiAuditDetailsList,
 			final String currentUser, final String selectedRowKey)
 					throws AppEditControllerException {
@@ -192,7 +192,7 @@ public class EditNaiAuditDetailsController {
 			logger.debug("Skipping selected row key: " + selectedRowKey);
 			return;
 		}
-		final AppCompVulnComposite selectedVuln = getVuln(model,
+		final AppCompVulnComposite selectedVuln = getVuln(
 				fullVulnNaiAuditDetailsList, key, selectedRowKey);
 
 		if (selectedVuln != null) {
@@ -222,7 +222,7 @@ public class EditNaiAuditDetailsController {
 		selectedVuln.getAuditPart().setUsername(currentUser);
 	}
 
-	private AppCompVulnComposite getVuln(final ModelMap model,
+	private AppCompVulnComposite getVuln(
 			final List<AppCompVulnComposite> fullVulnNaiAuditDetailsList,
 			final AppCompVulnKey key, final String keyString)
 					throws AppEditControllerException {
