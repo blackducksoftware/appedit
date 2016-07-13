@@ -45,6 +45,7 @@ import com.blackducksoftware.tools.appedit.naiaudit.inputvalidation.InputValidat
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
+import com.blackducksoftware.tools.appedit.naiaudit.model.RowUpdateResult;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.web.controller.AppEditControllerException;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
@@ -111,13 +112,36 @@ public class EditNaiAuditDetailsController {
 	 * @param status
 	 * @param comment
 	 * @return
+	 * @throws
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/editnaiauditdetails", method = RequestMethod.POST)
-	public Integer saveRow(@RequestParam final String key, @RequestParam final String status,
+	public RowUpdateResult saveRow(@RequestParam final String key, @RequestParam final String status,
 			@RequestParam final String comment) {
 		logger.debug("saveRow(): " + key + ": Status: " + status + "; Comment: " + comment);
-		return Integer.valueOf(7);
+		AppCompVulnComposite updatedRowData;
+		try {
+			updatedRowData = updateVulnAndReturnNewRowData(key, status, comment);
+		} catch (final AppEditControllerException e) {
+			final String msg = e.getMessage();
+			logger.error(msg);
+			return new RowUpdateResult(false, msg, null);
+		}
+		return new RowUpdateResult(true, "OK", updatedRowData);
+	}
+
+	private AppCompVulnComposite  updateVulnAndReturnNewRowData(final String selectedRowKey, final String status, final String comment) throws AppEditControllerException {
+		logger.info("Selected vulnerability key: " + selectedRowKey);
+		final AppCompVulnComposite updatedRowData = null;
+		final AppCompVulnKey key = generateKey(selectedRowKey);
+		if (key == null) {
+			logger.debug("Skipping selected row key: " + selectedRowKey);
+			return null;
+		}
+		//		final AppCompVulnComposite selectedVuln = getVuln(
+		//				fullVulnNaiAuditDetailsList, key, selectedRowKey);
+
+		return null;
 	}
 
 	/**
@@ -128,11 +152,11 @@ public class EditNaiAuditDetailsController {
 	 */
 	// @RequestMapping(value = "/editnaiauditdetails", method =
 	// RequestMethod.POST)
-	public String saveNaiAuditDetails(
+	public String savePage(
 			@ModelAttribute("selectedVulnerabilities") final NaiAuditViewData formData,
 			@RequestParam final String action, final ModelMap model) {
 
-		logger.info("EditNaiAuditDetailsController.saveNaiAuditDetails(): selectedVulnerabilities: "
+		logger.info("EditNaiAuditDetailsController.savePage(): selectedVulnerabilities: "
 				+ formData);
 
 		currentFirstRowIndex = formData.getFirstRowIndex();
@@ -156,8 +180,9 @@ public class EditNaiAuditDetailsController {
 
 			final String currentUser = getUser();
 			for (final String selectedRowKey : formData.getItemList()) {
-				updateVulnFromRow(formData, fullVulnNaiAuditDetailsList,
+				final AppCompVulnComposite updatedRowData = updateVulnFromRow(formData, fullVulnNaiAuditDetailsList,
 						currentUser, selectedRowKey);
+				logger.debug("Updated row data: " + updatedRowData);
 			}
 
 			final ApplicationPojo app = getApplication(formData);
@@ -182,15 +207,16 @@ public class EditNaiAuditDetailsController {
 		return app;
 	}
 
-	private void updateVulnFromRow(final NaiAuditViewData formData,
+	private AppCompVulnComposite updateVulnFromRow(final NaiAuditViewData formData,
 			final List<AppCompVulnComposite> fullVulnNaiAuditDetailsList,
 			final String currentUser, final String selectedRowKey)
 					throws AppEditControllerException {
 		logger.info("Selected vulnerability key: " + selectedRowKey);
+		final AppCompVulnComposite updatedRowData = null;
 		final AppCompVulnKey key = generateKey(selectedRowKey);
 		if (key == null) {
 			logger.debug("Skipping selected row key: " + selectedRowKey);
-			return;
+			return null;
 		}
 		final AppCompVulnComposite selectedVuln = getVuln(
 				fullVulnNaiAuditDetailsList, key, selectedRowKey);
@@ -199,17 +225,23 @@ public class EditNaiAuditDetailsController {
 			applyUserChangesToVulnObject(selectedVuln, formData, currentUser);
 			logger.info("Updating vulnerability with: " + selectedVuln);
 			updateVulnerability(selectedVuln);
+			return updatedRowData;
+		} else {
+			return null;
 		}
+
 	}
 
-	private void updateVulnerability(final AppCompVulnComposite selectedVuln)
+	private AppCompVulnComposite updateVulnerability(final AppCompVulnComposite selectedVuln)
 			throws AppEditControllerException {
+		AppCompVulnComposite updatedRowData;
 		try {
-			vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
+			updatedRowData = vulnNaiAuditDetailsService.updateVulnNaiAuditDetails(selectedVuln);
 		} catch (final AppEditException e) {
 			final String msg = "Error updating NAI Audit details: " + e.getMessage();
 			throw new AppEditControllerException("error/programError", msg);
 		}
+		return updatedRowData;
 	}
 
 	private void applyUserChangesToVulnObject(

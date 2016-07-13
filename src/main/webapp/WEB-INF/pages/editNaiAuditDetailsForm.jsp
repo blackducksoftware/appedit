@@ -355,7 +355,11 @@
 					
 					$.post("editnaiauditdetails", data,
 						    function(data, status){
-						        console.log("Data: " + data + "\nStatus: " + status);
+								if (data.success) {
+									console.log("Row update succeeded; new row data: " + data.newRowData);
+								} else {
+						        	console.log("Row update FAILED: " + data.message);
+								}
 						    });
 			    }
 			} );
