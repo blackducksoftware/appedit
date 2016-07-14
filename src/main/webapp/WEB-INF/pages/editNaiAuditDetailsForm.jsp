@@ -334,7 +334,7 @@
 			    console.log("cbox.value: " + cbox.value);
 			    
 			    if (cbox.checked) {
-			    	console.log("THIS CHECKBOX IS CHECKED");
+			    	console.log("This row is checked");
 			    	
 			    	// Send: selected vuln key
 					var data = {};
@@ -358,7 +358,13 @@
 					$.post("editnaiauditdetails", data,
 						    function(response, status){
 								if (response.status == 'SUCCEEDED') {
-									console.log("Row update succeeded; new row data: " + response.newRowData);
+									console.log("Row update succeeded on server; new row data: " + response.newRowData);
+									console.log("Updating row display");
+									updateRowDisplay(cbox, htmlCollectionCells, response, newStatus, newComment);
+									
+									console.log("Clearing status and comment");
+									$('#status').value = "";
+									$('#comment_field').value = "";
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchangd");
 									// TODO
@@ -369,8 +375,6 @@
 									console.log("Row update returned an unknown status: " + response.status);
 									// TODO
 								}
-								
-								updateRowDisplay(cbox, htmlCollectionCells, response, newStatus, newComment);
 								
 								
 						    });
@@ -393,8 +397,6 @@
 	    var returnedComment = response.newRowData.auditPart.vulnerabilityNaiAuditComment;
 	    htmlTableCellElementNaiComment.innerText = newComment;
 
-	    // TODO get this working
-	    
 	    console.log("Looking for Rem Comment in row (to update it)");
 		var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
 	    var returnedRemCommentShort = response.newRowData.ccPart.vulnerabilityRemediationCommentsShort;
@@ -524,7 +526,7 @@
             		value="${vulnerability.ccPart.vulnerabilityActualRemediationDate}" /></td>
             		
             	<td>${vulnerability.ccPart.vulnerabilityRemediationStatus}</td>
-            	<td title="${vulnerability.ccPart.vulnerabilityRemediationCommentsPopUpText}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}<c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if></span></td>
+            	<td title="${vulnerability.ccPart.vulnerabilityRemediationCommentsPopUpText}"><span style="white-space: pre-wrap">${vulnerability.ccPart.vulnerabilityRemediationCommentsShort}<c:if test="${fn:length(vulnerability.ccPart.vulnerabilityRemediationComments) > fn:length(vulnerability.ccPart.vulnerabilityRemediationCommentsShort)}"><c:out value='<br/><a target="_blank" title="See full text in separate window" href="${pageContext.request.contextPath}/showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=${vulnerability.key.asString}" >more...</a>' escapeXml="false"/></c:if></span></td>
             	<td>${vulnerability.auditPart.vulnerabilityNaiAuditStatus}</td>
             	<td title="${vulnerability.auditPart.vulnerabilityNaiAuditComment}">${vulnerability.auditPart.vulnerabilityNaiAuditCommentShort}</td>
         	</tr>
