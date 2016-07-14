@@ -28,6 +28,7 @@
 	var documentCheckboxes; // This is no good after initial page load
 	var clonedCheckboxes = [];
 	var tableGlobal;
+	var defaultStatusValue;
 	
 	$(document).ready(function() {
 		console.log("==================================================");
@@ -170,6 +171,8 @@
 	    } );
 	    
 	    document.getElementById('saveButton').disabled=true;
+	    
+	    defaultStatusValue = $("#status").val();
 	} );
 	
 	function unCheckAllRows() {
@@ -341,10 +344,10 @@
 					data["key"] = cbox.value;
 					
 					// Send status and comment values
-					var newStatus = $('#status').val();
-					var newComment = $('#comment_field').val();
-					data["status"] = newStatus;
-					data["comment"] = newComment;
+					var newStatusValue = $('#status').val();
+					var newCommentValue = $('#comment_field').val();
+					data["status"] = newStatusValue;
+					data["comment"] = newCommentValue;
 					
 					var token = $("meta[name='_csrf']").attr("content");
 					var header = $("meta[name='_csrf_header']").attr("content");
@@ -360,11 +363,13 @@
 								if (response.status == 'SUCCEEDED') {
 									console.log("Row update succeeded on server; new row data: " + response.newRowData);
 									console.log("Updating row display");
-									updateRowDisplay(cbox, htmlCollectionCells, response, newStatus, newComment);
+									updateRowDisplay(cbox, htmlCollectionCells, response, newStatusValue, newCommentValue);
 									
 									console.log("Clearing status and comment");
-									$('#status').value = "";
-									$('#comment_field').value = "";
+									
+									console.log("Default status: " + defaultStatusValue);
+									$('#status').val(defaultStatusValue);
+									$('#comment_field').val("");
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchangd");
 									// TODO
@@ -384,18 +389,18 @@
 		
 	}
 	
-	function updateRowDisplay(cbox, htmlCollectionCells, response, newStatus, newComment) {
+	function updateRowDisplay(cbox, htmlCollectionCells, response, newStatusValue, newCommentValue) {
 		cbox.checked = false;
 		
 		console.log("Looking for NAI status in row (to update it)");
 		var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
 	    var returnedStatus = response.newRowData.auditPart.vulnerabilityNaiAuditStatus;
-	    htmlTableCellElementNaiStatus.innerText = newStatus;
+	    htmlTableCellElementNaiStatus.innerText = newStatusValue;
 	    
 	    console.log("Looking for Comment in row (to update it)");
 		var htmlTableCellElementNaiComment = htmlCollectionCells.item(12);
 	    var returnedComment = response.newRowData.auditPart.vulnerabilityNaiAuditComment;
-	    htmlTableCellElementNaiComment.innerText = newComment;
+	    htmlTableCellElementNaiComment.innerText = newCommentValue;
 
 	    console.log("Looking for Rem Comment in row (to update it)");
 		var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
