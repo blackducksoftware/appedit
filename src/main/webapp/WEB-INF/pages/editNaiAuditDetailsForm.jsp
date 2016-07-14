@@ -389,29 +389,23 @@
 									resetStatusAndCommentFields();
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchanged");
-									// TODO rowMessage
-					        		
-									// Get the vuln name cell
 									var messageNode = document.createTextNode("Warning: This row was not changed (because status was unchanged)");
 									rowMessageElement.appendChild(messageNode);
-					        	
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								} else if (response.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + response.message);
-						        	// TODO
-						        	
+						        	var messageNode = document.createTextNode("Row update FAILED: " + response.message);
+									rowMessageElement.appendChild(messageNode);
 						        	cbox.checked = false;
 						        	resetStatusAndCommentFields();
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
-									// TODO
-									
+									var messageNode = document.createTextNode("Row update returned an unknown status value: " + response.message);
+									rowMessageElement.appendChild(messageNode);
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								}
-								
-								
 						    });
 			    }
 			} );
