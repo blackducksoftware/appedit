@@ -20,12 +20,15 @@ import org.springframework.web.context.request.WebRequest;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.mocks.MockVulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnComposite;
+import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditUpdateStatus;
 import com.blackducksoftware.tools.appedit.naiaudit.model.NaiAuditViewData;
+import com.blackducksoftware.tools.appedit.naiaudit.model.RowUpdateResult;
 import com.blackducksoftware.tools.appedit.naiaudit.service.VulnNaiAuditDetailsService;
 import com.blackducksoftware.tools.appedit.web.controller.naiaudit.EditNaiAuditDetailsController;
 
 public class EditNaiAuditDetailsControllerTest {
 
+	private static final String TEST_KEY = "testAppId|testRequestId|testCompId|testVulnId";
 	private final String COMMENT_512_BYTES = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789012";
 
 	@BeforeClass
@@ -192,7 +195,7 @@ public class EditNaiAuditDetailsControllerTest {
 	}
 
 	@Test
-	public void testPostRowSelected() throws Exception {
+	public void testSaveRow() throws Exception {
 
 		// Setup
 
@@ -211,120 +214,39 @@ public class EditNaiAuditDetailsControllerTest {
 				null);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-
-		// TODO need to implement this test for saveRow()
-
 		// Test
 
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
+		final RowUpdateResult result = controller.saveRow(TEST_KEY,
+				"testStatus", COMMENT_512_BYTES);
 
 		// Verify
 
-		// assertEquals("editNaiAuditDetailsForm", returnValue);
-		//
-		// final String message = (String) model.get("message");
-		// assertEquals(null, message);
-		//
-		// final NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
-		// .get("selectedVulnerabilities");
-		//
-		// assertEquals("testAppId", naiAuditViewData.getApplicationId());
-		// // This is what the mock produces
-		// assertEquals("testAppId", naiAuditViewData.getApplicationName());
-		// assertEquals("Unspecified",
-		// naiAuditViewData.getApplicationVersion());
-		// assertEquals(null, naiAuditViewData.getComment());
-		// assertEquals(null,
-		// naiAuditViewData.getVulnerabilityNaiAuditStatus());
-		// assertEquals(null, naiAuditViewData.getItemList());
-		//
-		// final List<AppCompVulnComposite> vulnNaiAuditDetailsList =
-		// (List<AppCompVulnComposite>) model
-		// .get("vulnNaiAuditDetailsList");
-		//
-		// assertEquals("component1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getComponentName());
-		// assertEquals("vulnerability1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getVulnerabilityName());
-		//
-		// // This is what the mock produces
-		// assertEquals("vulnerability1NaiAuditComment",
-		// vulnNaiAuditDetailsList.get(0)
-		// .getAuditPart().getVulnerabilityNaiAuditComment());
-		// assertEquals("vulnerability1NaiAuditStatus",
-		// vulnNaiAuditDetailsList.get(0)
-		// .getAuditPart().getVulnerabilityNaiAuditStatus());
+		assertEquals(NaiAuditUpdateStatus.SUCCEEDED, result.getStatus());
+		assertEquals("vulnerability1Id", result.getNewRowData().getKey().getVulnerabilityId());
+
+		assertEquals("vulnerability1RemediationStatus", result.getNewRowData().getCcPart()
+				.getVulnerabilityRemediationStatus());
+		assertEquals(COMMENT_512_BYTES, result.getNewRowData().getAuditPart()
+				.getVulnerabilityNaiAuditComment());
+
+		assertEquals("app1Id", result.getNewRowData().getKey().getApplicationId());
+		// This is what the mock produces
+		assertEquals("application1Name", result.getNewRowData().getCcPart().getApplicationName());
+		assertEquals("application1Version", result.getNewRowData().getCcPart().getApplicationVersion());
+
+		assertEquals("component1Name", result.getNewRowData().getCcPart().getComponentName());
+		assertEquals("vulnerability1Name", result.getNewRowData().getCcPart().getVulnerabilityName());
+
+		assertEquals("testStatus", result.getNewRowData().getAuditPart()
+				.getVulnerabilityNaiAuditStatus());
 	}
 
-	@Test
-	public void testPostNoRowSelected() throws Exception {
-
-		// Setup
-
-		final EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
-		Properties props;
-		props = getProperties();
-
-		final AppEditConfigManager config = new AppEditConfigManager(props);
-
-		controller.setConfig(config);
-
-		final VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-		controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
-		final Authentication auth = new TestingAuthenticationToken("testUserName",
-				null);
-		SecurityContextHolder.getContext().setAuthentication(auth);
-
-		// TODO need to implement this test for saveRow()
-
-		// Test
-
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
-
-		// Verify
-
-		// final String message = (String) model.get("message");
-		// assertEquals("No rows selected.", message);
-		//
-		// assertEquals("editNaiAuditDetailsForm", returnValue);
-		//
-		// final NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
-		// .get("selectedVulnerabilities");
-		//
-		// assertEquals("testAppId", naiAuditViewData.getApplicationId());
-		// assertEquals("testAppName", naiAuditViewData.getApplicationName());
-		// assertEquals("Unspecified",
-		// naiAuditViewData.getApplicationVersion());
-		// assertEquals(null, naiAuditViewData.getComment());
-		// assertEquals(null,
-		// naiAuditViewData.getVulnerabilityNaiAuditStatus());
-		// assertEquals(null, naiAuditViewData.getItemList());
-		//
-		// final List<AppCompVulnComposite> vulnNaiAuditDetailsList =
-		// (List<AppCompVulnComposite>) model
-		// .get("vulnNaiAuditDetailsList");
-		//
-		// assertEquals("component1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getComponentName());
-		// assertEquals("vulnerability1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getVulnerabilityName());
-		//
-		// assertEquals("vulnerability1NaiAuditComment", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditComment());
-		// assertEquals("vulnerability1NaiAuditStatus", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditStatus());
-	}
 
 	@Test
 	public void testPostCommentTooLong() throws Exception {
 
 		// Setup
 
-		final String longComment = COMMENT_512_BYTES + "a";
-
 		final EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
 		Properties props;
 		props = getProperties();
@@ -340,55 +262,20 @@ public class EditNaiAuditDetailsControllerTest {
 				null);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-		// TODO need to implement this test for saveRow()
-
 		// Test
 
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
+		final RowUpdateResult result = controller.saveRow(TEST_KEY, "testStatus", COMMENT_512_BYTES + "a");
 
 		// Verify
 
-		// final String message = (String) model.get("message");
-		// assertEquals(
-		// "The comment entered is too long. Maximum length is 512 characters",
-		// message);
-		//
-		// assertEquals("editNaiAuditDetailsForm", returnValue);
-		//
-		// final NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
-		// .get("selectedVulnerabilities");
-		//
-		// assertEquals("testAppId", naiAuditViewData.getApplicationId());
-		// assertEquals("testAppName", naiAuditViewData.getApplicationName());
-		// assertEquals("Unspecified",
-		// naiAuditViewData.getApplicationVersion());
-		// assertEquals(null, naiAuditViewData.getComment());
-		// assertEquals(null,
-		// naiAuditViewData.getVulnerabilityNaiAuditStatus());
-		// assertEquals(null, naiAuditViewData.getItemList());
-		//
-		// final List<AppCompVulnComposite> vulnNaiAuditDetailsList =
-		// (List<AppCompVulnComposite>) model
-		// .get("vulnNaiAuditDetailsList");
-		//
-		// assertEquals("component1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getComponentName());
-		// assertEquals("vulnerability1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getVulnerabilityName());
-		//
-		// assertEquals("vulnerability1NaiAuditComment", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditComment());
-		// assertEquals("vulnerability1NaiAuditStatus", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditStatus());
+		assertEquals(NaiAuditUpdateStatus.FAILED, result.getStatus());
+		assertEquals("The comment entered is too long. Maximum length is 512 characters", result.getMessage());
 	}
 
 	@Test
 	public void testPostCommentViolatesPattern() throws Exception {
 
 		// Setup
-
-		final String numericComment = COMMENT_512_BYTES;
 
 		final EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
 		Properties props;
@@ -407,45 +294,14 @@ public class EditNaiAuditDetailsControllerTest {
 				null);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-		// TODO need to implement this test for saveRow()
-
 		// Test
 
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
+		final RowUpdateResult result = controller.saveRow(TEST_KEY, "testStatus", COMMENT_512_BYTES);
 
 		// Verify
 
-		// final String message = (String) model.get("message");
-		// assertEquals("The comment entered is invalid.", message);
-		//
-		// assertEquals("editNaiAuditDetailsForm", returnValue);
-		//
-		// final NaiAuditViewData naiAuditViewData = (NaiAuditViewData) model
-		// .get("selectedVulnerabilities");
-		//
-		// assertEquals("testAppId", naiAuditViewData.getApplicationId());
-		// assertEquals("testAppName", naiAuditViewData.getApplicationName());
-		// assertEquals("Unspecified",
-		// naiAuditViewData.getApplicationVersion());
-		// assertEquals(null, naiAuditViewData.getComment());
-		// assertEquals(null,
-		// naiAuditViewData.getVulnerabilityNaiAuditStatus());
-		// assertEquals(null, naiAuditViewData.getItemList());
-		//
-		// final List<AppCompVulnComposite> vulnNaiAuditDetailsList =
-		// (List<AppCompVulnComposite>) model
-		// .get("vulnNaiAuditDetailsList");
-		//
-		// assertEquals("component1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getComponentName());
-		// assertEquals("vulnerability1Name", vulnNaiAuditDetailsList.get(0)
-		// .getCcPart().getVulnerabilityName());
-		//
-		// assertEquals("vulnerability1NaiAuditComment", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditComment());
-		// assertEquals("vulnerability1NaiAuditStatus", vulnNaiAuditDetailsList
-		// .get(0).getAuditPart().getVulnerabilityNaiAuditStatus());
+		assertEquals(NaiAuditUpdateStatus.FAILED, result.getStatus());
+		assertEquals("The comment entered is invalid.", result.getMessage());
 	}
 
 	@Test
@@ -453,8 +309,6 @@ public class EditNaiAuditDetailsControllerTest {
 
 		// Setup
 
-		final String validComment = COMMENT_512_BYTES;
-
 		final EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
 		Properties props;
 		props = getProperties();
@@ -470,60 +324,14 @@ public class EditNaiAuditDetailsControllerTest {
 				null);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-		// TODO need to implement this test for saveRow()
-
 		// Test
 
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
+		final RowUpdateResult result = controller.saveRow("invalidKey", "testStatus", COMMENT_512_BYTES);
 
 		// Verify
 
-		// final String message = (String) model.get("message");
-		// assertEquals(
-		// "The selected row key (badkey|) is invalid; failed extracting IDs.",
-		// message);
-		//
-		// assertEquals("error/programError", returnValue);
-	}
-
-	@Test
-	public void testPostSelectedRowKeyNotInList() throws Exception {
-
-		// Setup
-
-		final String validComment = COMMENT_512_BYTES;
-
-		final EditNaiAuditDetailsController controller = new EditNaiAuditDetailsController();
-		Properties props;
-		props = getProperties();
-
-		final AppEditConfigManager config = new AppEditConfigManager(props);
-
-		controller.setConfig(config);
-
-		final VulnNaiAuditDetailsService vulnNaiAuditDetailsService = new MockVulnNaiAuditDetailsService();
-		controller.setVulnNaiAuditDetailsService(vulnNaiAuditDetailsService);
-
-		final Authentication auth = new TestingAuthenticationToken("testUserName",
-				null);
-		SecurityContextHolder.getContext().setAuthentication(auth);
-
-		// TODO need to implement this test for saveRow()
-
-		// Test
-
-		// final String returnValue = controller
-		// .saveNaiAuditDetails(formData, "", model);
-
-		// Verify
-
-		// final String message = (String) model.get("message");
-		// assertEquals(
-		// "The selected row key (bogus|componentUse1Id|component1Id|vulnerability1Id) not found in full vulnerabilities list.",
-		// message);
-		//
-		// assertEquals("error/programError", returnValue);
+		assertEquals(NaiAuditUpdateStatus.FAILED, result.getStatus());
+		assertEquals("The selected row key (invalidKey) is invalid; failed extracting IDs.", result.getMessage());
 	}
 
 	private Properties getProperties() {

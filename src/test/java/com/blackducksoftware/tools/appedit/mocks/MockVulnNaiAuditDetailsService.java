@@ -48,8 +48,14 @@ VulnNaiAuditDetailsService {
 					"mock: failure getting app comp vuln comp list");
 		}
 
-		final Date now = new Date();
+		final AppCompVulnComposite appCompVulnComposite = generateComposite("vulnerability1Name");
+		final List<AppCompVulnComposite> result = new ArrayList<AppCompVulnComposite>();
+		result.add(appCompVulnComposite);
+		return result;
+	}
 
+	private AppCompVulnComposite generateComposite(final String vulnerabilityName) throws AppEditException {
+		final Date now = new Date();
 		final AppCompVulnKey key = new AppCompVulnKey("app1Id", "componentUse1Id", "component1Id",
 				"vulnerability1Id");
 
@@ -60,7 +66,7 @@ VulnNaiAuditDetailsService {
 				.setComponentName("component1Name")
 				.setComponentVersion("component1Version")
 				.setRequestId("request1Id")
-				.setVulnerabilityName("vulnerability1Name")
+				.setVulnerabilityName(vulnerabilityName)
 				.setVulnerabilitySeverity(VulnerabilitySeverity.HIGH)
 				.setVulnerabilityBaseScore("vulnerability1BaseScore")
 				.setVulnerabilityExploitableScore(
@@ -83,9 +89,7 @@ VulnNaiAuditDetailsService {
 
 		final AppCompVulnComposite appCompVulnComposite = new AppCompVulnComposite(
 				key, ccPart, auditPart);
-		final List<AppCompVulnComposite> result = new ArrayList<AppCompVulnComposite>();
-		result.add(appCompVulnComposite);
-		return result;
+		return appCompVulnComposite;
 	}
 
 	@Override
@@ -95,11 +99,11 @@ VulnNaiAuditDetailsService {
 		return appCompVulnComposite;
 	}
 
+
 	@Override
 	public AppCompVulnComposite getAppCompVulnComposite(final AppCompVulnKey key)
 			throws AppEditException {
-		// TODO Auto-generated method stub
-		return null;
+		return generateComposite("vulnerability1Name");
 	}
 
 }
