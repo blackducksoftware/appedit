@@ -308,6 +308,12 @@
 		$('#comment_field').val("");
 	}
 	
+	function getRowMessageElement(htmlCollectionCells) {
+		var htmlTableCellElementVulnName = htmlCollectionCells.item(1);
+		var rowMessageElement = htmlTableCellElementVulnName.getElementsByTagName("div")[0];
+		return rowMessageElement;
+	}
+	
 	function doSave() {
 		console.log("doSave()");
 		
@@ -373,29 +379,32 @@
 									console.log("Clearing status and comment");
 									
 									console.log("Default status: " + defaultStatusValue);
+									cbox.checked = false;
 									resetStatusAndCommentFields();
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchanged");
 									// TODO rowMessage
 					        		
 									// Get the vuln name cell
-									var htmlTableCellElementVulnName = htmlCollectionCells.item(1);
-									var rowMessageElement = htmlTableCellElementVulnName.getElementsByTagName("div")[0];
+									var rowMessageElement = getRowMessageElement(htmlCollectionCells)
 									var messageNode = document.createTextNode("Warning: This row was not changed (because status was unchanged)");
 									//htmlTableCellElementVulnName.appendChild(document.createElement("br"));
 									//htmlTableCellElementVulnName.appendChild(document.createElement("br"))
 									rowMessageElement.appendChild(messageNode);
 					        	
+									cbox.checked = false;
 									resetStatusAndCommentFields();
 								} else if (response.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + response.message);
 						        	// TODO
 						        	
+						        	cbox.checked = false;
 						        	resetStatusAndCommentFields();
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
 									// TODO
 									
+									cbox.checked = false;
 									resetStatusAndCommentFields();
 								}
 								
@@ -408,7 +417,6 @@
 	}
 	
 	function updateRowDisplay(cbox, htmlCollectionCells, response, newStatusValue, newCommentValue) {
-		cbox.checked = false;
 		
 		console.log("Looking for NAI status in row (to update it)");
 		var htmlTableCellElementNaiStatus = htmlCollectionCells.item(11);
@@ -537,7 +545,7 @@
             	<td>
             		<a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a>
             		<br/>
-            		<div id="rowMessage"></div>
+            		<font color="red"><div id="rowMessage"></div></font>
             	</td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
