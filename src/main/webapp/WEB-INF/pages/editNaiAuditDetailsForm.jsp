@@ -347,6 +347,12 @@
 			    console.log("cbox.checked: " + cbox.checked);
 			    console.log("cbox.value: " + cbox.value);
 			    
+			    var rowMessageElement = getRowMessageElement(htmlCollectionCells);
+			    if (rowMessageElement.childNodes.length > 0) {
+			    	console.log("Removing message text from this row: " + rowMessageElement.childNodes[0].textContent);
+			    	rowMessageElement.removeChild(rowMessageElement.childNodes[0]);
+			    }
+			    
 			    if (cbox.checked) {
 			    	console.log("This row is checked");
 			    	
@@ -386,10 +392,7 @@
 									// TODO rowMessage
 					        		
 									// Get the vuln name cell
-									var rowMessageElement = getRowMessageElement(htmlCollectionCells)
 									var messageNode = document.createTextNode("Warning: This row was not changed (because status was unchanged)");
-									//htmlTableCellElementVulnName.appendChild(document.createElement("br"));
-									//htmlTableCellElementVulnName.appendChild(document.createElement("br"))
 									rowMessageElement.appendChild(messageNode);
 					        	
 									cbox.checked = false;
