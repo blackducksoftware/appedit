@@ -252,8 +252,30 @@
 		rowMessageElement.appendChild(messageNode);
 	}
 	
+	function setAdvice(msg) {
+		console.log("Setting advice to: " + msg);
+		clearAdvice();
+		var adviceElement = document.getElementsByClassName("advice")[0];
+		var messageNode = document.createTextNode(msg);
+		adviceElement.appendChild(messageNode); 
+	}
+	
+	function clearAdvice() {
+		console.log("Clearing advice");
+		var adviceElement = document.getElementsByClassName("advice")[0];
+	    if (adviceElement.childNodes.length > 0) {
+	    	console.log("Removing old advice: " + adviceElement.childNodes[0].textContent);
+	    	adviceElement.removeChild(adviceElement.childNodes[0]);
+	    }
+	}
+	
+	function resetAdvice() {
+	    setAdvice("Select 1 or more rows, enter values, and click Save");
+	}
+	
 	function doSave() {
 		console.log("doSave()");
+		setAdvice("Saving...");
 		
 		 // Identify visible rows
 		 globalTable = new $.fn.dataTable.Api( '#table_id' );
@@ -305,6 +327,7 @@
 					
 					$.post("editnaiauditdetails", data,
 						    function(response, status){
+								resetAdvice();
 								if (response.status == 'SUCCEEDED') {
 									console.log("Row update succeeded on server; new row data: " + response.newRowData + "; Updating row display");
 									updateRowDisplay(cbox, htmlCollectionCells, response, newStatusValue, newCommentValue);
@@ -383,7 +406,6 @@
 	    console.log("Changing " + htmlTableCellElementRemDateActual.innerText + " to " + returnedRemDateActual);
 	    htmlTableCellElementRemDateActual.innerText = returnedRemDateActual;
 	    
-
 	    console.log("Getting Target Rem Date in row (to update it)");
 	    var htmlTableCellElementRemDateTarget = htmlCollectionCells.item(7);
 	    var returnedRemDateTarget = response.newRowData.ccPart.vulnerabilityTargetRemediationDate;
