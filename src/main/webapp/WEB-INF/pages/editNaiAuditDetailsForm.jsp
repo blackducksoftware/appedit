@@ -393,18 +393,27 @@
 	    var returnedComment = response.newRowData.auditPart.vulnerabilityNaiAuditComment;
 	    htmlTableCellElementNaiComment.innerText = newComment;
 
+	    // TODO get this working
+	    
 	    console.log("Looking for Rem Comment in row (to update it)");
 		var htmlTableCellElementRemComment = htmlCollectionCells.item(10);
 	    var returnedRemCommentShort = response.newRowData.ccPart.vulnerabilityRemediationCommentsShort;
-	    
+	    console.log("Changing " + htmlTableCellElementRemComment.innerHtml + " to " + returnedRemCommentShort);
+	    htmlTableCellElementRemComment.innerText = returnedRemCommentShort;
 	    if (response.newRowData.ccPart.vulnerabilityRemediationComments.length > response.newRowData.ccPart.vulnerabilityRemediationCommentsShort.length) {
 			var moreLink = '<br/><a target="_blank" href="showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=' + response.newRowData.key.asString + '" >more...</a>';
 			console.log("moreLink: " + moreLink);
-			returnedRemCommentShort += moreLink;
+			var breakElem = document.createElement("br");
+			var moreLinkElem = document.createElement("a");
+			var linkText = document.createTextNode("more...");
+			moreLinkElem.title = "See full text in separate window";
+			moreLinkElem.href = "showfulltext?itemType=REMEDIATION_COMMENTS&itemKey=" + response.newRowData.key.asString;
+			moreLinkElem.target = "_blank";
+			moreLinkElem.appendChild(linkText);
+			htmlTableCellElementRemComment.appendChild(breakElem);
+			htmlTableCellElementRemComment.appendChild(moreLinkElem);
 	    }
 	    
-	    console.log("Changing " + htmlTableCellElementRemComment.innerHtml + " to " + returnedRemCommentShort);
-	    htmlTableCellElementRemComment.innerHtml = returnedRemCommentShort;
 	    var returnedRemCommentPopupText = response.newRowData.ccPart.vulnerabilityRemediationCommentsPopUpText;
 	    htmlTableCellElementRemComment.title = returnedRemCommentPopupText;
 
