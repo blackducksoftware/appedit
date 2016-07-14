@@ -239,10 +239,10 @@
 			    console.log("--- data: " + data);
 			    
 			    var htmlCollectionCells = htmlTableRowElement.cells;
-			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
-			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
+			    var htmlTableCellElementCheckbox = htmlCollectionCells.item(0);
+			    console.log("htmlTableCellElementCheckbox: " + htmlTableCellElementCheckbox);
 			    
-			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
+			    var cboxElementCollection = htmlTableCellElementCheckbox.getElementsByClassName("rowCheckbox");
 			    console.log("cboxElement: " + cboxElementCollection);
 			    var cbox = cboxElementCollection.item(0);
 			    console.log("cbox: " + cbox);
@@ -314,6 +314,11 @@
 		return rowMessageElement;
 	}
 	
+	function setRowMessage(rowMessageElement, message) {
+		var messageNode = document.createTextNode(message);
+		rowMessageElement.appendChild(messageNode);
+	}
+	
 	function doSave() {
 		console.log("doSave()");
 		
@@ -328,25 +333,19 @@
 		 visibleRows.every( function ( rowIdx, tableLoop, rowLoop ) {
 			    console.log("about to get row at " + rowIdx);
 			 	var row = tableGlobal.row( rowIdx );
-			 	console.log("--- row: " + row);
 			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
-			 	console.log("--- htmlTableRowElement: " + htmlTableRowElement);
 			    var data = row.data();
-			    console.log("--- data: " + data);
 			    
 			    var htmlCollectionCells = htmlTableRowElement.cells;
 			     
 			    // Get checkbox value
-			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
-			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
+			    var htmlTableCellElementCheckbox = htmlCollectionCells.item(0);
 			    
-			    var cboxElementCollection = htmlTableCellElementZero.getElementsByClassName("rowCheckbox");
+			    var cboxElementCollection = htmlTableCellElementCheckbox.getElementsByClassName("rowCheckbox");
 			    console.log("cboxElement: " + cboxElementCollection);
 			    var cbox = cboxElementCollection.item(0);
-			    console.log("cbox: " + cbox);
-			    console.log("cbox.checked: " + cbox.checked);
-			    console.log("cbox.value: " + cbox.value);
 			    
+			    // Remove any row message resulting from stuff that happened last Save
 			    var rowMessageElement = getRowMessageElement(htmlCollectionCells);
 			    if (rowMessageElement.childNodes.length > 0) {
 			    	console.log("Removing message text from this row: " + rowMessageElement.childNodes[0].textContent);
@@ -381,28 +380,25 @@
 									console.log("Row update succeeded on server; new row data: " + response.newRowData);
 									console.log("Updating row display");
 									updateRowDisplay(cbox, htmlCollectionCells, response, newStatusValue, newCommentValue);
-									
-									console.log("Clearing status and comment");
-									
-									console.log("Default status: " + defaultStatusValue);
+
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								} else if (response.status == 'UNCHANGED') {
 									console.log("Row was unchanged");
-									var messageNode = document.createTextNode("Warning: This row was not changed (because status was unchanged)");
-									rowMessageElement.appendChild(messageNode);
+									setRowMessage(rowMessageElement, "Warning: This row was not changed (because status was unchanged)");
+									
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								} else if (response.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + response.message);
-						        	var messageNode = document.createTextNode("Row update FAILED: " + response.message);
-									rowMessageElement.appendChild(messageNode);
+						        	setRowMessage(rowMessageElement, "Row update FAILED: " + response.message);
+									
 						        	cbox.checked = false;
 						        	resetStatusAndCommentFields();
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
-									var messageNode = document.createTextNode("Row update returned an unknown status value: " + response.message);
-									rowMessageElement.appendChild(messageNode);
+									setRowMessage(rowMessageElement, "Row update returned an unknown status value: " + response.message);
+									
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								}
