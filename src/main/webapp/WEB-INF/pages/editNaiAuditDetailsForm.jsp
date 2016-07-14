@@ -137,7 +137,7 @@
 			unCheckAllRows();
 	    } );
 	    
-	    document.getElementById('saveButton').disabled=true;
+	    disableSaveButton();
 	    
 	    defaultStatusValue = $("#status").val();
 	} );
@@ -220,10 +220,10 @@
 
 		if (userEnteredSomething) {
 			console.log("formChanged(): enabling save button");
-			document.getElementById('saveButton').disabled=false;
+			enableSaveButton();
 		} else {
 			console.log("formChanged(): disabling save button");
-			document.getElementById('saveButton').disabled=true;
+			disableSaveButton();
 		}
 	}
 	
@@ -273,8 +273,19 @@
 	    setAdvice("Select 1 or more rows, enter values, and click Save");
 	}
 	
+	function disableSaveButton() {
+		console.log("Disabling Save button");
+		document.getElementById('saveButton').disabled=true;
+	}
+	
+	function enableSaveButton() {
+		console.log("Enabling Save button");
+		document.getElementById('saveButton').disabled=false;
+	}
+	
 	function doSave() {
 		console.log("doSave()");
+		disableSaveButton();
 		setAdvice("Saving...");
 		
 		 // Identify visible rows
