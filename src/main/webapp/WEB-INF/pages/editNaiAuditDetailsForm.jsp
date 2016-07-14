@@ -303,6 +303,11 @@
 		window.close();
 	}
 	
+	function resetStatusAndCommentFields() {
+		$('#status').val(defaultStatusValue);
+		$('#comment_field').val("");
+	}
+	
 	function doSave() {
 		console.log("doSave()");
 		
@@ -324,7 +329,7 @@
 			    console.log("--- data: " + data);
 			    
 			    var htmlCollectionCells = htmlTableRowElement.cells;
-			    
+			     
 			    // Get checkbox value
 			    var htmlTableCellElementZero = htmlCollectionCells.item(0);
 			    console.log("htmlTableCellElementZero: " + htmlTableCellElementZero);
@@ -342,7 +347,7 @@
 			    	// Send: selected vuln key
 					var data = {};
 					data["key"] = cbox.value;
-					
+
 					// Send status and comment values
 					var newStatusValue = $('#status').val();
 					var newCommentValue = $('#comment_field').val();
@@ -368,17 +373,30 @@
 									console.log("Clearing status and comment");
 									
 									console.log("Default status: " + defaultStatusValue);
-									$('#status').val(defaultStatusValue);
-									$('#comment_field').val("");
+									resetStatusAndCommentFields();
 								} else if (response.status == 'UNCHANGED') {
-									console.log("Row was unchangd");
-									// TODO
+									console.log("Row was unchanged");
+									// TODO rowMessage
+					        		
+									// Get the vuln name cell
+									var htmlTableCellElementVulnName = htmlCollectionCells.item(1);
+									var rowMessageElement = htmlTableCellElementVulnName.getElementsByTagName("div")[0];
+									var messageNode = document.createTextNode("Warning: This row was not changed (because status was unchanged)");
+									//htmlTableCellElementVulnName.appendChild(document.createElement("br"));
+									//htmlTableCellElementVulnName.appendChild(document.createElement("br"))
+									rowMessageElement.appendChild(messageNode);
+					        	
+									resetStatusAndCommentFields();
 								} else if (response.status == 'FAILED') {
 						        	console.log("Row update FAILED: " + response.message);
 						        	// TODO
+						        	
+						        	resetStatusAndCommentFields();
 								} else {
 									console.log("Row update returned an unknown status: " + response.status);
 									// TODO
+									
+									resetStatusAndCommentFields();
 								}
 								
 								
@@ -516,7 +534,11 @@
     	<c:forEach var="vulnerability" items="${vulnNaiAuditDetailsList}" varStatus="rowCount">
         	<tr>
         		<td><form:checkbox class="rowCheckbox" onchange="javascript:formChanged();" id="checkbox${rowCount.index}" path="itemList" value="${vulnerability.key.asString}" /></td>
-            	<td><a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a></td>
+            	<td>
+            		<a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=${vulnerability.ccPart.vulnerabilityName}" target="_blank">${vulnerability.ccPart.vulnerabilityName}</a>
+            		<br/>
+            		<div id="rowMessage"></div>
+            	</td>
             	<td>${vulnerability.ccPart.componentName}</td>
             	<td>${vulnerability.ccPart.componentVersion}</td>
             	<td>${vulnerability.ccPart.vulnerabilitySeverityString}</td>
