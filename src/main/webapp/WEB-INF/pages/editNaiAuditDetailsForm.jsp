@@ -335,16 +335,8 @@
 			 	var row = tableGlobal.row( rowIdx );
 			 	var htmlTableRowElement = row.node(); // HTMLTableRowElement
 			    var data = row.data();
-			    
 			    var htmlCollectionCells = htmlTableRowElement.cells;
-			     
-			    // Get checkbox value
-			    var htmlTableCellElementCheckbox = htmlCollectionCells.item(0);
-			    
-			    var cboxElementCollection = htmlTableCellElementCheckbox.getElementsByClassName("rowCheckbox");
-			    console.log("cboxElement: " + cboxElementCollection);
-			    var cbox = cboxElementCollection.item(0);
-			    
+
 			    // Remove any row message resulting from stuff that happened last Save
 			    var rowMessageElement = getRowMessageElement(htmlCollectionCells);
 			    if (rowMessageElement.childNodes.length > 0) {
@@ -352,6 +344,11 @@
 			    	rowMessageElement.removeChild(rowMessageElement.childNodes[0]);
 			    }
 			    
+			 	// Get checkbox value
+			    var htmlTableCellElementCheckbox = htmlCollectionCells.item(0);
+			    var cboxElementCollection = htmlTableCellElementCheckbox.getElementsByClassName("rowCheckbox");
+			    console.log("cboxElement: " + cboxElementCollection);
+			    var cbox = cboxElementCollection.item(0);
 			    if (cbox.checked) {
 			    	console.log("This row is checked");
 			    	
