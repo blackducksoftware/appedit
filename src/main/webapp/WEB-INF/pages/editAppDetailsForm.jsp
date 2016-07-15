@@ -10,6 +10,18 @@
 <head>
     <title><spring:message code="label.appdetailsedit.title" text="Edit Application Details" /></title>
     <LINK rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/appEdit.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    function doExit() {
+		console.log("doExit()");
+		
+		$.ajax({
+			type : "GET",
+			url : "logout"
+		});
+		window.close();
+	}
+    </script>
 </head>
 <body>
     <div class="page-header">
@@ -40,7 +52,7 @@
 				<spring:message code="label.appdetailsedit.submit" />
 			</button>
 			<button type="button" class="btn btn-primary" value="cancel"
-				onclick="window.close()">
+				onclick="doExit()">
 				<spring:message code="label.appdetailsedit.cancel" />
 			</button>
 		</form:form>
