@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -57,14 +56,11 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()
 			.getName());
 
-	private boolean componentCacheInitialized = false;
-
 	private ICodeCenterServerWrapper ccsw;
 
 	@Inject
 	public void setCcsw(final ICodeCenterServerWrapper ccsw) {
 		this.ccsw = ccsw;
-		initComponentCache();
 	}
 
 	private AppEditConfigManager config;
@@ -72,7 +68,6 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
-		initComponentCache();
 	}
 
 	private VulnerabilityDao vulnerabilityDao;
@@ -87,26 +82,6 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setComponentNameVersionDao(final ComponentNameVersionDao componentNameVersionDao) {
 		this.componentNameVersionDao = componentNameVersionDao;
-	}
-
-	private void initComponentCache() {
-		if (componentCacheInitialized) {
-			return;
-		}
-		if (!config.isNaiAuditPreloadComponents()) {
-			return;
-		}
-
-		if ((config == null) || (ccsw == null)) {
-			return;
-		}
-
-		logger.info("Initializing component cache: size: " + config.getNaiAuditPreloadComponentsCacheSize()
-				+ "; timeout: " + config.getNaiAuditPreloadComponentsTimeoutValue() + " "
-				+ config.getNaiAuditPreloadComponentsTimeoutUnits());
-		ccsw.getComponentManager().resetComponentCache(config.getNaiAuditPreloadComponentsCacheSize(),
-				config.getNaiAuditPreloadComponentsTimeoutValue(), TimeUnit.DAYS);
-		componentCacheInitialized = true;
 	}
 
 	/**

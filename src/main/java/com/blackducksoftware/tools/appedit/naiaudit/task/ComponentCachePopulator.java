@@ -1,4 +1,4 @@
-package com.blackducksoftware.tools.appedit.naiaudit.dao.cc;
+package com.blackducksoftware.tools.appedit.naiaudit.task;
 
 import javax.inject.Inject;
 
@@ -9,7 +9,7 @@ import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.ComponentNameVersionDao;
 
-public class CcComponentCachePopulator {
+public class ComponentCachePopulator {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	private AppEditConfigManager config;
@@ -26,7 +26,7 @@ public class CcComponentCachePopulator {
 		this.componentNameVersionDao = componentNameVersionDao;
 	}
 
-	public CcComponentCachePopulator() {
+	public ComponentCachePopulator() {
 	}
 
 	public void run() {

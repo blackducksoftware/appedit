@@ -85,11 +85,14 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 	@Override
 	public IdNameVersion getComponentNameVersionById(final String componentId) throws AppEditException {
 		logger.debug("getComponentNameVersionById(): getting from cache component with ID: " + componentId);
+		IdNameVersion comp;
 		try {
-			return compNameVersionByIdCache.get(componentId);
+			comp = compNameVersionByIdCache.get(componentId);
 		} catch (final ExecutionException e) {
 			throw new AppEditException("Error getting component with ID " + componentId + " from cache");
 		}
+		logger.debug("Got component: " + comp.getName() + " / " + comp.getVersion());
+		return comp;
 	}
 
 	@Override
