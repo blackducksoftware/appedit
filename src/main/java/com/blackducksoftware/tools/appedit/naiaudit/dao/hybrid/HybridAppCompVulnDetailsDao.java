@@ -33,14 +33,15 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.AppCompVulnDetailsDao;
+import com.blackducksoftware.tools.appedit.naiaudit.dao.ComponentNameVersionDao;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.VulnerabilityDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetails;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnDetailsBuilder;
 import com.blackducksoftware.tools.appedit.naiaudit.model.AppCompVulnKey;
+import com.blackducksoftware.tools.appedit.naiaudit.model.IdNameVersion;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationPojo;
-import com.blackducksoftware.tools.connector.codecenter.common.CodeCenterComponentPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.RequestPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.RequestVulnerabilityPojo;
 
@@ -79,6 +80,13 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	@Inject
 	public void setVulnerabilityDao(final VulnerabilityDao vulnerabilityDao) {
 		this.vulnerabilityDao = vulnerabilityDao;
+	}
+
+	private ComponentNameVersionDao componentNameVersionDao;
+
+	@Inject
+	public void setComponentNameVersionDao(final ComponentNameVersionDao componentNameVersionDao) {
+		this.componentNameVersionDao = componentNameVersionDao;
 	}
 
 	private void initComponentCache() {
@@ -161,11 +169,10 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 					+ key.getApplicationId() + ": " + e1.getMessage(), e1);
 		}
 
-		CodeCenterComponentPojo comp;
+		IdNameVersion comp;
 		try {
-			comp = ccsw.getComponentManager().getComponentById(
-					CodeCenterComponentPojo.class, key.getComponentId());
-		} catch (final CommonFrameworkException e1) {
+			comp = componentNameVersionDao.getComponentNameVersionById(key.getComponentId());
+		} catch (final AppEditException e1) {
 			throw new AppEditException("Error getting component with ID "
 					+ key.getComponentId() + ": " + e1.getMessage(), e1);
 		}
@@ -254,12 +261,10 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 		for (final RequestPojo request : requests) {
 			final String requestId = request.getRequestId();
 
-			CodeCenterComponentPojo comp;
+			IdNameVersion comp;
 			try {
-				comp = ccsw.getComponentManager()
-						.getComponentById(CodeCenterComponentPojo.class,
-								request.getComponentId());
-			} catch (final CommonFrameworkException e1) {
+				comp = componentNameVersionDao.getComponentNameVersionById(request.getComponentId());
+			} catch (final AppEditException e1) {
 				throw new AppEditException("Error getting component with ID "
 						+ request.getComponentId() + ": " + e1.getMessage(), e1);
 			}
@@ -280,7 +285,7 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 
 	private void collectRequestVulnerabilities(
 			final Map<AppCompVulnKey, AppCompVulnDetails> result,
-			final ApplicationPojo app, final CodeCenterComponentPojo comp,
+			final ApplicationPojo app, final IdNameVersion comp,
 			final List<RequestVulnerabilityPojo> requestVulnerabilities)
 					throws AppEditException {
 		for (final RequestVulnerabilityPojo requestVulnerability : requestVulnerabilities) {
@@ -298,7 +303,7 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	}
 
 	private AppCompVulnKey deriveKey(final String applicationId,
-			final CodeCenterComponentPojo comp,
+ final IdNameVersion comp,
 			final RequestVulnerabilityPojo requestVulnerability) {
 		final AppCompVulnKey key = new AppCompVulnKey(applicationId, requestVulnerability.getRequestId(), comp.getId(),
 				requestVulnerability.getVulnerabilityId());
@@ -306,7 +311,8 @@ public class HybridAppCompVulnDetailsDao implements AppCompVulnDetailsDao {
 	}
 
 	private AppCompVulnDetails deriveAppCompVulnDetails(final AppCompVulnKey key,
-			final ApplicationPojo app, final CodeCenterComponentPojo comp,
+ final ApplicationPojo app,
+			final IdNameVersion comp,
 			final RequestVulnerabilityPojo requestVulnerability)
 					throws AppEditException {
 		final AppCompVulnDetails appCompVulnDetails = (new AppCompVulnDetailsBuilder())

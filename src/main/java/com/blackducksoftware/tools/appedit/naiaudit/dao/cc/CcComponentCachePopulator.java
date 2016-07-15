@@ -6,24 +6,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
-import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
-import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
+import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
+import com.blackducksoftware.tools.appedit.naiaudit.dao.ComponentNameVersionDao;
 
 public class CcComponentCachePopulator {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
-	private ICodeCenterServerWrapper ccsw;
-
-	@Inject
-	public void setCcsw(final ICodeCenterServerWrapper ccsw) {
-		this.ccsw = ccsw;
-	}
 
 	private AppEditConfigManager config;
 
 	@Inject
 	public void setConfig(final AppEditConfigManager config) {
 		this.config = config;
+	}
+
+	private ComponentNameVersionDao componentNameVersionDao;
+
+	@Inject
+	public void setComponentNameVersionDao(final ComponentNameVersionDao componentNameVersionDao) {
+		this.componentNameVersionDao = componentNameVersionDao;
 	}
 
 	public CcComponentCachePopulator() {
@@ -35,12 +35,11 @@ public class CcComponentCachePopulator {
 			return;
 		}
 		try {
-			logger.info("Pre-loading component cache from catalog");
+			logger.info("Pre-loading component name version cache with possibly-NAI components");
 
-			ccsw.getComponentManager()
-			.populateComponentCacheFromCatalog(config.getNaiAuditPreloadComponentsBatchSize());
-			logger.info("Done pre-loading component cache from catalog");
-		} catch (final CommonFrameworkException e) {
+			componentNameVersionDao.cachePossiblyNaiComponents();
+			logger.info("Done Pre-loading component name version cache with possibly-NAI components");
+		} catch (final AppEditException e) {
 			logger.error("Error pre-populating component cache from catalog; the NAI Audit screen will take longer to load");
 		}
 	}
