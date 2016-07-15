@@ -229,9 +229,11 @@
 	
 	function doExit() {
 		console.log("doExit()");
+		var logoutUrl = "${pageContext.request.contextPath}/logout";
+		console.log("logoutUrl: " + logoutUrl);
 		$.ajax({
 			type : "GET",
-			url : "logout"
+			url : logoutUrl
 		});
 		window.close();
 	}
