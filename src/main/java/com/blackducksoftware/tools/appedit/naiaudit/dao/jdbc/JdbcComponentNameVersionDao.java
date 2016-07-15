@@ -68,9 +68,15 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 		logger.debug("Read " + componentIdNameVersions.size() + " component records for component ID " + componentId);
 
 		if (componentIdNameVersions.size() == 0) {
-
+			final String msg = "Error getting component id/name/version with component ID " + componentId
+					+ ": Zero records returned";
+			logger.error(msg);
+			throw new AppEditException(msg);
 		} else if (componentIdNameVersions.size() > 1) {
-
+			final String msg = "Error getting component id/name/version with component ID " + componentId + ": "
+					+ componentIdNameVersions.size() + " records returned (expected 1)";
+			logger.error(msg);
+			throw new AppEditException(msg);
 		}
 
 		return componentIdNameVersions.get(0);
@@ -88,8 +94,28 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 
 	@Override
 	public void cachePossiblyNaiComponents() throws AppEditException {
+		final String queryString = SQL_FETCH_POSSIBLY_NAI_COMPONENTS;
+		List<IdNameVersion> componentIdNameVersions;
+		try {
+			logger.debug("JDBC: Executing query: " + queryString);
+			componentIdNameVersions = jdbcTemplateBdsCatalog.query(queryString, new ComponentIdNameVersionMapper());
+			logger.debug("JDBC: Done executing query; item count: " + componentIdNameVersions.size());
+		} catch (final BadSqlGrammarException e) {
+			logger.debug("JDBC: Error executing query");
+			final String msg = "Error getting possibly-NAI component id/name/versions: " + e.getMessage();
+			logger.error(msg);
+			throw new AppEditException(msg);
+		}
+		logger.debug("Read " + componentIdNameVersions.size() + " possibly-NAI component records");
 
+		for (final IdNameVersion comp : componentIdNameVersions) {
+			logger.debug("Caching component: " + comp);
+			compNameVersionByIdCache.put(comp.getId(), comp);
+		}
+	}
 
+	long getCacheSize() {
+		return compNameVersionByIdCache.size();
 	}
 
 }
