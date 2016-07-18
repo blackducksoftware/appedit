@@ -43,7 +43,8 @@ import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 
 
 /**
- * Authenticates a given username/password via Code Center.
+ * Authenticates a given username/password, using both Code Center and the given
+ * UserRoleDao.
  *
  * @author sbillings
  *

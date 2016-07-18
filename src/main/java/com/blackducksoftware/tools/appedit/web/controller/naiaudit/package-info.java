@@ -18,8 +18,8 @@
  * under the License.
  *******************************************************************************/
 /**
- * NAI Audit controllers.
- * 
+ * NAI (Remediation Status = Not An Issue) Audit controllers.
+ *
  * @author sbillings
  *
  */

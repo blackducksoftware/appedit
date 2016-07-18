@@ -18,7 +18,7 @@
  * under the License.
  *******************************************************************************/
 /**
- * Code Center Data Access Objects
+ * Code Center Data SDK Access Objects
  * @author sbillings
  *
  */

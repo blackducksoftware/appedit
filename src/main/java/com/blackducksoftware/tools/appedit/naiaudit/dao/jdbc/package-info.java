@@ -18,8 +18,8 @@
  * under the License.
  *******************************************************************************/
 /**
- * JDBC Data Access Objects.
- * 
+ * JDBC Data Access Objects for NAI Audit.
+ *
  * @author sbillings
  *
  */

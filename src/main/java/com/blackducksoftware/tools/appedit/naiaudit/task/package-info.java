@@ -17,13 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.blackducksoftware.tools.appedit.naiaudit.dao;
-
-import java.util.List;
-
-import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
-import com.blackducksoftware.tools.connector.codecenter.common.RequestVulnerabilityPojo;
-
-public interface VulnerabilityDao {
-	List<RequestVulnerabilityPojo> getVulnerabilitiesByRequestId(String requestId) throws AppEditException;
-}
+/**
+ * Periodically-scheduled tasks.
+ */
+package com.blackducksoftware.tools.appedit.naiaudit.task;

@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Copyright (C) 2016 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *******************************************************************************/
 package com.blackducksoftware.tools.appedit.core.dao.jdbc;
 
 import java.util.HashMap;
@@ -16,6 +35,12 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import com.blackducksoftware.tools.appedit.core.dao.UserRoleDao;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 
+/**
+ * JDBC/SQL Data Access Object for user role details.
+ *
+ * @author sbillings
+ *
+ */
 public class JdbcUserRoleDao implements UserRoleDao {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	private final String SQL_FETCH_USER_ROLE_ASSIGNMENT = "SELECT id FROM role_assignment WHERE enduser = :userId AND role = :roleId AND application is null";
@@ -29,6 +54,14 @@ public class JdbcUserRoleDao implements UserRoleDao {
 	public JdbcUserRoleDao() {
 	}
 
+	/**
+	 * Returns true if the given user has the given role.
+	 *
+	 * @param userId
+	 * @param RoleId
+	 * @return
+	 * @throws AppEditException
+	 */
 	@Override
 	public boolean userHasRole(final long userId, final String roleId) throws AppEditException {
 
