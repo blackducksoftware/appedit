@@ -130,8 +130,7 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 		return compNameVersionByIdCache.size();
 	}
 
-	@Override
-	public void init() {
+	private void init() {
 		if (initialized) {
 			return;
 		}
