@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
+import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.exception.AppEditException;
 import com.blackducksoftware.tools.appedit.naiaudit.dao.ComponentNameVersionDao;
 import com.blackducksoftware.tools.appedit.naiaudit.model.IdNameVersion;
@@ -28,7 +29,7 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 			+ " INNER JOIN componentuse_vulnerability on componentuse_vulnerability.componentuse_id = componentuse.id";
 	private static final String SQL_FETCH_COMPONENT_BY_ID = "SELECT id, name, version FROM component"
 			+ " WHERE id = :componentId";
-
+	private boolean initialized = false;
 	private LoadingCache<String, IdNameVersion> compNameVersionByIdCache;
 
 	private NamedParameterJdbcTemplate jdbcTemplateBdsCatalog;
@@ -38,15 +39,14 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 		this.jdbcTemplateBdsCatalog = jdbcTemplateBdsCatalog;
 	}
 
+	private AppEditConfigManager config;
+
+	@Inject
+	public void setConfig(final AppEditConfigManager config) {
+		this.config = config;
+	}
+
 	public JdbcComponentNameVersionDao() {
-		// TODO configurable
-		compNameVersionByIdCache = CacheBuilder.newBuilder().maximumSize(40000).expireAfterWrite(2, TimeUnit.DAYS)
-				.build(new CacheLoader<String, IdNameVersion>() {
-					@Override
-					public IdNameVersion load(final String componentId) throws AppEditException {
-						return fetchComponentById(componentId);
-					}
-				});
 	}
 
 	private IdNameVersion fetchComponentById(final String componentId) throws AppEditException {
@@ -84,6 +84,9 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 
 	@Override
 	public IdNameVersion getComponentNameVersionById(final String componentId) throws AppEditException {
+		if (!initialized) {
+			init();
+		}
 		logger.debug("getComponentNameVersionById(): getting from cache component with ID: " + componentId);
 		IdNameVersion comp;
 		try {
@@ -97,6 +100,9 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 
 	@Override
 	public void cachePossiblyNaiComponents() throws AppEditException {
+		if (!initialized) {
+			init();
+		}
 		final String queryString = SQL_FETCH_POSSIBLY_NAI_COMPONENTS;
 		List<IdNameVersion> componentIdNameVersions;
 		try {
@@ -118,7 +124,28 @@ public class JdbcComponentNameVersionDao implements ComponentNameVersionDao {
 	}
 
 	long getCacheSize() {
+		if (!initialized) {
+			init();
+		}
 		return compNameVersionByIdCache.size();
+	}
+
+	@Override
+	public void init() {
+		if (initialized) {
+			return;
+		}
+		final int cacheSize = config.getNaiAuditPreloadComponentsCacheSize();
+		final int timeoutValue = config.getNaiAuditPreloadComponentsTimeoutValue();
+		final TimeUnit timeoutUnits = config.getNaiAuditPreloadComponentsTimeoutUnits();
+		compNameVersionByIdCache = CacheBuilder.newBuilder().maximumSize(cacheSize)
+				.expireAfterWrite(timeoutValue, timeoutUnits).build(new CacheLoader<String, IdNameVersion>() {
+					@Override
+					public IdNameVersion load(final String componentId) throws AppEditException {
+						return fetchComponentById(componentId);
+					}
+				});
+		initialized = true;
 	}
 
 }

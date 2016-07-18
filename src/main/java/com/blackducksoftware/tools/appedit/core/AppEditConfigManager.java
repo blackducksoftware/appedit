@@ -99,14 +99,12 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_VALUE_DEFAULT = 2;
 	private static final TimeUnit NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_UNITS_DEFAULT = TimeUnit.DAYS;
 	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_DEFAULT = 50000;
-	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_DEFAULT = 1000;
 
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_PROPERTY = "nai.audit.preload.components";
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_MINUTES_TO_INITIAL_RUN_PROPERTY = "nai.audit.preload.components.minutes.until.initial.run";
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_PROPERTY = "nai.audit.preload.components.cache.size";
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_VALUE_PROPERTY = "nai.audit.preload.components.cache.timeout.value";
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_TIMEOUT_UNITS_PROPERTY = "nai.audit.preload.components.cache.timeout.units";
-	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY = "nai.audit.preload.components.batch.size";
 
 	private static final int NAI_AUDIT_PRELOAD_COMPONENTS_MINUTES_TO_INITIAL_RUN_DEFAULT = 20;
 	private static final String NAI_AUDIT_PRELOAD_COMPONENTS_CRON_CONFIG_PROPERTY = "nai.audit.preload.components.cron";
@@ -154,7 +152,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private String fieldInputValidationRegexNaiAuditComment;
 	private boolean naiAuditPreloadComponents = false;
 	private long naiAuditPreloadComponentsMillisecondsToInitialRun = NAI_AUDIT_PRELOAD_COMPONENTS_MINUTES_TO_INITIAL_RUN_DEFAULT + 60 + 1000L;
-	private int naiAuditPreloadComponentsBatchSize = NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_DEFAULT;
 	private int naiAuditPreloadComponentsCacheSize = NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_DEFAULT;
 	private int naiAuditPreloadComponentsTimeoutValue = NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_VALUE_DEFAULT;
 	private TimeUnit naiAuditPreloadComponentsTimeoutUnits = NAI_AUDIT_PRELOAD_COMPONENTS_TIMEOUT_UNITS_DEFAULT;
@@ -330,11 +327,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 			log.debug("The initial run of the component loader will run in "
 					+ naiAuditPreloadComponentsMillisecondsToInitialRun + " milliseconds ("
 					+ (naiAuditPreloadComponentsMillisecondsToInitialRun / 60 / 1000) + " minutes)");
-		}
-
-		final String naiAuditPreloadBatchSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_BATCH_SIZE_PROPERTY);
-		if (naiAuditPreloadBatchSizeString != null) {
-			naiAuditPreloadComponentsBatchSize = Integer.parseInt(naiAuditPreloadBatchSizeString);
 		}
 
 		final String naiAuditPreloadComponentsCacheSizeString = getOptionalProperty(NAI_AUDIT_PRELOAD_COMPONENTS_CACHE_SIZE_PROPERTY);
@@ -522,10 +514,6 @@ public class AppEditConfigManager extends ConfigurationManager {
 
 	public boolean isNaiAuditPreloadComponents() {
 		return naiAuditPreloadComponents;
-	}
-
-	public int getNaiAuditPreloadComponentsBatchSize() {
-		return naiAuditPreloadComponentsBatchSize;
 	}
 
 	public int getNaiAuditPreloadComponentsCacheSize() {

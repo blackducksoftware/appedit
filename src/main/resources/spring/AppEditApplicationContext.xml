@@ -40,23 +40,26 @@
     <bean id="userRoleDao" class="com.blackducksoftware.tools.appedit.core.dao.jdbc.JdbcUserRoleDao" />
     
     
-
+	<!-- Component cache populator, for faster NAI Audit page loading -->
     <bean id="componentCachePopulatorJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
     	<property name="targetObject" ref="componentCachePopulator" />
     	<property name="targetMethod" value="run" />
     	<property name="concurrent" value="false" />
     </bean>
-    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
-    	<property name="jobDetail" ref="componentCachePopulatorJob" />
-		<property name="cronExpression" value="#{config.naiAuditPreloadComponentsCronConfig}" />
-    </bean>
+    <!-- This trigger runs the componentCachePopulatorJob once, soon after startup -->
     <bean id="runSoonTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean" >
     	<property name="jobDetail" ref="componentCachePopulatorJob" />
     	<property name="startDelay" value="#{config.naiAuditPreloadComponentsMillisecondsToInitialRun}" />
     	<property name="repeatCount" value="0" />
     	<property name="repeatInterval" value="300000" />
     </bean>
-    
+    <!-- This trigger runs the componentCachePopulatorJob periodically -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+    	<property name="jobDetail" ref="componentCachePopulatorJob" />
+		<property name="cronExpression" value="#{config.naiAuditPreloadComponentsCronConfig}" />
+    </bean>
+    <!-- Single-thread pool. The componentCachePopulatorJob shouldn't run very frequently, -->
+    <!-- and shouldn't normally overlap with itself (though there's no real harm if it does) -->
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
     	<property name="corePoolSize" value="1" />
     	<property name="maxPoolSize" value="1" />
