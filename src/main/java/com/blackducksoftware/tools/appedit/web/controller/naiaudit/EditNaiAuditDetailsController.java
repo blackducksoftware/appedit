@@ -262,7 +262,7 @@ public class EditNaiAuditDetailsController {
 			final String appName, final String appVersion,
 			final List<AppCompVulnComposite> vulnNaiAuditDetailsList) {
 
-		logger.debug("Sending to view: " + vulnNaiAuditDetailsList);
+		logger.debug("Sending to view: " + vulnNaiAuditDetailsList.size() + " vulnerabilities");
 		final NaiAuditViewData auditFormData = new NaiAuditViewData();
 		auditFormData.setApplicationId(appId);
 		auditFormData.setApplicationName(appName);

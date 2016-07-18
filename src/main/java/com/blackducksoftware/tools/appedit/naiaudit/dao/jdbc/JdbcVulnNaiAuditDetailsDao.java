@@ -163,7 +163,7 @@ public class JdbcVulnNaiAuditDetailsDao implements VulnNaiAuditDetailsDao {
 				+ " vulnNaiAuditDetail records.");
 		final Map<AppCompVulnKey, VulnNaiAuditDetails> vulnNaiAuditDetailsMap = new HashMap<>();
 		for (final VulnNaiAuditDetails vulnNaiAuditDetails : vulnNaiAuditDetailsList) {
-			logger.info("VulnNaiAuditDetails: " + vulnNaiAuditDetails);
+			logger.debug("VulnNaiAuditDetails: " + vulnNaiAuditDetails);
 			vulnNaiAuditDetailsMap.put(vulnNaiAuditDetails.getAppCompVulnKey(),
 					vulnNaiAuditDetails);
 		}
