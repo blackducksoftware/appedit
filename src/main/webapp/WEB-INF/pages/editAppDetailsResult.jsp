@@ -9,12 +9,22 @@
     <script type="text/javascript">
     function doExit() {
 		console.log("doExit()");
-		
+		var logoutUrl = "${pageContext.request.contextPath}/logout";
+		console.log("logoutUrl: " + logoutUrl);
 		$.ajax({
 			type : "GET",
-			url : "logout"
+			url : logoutUrl,
+			success : function(data, text) {
+				console.log("logout succeeded: text: " + text);
+				window.close();
+			},
+			error : function(request, status, error) {
+				console.log("logout error: responseText: " + request.responseText);
+				console.log("logout error: status: " + status);
+				console.log("logout error: error: " + error);
+			}
 		});
-		window.close();
+		
 	}
     </script>
 </head>
