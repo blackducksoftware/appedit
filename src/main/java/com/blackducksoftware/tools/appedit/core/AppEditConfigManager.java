@@ -47,7 +47,6 @@ import com.blackducksoftware.tools.commonframework.core.config.ConfigurationPass
 public class AppEditConfigManager extends ConfigurationManager {
 
 	private static final String DB_DATABASE_DEFAULT = "bds_catalog";
-	private static final String DB_PASSWORD_DEFAULT = "mallard";
 
 	private static final String DB_USER_DEFAULT = "blackduck";
 
@@ -136,13 +135,13 @@ public class AppEditConfigManager extends ConfigurationManager {
 	private String dbServer;
 	private String dbPort = DB_PORT_DEFAULT;
 	private String dbUser = DB_USER_DEFAULT;
-	private String dbPassword = DB_PASSWORD_DEFAULT;
+	private String dbPassword = null;
 
 	private String dbServerNaiAudit;
 	private String dbDatabaseNaiAudit = DB_DATABASE_DEFAULT;
 	private String dbPortNaiAudit = DB_PORT_DEFAULT;
 	private String dbUserNaiAudit = DB_USER_DEFAULT;
-	private String dbPasswordNaiAudit = DB_PASSWORD_DEFAULT;
+	private String dbPasswordNaiAudit = null;
 
 	private List<String> naiAuditStatusChoices;
 	private DateFormat naiAuditDateFormat;
