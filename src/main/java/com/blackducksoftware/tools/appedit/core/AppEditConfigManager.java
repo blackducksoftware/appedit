@@ -504,7 +504,11 @@ public class AppEditConfigManager extends ConfigurationManager {
 	}
 
 	public String getDbPasswordNaiAudit() {
-		return dbPasswordNaiAudit;
+		if (dbPasswordNaiAudit != null) {
+			return dbPasswordNaiAudit;
+		} else {
+			return getDbPassword();
+		}
 	}
 
 	public boolean isCcPre7_1_1() {

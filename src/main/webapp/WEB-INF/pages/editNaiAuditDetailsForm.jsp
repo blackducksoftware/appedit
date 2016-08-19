@@ -371,6 +371,21 @@
 									cbox.checked = false;
 									resetStatusAndCommentFields();
 								}
+						    })
+						    .fail(function(response) {
+						    	console.log("*** Post failed");
+						    	console.log("Response: " + response.status);
+						    	if (response.status == "403") {
+						    		console.log("The session timed out");
+						        	setAdvice("The session has timed out. Please refresh or exit this browser window.");
+						        	cbox.checked = false;
+						        	resetStatusAndCommentFields();
+						    	} else {
+						    		console.log("Error code: " + response.status);
+						    		setAdvice("Error code: " + response.status + ". Please refresh or exit this browser window.");
+						        	cbox.checked = false;
+						        	resetStatusAndCommentFields();
+						    	}
 						    });
 			    }
 			} );
