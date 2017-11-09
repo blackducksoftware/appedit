@@ -11,7 +11,7 @@
 
   <groupId>com.blackducksoftware.tools</groupId>
   <artifactId>appedit</artifactId>
-  <version>1.4.4</version>
+  <version>1.4.5-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>Application Details Edit Webapp</name>
@@ -44,7 +44,7 @@
       <dependency>
         <groupId>io.spring.platform</groupId>
         <artifactId>platform-bom</artifactId>
-        <version>1.1.1.RELEASE</version>
+        <version>Brussels-SR5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -147,7 +147,7 @@
     <dependency>
       <groupId>com.blackducksoftware.tools</groupId>
       <artifactId>cf-7x-connector</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.3-SNAPSHOT</version>
       <exclusions>
         <!-- Swap out commons-collections 3.2 for 3.2.2 to avoid CVE-2015-6420 -->
         <!--  Don't know why this is necessary here, but without it, maven used collections 3.2.1 -->
