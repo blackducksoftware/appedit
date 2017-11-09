@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
 import com.blackducksoftware.sdk.codecenter.role.data.RoleNameToken;
+import com.blackducksoftware.tools.appedit.appdetails.dao.AppDao;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
 import com.blackducksoftware.tools.appedit.core.dao.UserAuthenticationDao;
 import com.blackducksoftware.tools.appedit.core.dao.UserRoleDao;
@@ -68,6 +69,14 @@ public class HybridUserAuthenticationDao implements UserAuthenticationDao {
 	public void setUserRoleDao(final UserRoleDao userRoleDao) {
 		this.userRoleDao = userRoleDao;
 	}
+	
+	private AppDao appDao;
+	
+	@Inject
+	public void setAppDao(final AppDao appDao){
+		this.appDao = appDao;
+	}
+	
 
 	/**
 	 * Default constructor
@@ -103,7 +112,7 @@ public class HybridUserAuthenticationDao implements UserAuthenticationDao {
 		try {
 			userSpecificConfig = createConfig(username, password);
 			final CodeCenterServerWrapper userSpecificCcsw = createCodeCenterServerWrapper(userSpecificConfig);
-			user = getUser(userSpecificCcsw, username);
+			user = appDao.getUser(username);
 			ensureAuditorRoleIdIsPopulated(userSpecificCcsw, user.getId(), username);
 			isAuditor = isAuditor(userSpecificCcsw, username, user);
 		} catch (final AuthenticationException e1) {
@@ -164,28 +173,6 @@ public class HybridUserAuthenticationDao implements UserAuthenticationDao {
 			throw new AuthenticationException(authResult, message);
 		}
 		return isAuditor;
-	}
-
-	private CodeCenterUserPojo getUser(
-			final CodeCenterServerWrapper userSpecificCcsw, final String username)
-					throws AuthenticationException {
-		// Authorize by performing an operation this user should be able to do
-		logger.debug("getUser()");
-		CodeCenterUserPojo user;
-		try {
-			user = userSpecificCcsw.getUserManager().getUserByName(username);
-		} catch (final CommonFrameworkException e) {
-			final String message = "Authorization failed: " + e.getMessage();
-			final AuthenticationResult authResult = new AuthenticationResult(null,
-					null, false, message, Role.ROLE_NONE);
-			throw new AuthenticationException(authResult, message);
-		} catch (final SOAPFaultException e) {
-			final String message = "Authorization failed: " + e.getMessage();
-			final AuthenticationResult authResult = new AuthenticationResult(null,
-					null, false, message, Role.ROLE_NONE);
-			throw new AuthenticationException(authResult, message);
-		}
-		return user;
 	}
 
 	private CodeCenterServerWrapper createCodeCenterServerWrapper(

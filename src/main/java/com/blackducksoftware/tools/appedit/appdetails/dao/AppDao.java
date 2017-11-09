@@ -20,7 +20,9 @@
 package com.blackducksoftware.tools.appedit.appdetails.dao;
 
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
+import com.blackducksoftware.tools.appedit.core.exception.AuthenticationException;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
+import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 
 /**
  * Application Data Access Object (DAO).
@@ -38,7 +40,15 @@ public interface AppDao {
      * @return
      */
     boolean authorizeUser(String appId, String username);
-
+    
+    /**
+     * Authorizes and returns user.
+     * @param username
+     * @return
+     */
+    CodeCenterUserPojo getUser(final String username) throws AuthenticationException;
+    
+    
     /**
      * Load an application's details by ID.
      *

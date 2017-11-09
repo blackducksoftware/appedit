@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.inject.Inject;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVers
 import com.blackducksoftware.tools.appedit.appdetails.dao.AppDao;
 import com.blackducksoftware.tools.appedit.appdetails.model.AppDetails;
 import com.blackducksoftware.tools.appedit.core.AppEditConfigManager;
+import com.blackducksoftware.tools.appedit.core.exception.AuthenticationException;
+import com.blackducksoftware.tools.appedit.core.model.AuthenticationResult;
+import com.blackducksoftware.tools.appedit.core.model.Role;
 import com.blackducksoftware.tools.commonframework.core.exception.CommonFrameworkException;
 import com.blackducksoftware.tools.connector.codecenter.CodeCenterServerWrapper;
 import com.blackducksoftware.tools.connector.codecenter.ICodeCenterServerWrapper;
@@ -41,6 +45,7 @@ import com.blackducksoftware.tools.connector.codecenter.application.ApplicationP
 import com.blackducksoftware.tools.connector.codecenter.application.ApplicationUserPojo;
 import com.blackducksoftware.tools.connector.codecenter.attribute.AttributeDefinitionPojo;
 import com.blackducksoftware.tools.connector.codecenter.common.AttributeValuePojo;
+import com.blackducksoftware.tools.connector.codecenter.user.CodeCenterUserPojo;
 
 /**
  * Loads AppDetails data from Code Center / Updates Code Center with data from a
@@ -83,7 +88,30 @@ public class CcAppDao implements AppDao {
 	this.config = config;
 	ccsw = new CodeCenterServerWrapper(config);
     }
-
+    
+    /**
+     * Authorize and returns user.
+     */
+    public CodeCenterUserPojo getUser(final String username) throws AuthenticationException {
+		// Authorize by performing an operation this user should be able to do
+		logger.debug("getUser()");
+		CodeCenterUserPojo user;
+		try {
+			user = ccsw.getUserManager().getUserByName(username);
+		} catch (final CommonFrameworkException e) {
+			final String message = "Authorization failed: " + e.getMessage();
+			final AuthenticationResult authResult = new AuthenticationResult(null,
+					null, false, message, Role.ROLE_NONE);
+			throw new AuthenticationException(authResult, message);
+		} catch (final SOAPFaultException e) {
+			final String message = "Authorization failed: " + e.getMessage();
+			final AuthenticationResult authResult = new AuthenticationResult(null,
+					null, false, message, Role.ROLE_NONE);
+			throw new AuthenticationException(authResult, message);
+		}
+		return user;
+	}
+    
     /**
      * Returns true if the given user is authorized to access the application
      * specified by the given appId.
