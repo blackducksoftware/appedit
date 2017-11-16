@@ -5,13 +5,13 @@
   <parent>
     <groupId>com.blackducksoftware.integration</groupId>
     <artifactId>common-maven-parent</artifactId>
-    <version>1.0.0</version>
+    <version>4.0.2</version>
     <relativePath>../common-maven-parent</relativePath>
   </parent>
 
   <groupId>com.blackducksoftware.tools</groupId>
   <artifactId>appedit</artifactId>
-  <version>1.4.4</version>
+  <version>1.4.5-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>Application Details Edit Webapp</name>
@@ -35,7 +35,7 @@
   <repositories>
     <repository>
       <id>bds-int-public</id>
-      <url>https://updates.suite.blackducksoftware.com/integrations/</url>
+      <url>https://prd-eng-repo02.dc2.lan/artifactory/bds-integrations-release/</url>
     </repository>
   </repositories>
 
@@ -44,7 +44,7 @@
       <dependency>
         <groupId>io.spring.platform</groupId>
         <artifactId>platform-bom</artifactId>
-        <version>1.1.1.RELEASE</version>
+        <version>Brussels-SR5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -147,7 +147,7 @@
     <dependency>
       <groupId>com.blackducksoftware.tools</groupId>
       <artifactId>cf-7x-connector</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.3</version>
       <exclusions>
         <!-- Swap out commons-collections 3.2 for 3.2.2 to avoid CVE-2015-6420 -->
         <!--  Don't know why this is necessary here, but without it, maven used collections 3.2.1 -->
