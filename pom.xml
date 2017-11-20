@@ -155,6 +155,14 @@
           <groupId>commons-collections</groupId>
           <artifactId>commons-collections</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.blackducksoftware.protex.sdkclient</groupId>
+          <artifactId>protex-sdk-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.blackducksoftware.protex.sdkclient</groupId>
+          <artifactId>protex-sdk-utilities</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- Swap in commons-collections 3.2.2 for 3.2 to avoid CVE-2015-6420 -->
