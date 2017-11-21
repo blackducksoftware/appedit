@@ -147,7 +147,7 @@
     <dependency>
       <groupId>com.blackducksoftware.tools</groupId>
       <artifactId>cf-7x-connector</artifactId>
-      <version>1.5.4</version>
+      <version>1.5.5</version>
       <exclusions>
         <!-- Swap out commons-collections 3.2 for 3.2.2 to avoid CVE-2015-6420 -->
         <!--  Don't know why this is necessary here, but without it, maven used collections 3.2.1 -->
@@ -162,10 +162,6 @@
         <exclusion>
           <groupId>com.blackducksoftware.protex.sdkclient</groupId>
           <artifactId>protex-sdk-utilities</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.santuario</groupId>
-          <artifactId>xmlsec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
